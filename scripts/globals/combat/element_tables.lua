@@ -99,7 +99,7 @@ xi.combat.element.getAssociatedSingleWeather = function(element)
     local elementToCheck = element or 0
 
     if elementToCheck < xi.element.FIRE or elementToCheck > xi.element.DARK then
-        return 0
+        return -1
     end
 
     return xi.combat.element.dataTable[elementToCheck][column.WEATHER_SINGLE]
@@ -110,7 +110,7 @@ xi.combat.element.getOppositeSingleWeather = function(element)
     local elementToCheck = element or 0
 
     if elementToCheck < xi.element.FIRE or elementToCheck > xi.element.DARK then
-        return 0
+        return -1
     end
 
     -- Fetch opposite element.
@@ -124,7 +124,7 @@ xi.combat.element.getAssociatedDoubleWeather = function(element)
     local elementToCheck = element or 0
 
     if elementToCheck < xi.element.FIRE or elementToCheck > xi.element.DARK then
-        return 0
+        return -1
     end
 
     return xi.combat.element.dataTable[elementToCheck][column.WEATHER_DOUBLE]
@@ -135,7 +135,7 @@ xi.combat.element.getOppositeDoubleWeather = function(element)
     local elementToCheck = element or 0
 
     if elementToCheck < xi.element.FIRE or elementToCheck > xi.element.DARK then
-        return
+        return -1
     end
 
     -- Fetch opposite element.
