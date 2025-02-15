@@ -1278,6 +1278,7 @@ xi.item =
     STAR_SAPPHIRE                       = 2359,
     PIECE_OF_YELLOW_GINSENG             = 2364,
     BHAFLAU_CARD                        = 2377,
+    SILVER_SEA_CARD                     = 2378,
     SMOKE_FILLED_FLASK                  = 2384,
     MOLDY_BUCKLER                       = 2385,
     HOARY_BATTLE_HORN                   = 2386,
