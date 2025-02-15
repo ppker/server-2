@@ -1,8 +1,6 @@
 -----------------------------------
 -- Zone: Castle_Zvahl_Baileys (161)
 -----------------------------------
-local ID = zones[xi.zone.CASTLE_ZVAHL_BAILEYS]
------------------------------------
 ---@type TZone
 local zoneObject = {}
 
