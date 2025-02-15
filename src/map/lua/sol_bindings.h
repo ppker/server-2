@@ -128,6 +128,10 @@ class CLuaMobSkill;
 class CMobSkill;
 SOL_BIND_DEC(CLuaMobSkill, CMobSkill);
 
+class CLuaPetSkill;
+class CPetSkill;
+SOL_BIND_DEC(CLuaPetSkill, CPetSkill);
+
 class CLuaSpell;
 class CSpell;
 SOL_BIND_DEC(CLuaSpell, CSpell);
