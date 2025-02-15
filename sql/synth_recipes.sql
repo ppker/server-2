@@ -4763,6 +4763,17 @@ INSERT INTO `synth_recipes` VALUES (75536,1,0,0,0,69,0,0,0,0,0,4100,4242,16618,0
 INSERT INTO `synth_recipes` VALUES (75537,1,0,0,0,45,0,0,0,0,0,4100,4242,14790,0,0,0,0,0,0,0,653,653,653,653,1,2,2,2,'Reraise Earring (desynth)','COP'); -- FFXIclopedia
 INSERT INTO `synth_recipes` VALUES (75538,1,0,0,0,0,0,0,82,0,0,4100,4242,13171,0,0,0,0,0,0,0,850,850,850,887,1,1,1,1,'Reraise Gorget (desynth)','COP'); -- FFXIclopedia
 INSERT INTO `synth_recipes` VALUES (75539,1,0,0,0,86,0,0,0,0,0,4100,4242,17065,0,0,0,0,0,0,0,652,652,745,746,1,1,1,1,'Platinum Rod (desynth)',NULL); -- FFXIclopedia
+INSERT INTO `synth_recipes` VALUES (75540,1,0,0,0,25,0,0,0,0,0,4098,4240,1625,0,0,0,0,0,0,0,661,661,661,752,1,1,1,1,'Moblin Helm (desynth)',NULL); -- FFXIclopedia and JP Wiki
+INSERT INTO `synth_recipes` VALUES (75541,1,0,0,0,26,0,0,0,0,0,4098,4240,1632,0,0,0,0,0,0,0,661,661,661,752,2,2,2,1,'Moblin Mail (desynth)',NULL); -- BGwiki
+INSERT INTO `synth_recipes` VALUES (75542,1,0,0,95,0,0,0,0,0,0,4100,4242,2504,0,0,0,0,0,0,0,652,653,654,1711,1,1,1,1,'Heavy Quadav Chestplate (desynth)',NULL); -- BGwiki
+INSERT INTO `synth_recipes` VALUES (75543,1,0,0,95,0,0,0,0,0,0,4100,4242,2505,0,0,0,0,0,0,0,652,653,654,659,2,2,2,2,'Heavy Quadav Backplate (desynth)',NULL); -- BGwiki
+INSERT INTO `synth_recipes` VALUES (75544,1,0,0,47,0,0,0,0,0,0,4100,4242,2510,0,0,0,0,0,0,0,651,652,1629,1629,2,2,1,1,'Orc Helmet (desynth)',NULL); -- BGwiki and JP Wiki
+INSERT INTO `synth_recipes` VALUES (75545,1,0,0,43,0,0,0,0,0,0,4100,4242,2511,0,0,0,0,0,0,0,651,652,1629,1629,1,1,1,1,'Orc Pauldron (desynth)',NULL); -- BGwiki and JP Wiki
+INSERT INTO `synth_recipes` VALUES (75546,1,0,0,0,0,0,44,0,0,0,4098,4240,2519,0,0,0,0,0,0,0,1629,2529,676,2006,1,1,1,1,'Yagudo Osode (desynth)',NULL); -- BGwiki
+INSERT INTO `synth_recipes` VALUES (75547,1,0,0,0,0,0,44,0,0,0,4098,4240,2520,0,0,0,0,0,0,0,1629,2529,666,676,1,1,2,3,'Yagudo Kote (desynth)',NULL); -- BGwiki, FFXIclopedia and JP wiki (highest level used)
+INSERT INTO `synth_recipes` VALUES (75548,1,0,0,69,0,0,0,0,0,0,4100,4242,2652,0,0,0,0,0,0,0,651,651,653,1615,2,2,1,1,'Gigas Helm (desynth)',NULL); -- BGwiki and JP Wiki
+INSERT INTO `synth_recipes` VALUES (75549,1,0,0,77,0,0,0,0,0,0,4100,4242,2653,0,0,0,0,0,0,0,651,651,654,1629,1,1,1,1,'Gigas Gauntlets (desynth)',NULL); -- BGwiki and JP Wiki
+INSERT INTO `synth_recipes` VALUES (75550,1,0,0,96,0,0,0,0,0,0,4100,4242,16166,0,0,0,0,0,0,0,2303,2303,2303,2303,1,1,2,2,'Januwiyah -1 (desynth)',NULL); -- BGwiki
 -- -----------
 -- RECIPES END
 
