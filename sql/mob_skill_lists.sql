@@ -909,11 +909,11 @@ INSERT INTO `mob_skill_lists` VALUES ('Ram',208,266);
 INSERT INTO `mob_skill_lists` VALUES ('Ram',208,267);
 INSERT INTO `mob_skill_lists` VALUES ('Ram',208,268);
 INSERT INTO `mob_skill_lists` VALUES ('Ram',208,269);
--- INSERT INTO `mob_skill_lists` VALUES ('Rampart',209,2032);
--- INSERT INTO `mob_skill_lists` VALUES ('Rampart',209,2033);
--- INSERT INTO `mob_skill_lists` VALUES ('Rampart',209,2034);
--- INSERT INTO `mob_skill_lists` VALUES ('Rampart',209,2035);
--- INSERT INTO `mob_skill_lists` VALUES ('Rampart',209,2036);
+INSERT INTO `mob_skill_lists` VALUES ('Rampart',209,2032); -- Roller Chain
+INSERT INTO `mob_skill_lists` VALUES ('Rampart',209,2033); -- Choke Chain
+INSERT INTO `mob_skill_lists` VALUES ('Rampart',209,2034); -- Reinforcements
+INSERT INTO `mob_skill_lists` VALUES ('Rampart',209,2035); -- Biomagnet
+INSERT INTO `mob_skill_lists` VALUES ('Rampart',209,2036); -- Astral Gate
 INSERT INTO `mob_skill_lists` VALUES ('Raptor',210,374);
 INSERT INTO `mob_skill_lists` VALUES ('Raptor',210,376);
 INSERT INTO `mob_skill_lists` VALUES ('Raptor',210,379);
