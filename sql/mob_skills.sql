@@ -2046,11 +2046,11 @@ INSERT INTO `mob_skills` VALUES (2028,1386,'fulmination',1,0.0,32.0,2000,1500,4,
 -- INSERT INTO `mob_skills` VALUES (2029,1773,'.',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
 -- INSERT INTO `mob_skills` VALUES (2030,1774,'.',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
 INSERT INTO `mob_skills` VALUES (2031,433,'reactive_shield',0,0.0,7.0,2000,0,16,4,0,0,0,0,0);
--- INSERT INTO `mob_skills` VALUES (2032,1776,'roller_chain',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
--- INSERT INTO `mob_skills` VALUES (2033,1777,'choke_chain',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
--- INSERT INTO `mob_skills` VALUES (2034,1778,'reinforcements',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
--- INSERT INTO `mob_skills` VALUES (2035,1779,'biomagnet',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
--- INSERT INTO `mob_skills` VALUES (2036,1780,'astral_gate',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
+INSERT INTO `mob_skills` VALUES (2032,1383,'roller_chain',1,0.0,10.0,2000,1500,4,0,0,0,0,0,0);
+INSERT INTO `mob_skills` VALUES (2033,1384,'choke_chain',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
+INSERT INTO `mob_skills` VALUES (2034,1385,'reinforcements',0,0.0,7.0,2000,1500,1,0,0,0,0,0,0);
+INSERT INTO `mob_skills` VALUES (2035,1396,'biomagnet',0,0.0,10.0,2000,1500,4,0,0,0,0,0,0);
+INSERT INTO `mob_skills` VALUES (2036,1397,'astral_gate',4,0.0,7.0,2000,1500,4,0,0,7,0,0,0);
 -- INSERT INTO `mob_skills` VALUES (2037,1781,'warp',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
 INSERT INTO `mob_skills` VALUES (2038,1387,'artificial_gravity',1,0.0,15.0,2000,1500,4,0,0,0,0,0,0);
 INSERT INTO `mob_skills` VALUES (2039,1388,'antigravity',1,0.0,15.0,2000,1500,4,0,0,2,0,0,0);
