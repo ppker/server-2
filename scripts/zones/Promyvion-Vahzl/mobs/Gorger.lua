@@ -1,6 +1,6 @@
 -----------------------------------
--- Area: Promyvion-Dem
---  Mob: Seether
+-- Area: Promyvion-Vahzl
+--  Mob: Gorger
 -----------------------------------
 mixins = { require('scripts/mixins/families/empty_terroanima') }
 -----------------------------------
@@ -8,7 +8,7 @@ mixins = { require('scripts/mixins/families/empty_terroanima') }
 local entity = {}
 
 entity.onMobSpawn = function(mob)
-    xi.promyvion.emptyOnMobSpawn(mob, xi.promyvion.mobType.SEETHER)
+    xi.promyvion.emptyOnMobSpawn(mob, xi.promyvion.mobType.GORGER)
 end
 
 return entity
