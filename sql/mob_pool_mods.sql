@@ -593,9 +593,20 @@ INSERT INTO `mob_pool_mods` VALUES (5922,6,150,0);      -- MPP: 150
 -- Trust: Fablinix
 INSERT INTO `mob_pool_mods` VALUES (5932,6,250,0);    -- MPP: 250
 
+-- Trust: Karaha-Baruha
+INSERT INTO `mob_pool_mods` VALUES (5936,3,-10,0); -- HPP: -10
+INSERT INTO `mob_pool_mods` VALUES (5936,6,20,0); -- MPP: 20
+
+-- Trust: Areuhat
+INSERT INTO `mob_pool_mods` VALUES (5939,1046,30,0); -- ENHANCES_BLOOD_RAGE: 30
+INSERT INTO `mob_pool_mods` VALUES (5939,234,8,0);  -- DEMON_KILLER: 8
+
 -- Trust: Ferreous Coffin
 INSERT INTO `mob_pool_mods` VALUES (5944,3,-10,0);      -- HPP: -10
 INSERT INTO `mob_pool_mods` VALUES (5944,6,35,0);       -- MPP: 35
+
+-- Trust: Rahal
+INSERT INTO `mob_pool_mods` VALUES (5951,233,8,0); -- DRAGON_KILLER: 8
 
 -- Trust: Prishe II
 INSERT INTO `mob_pool_mods` VALUES (6011,165,25,0);     -- CRITHITRATE: 25
