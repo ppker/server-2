@@ -3450,8 +3450,8 @@ INSERT INTO `mob_skills` VALUES (3434,385,'tachi_kamai',0,0.0,7.0,2000,1500,4,0,
 INSERT INTO `mob_skills` VALUES (3435,386,'iainuki',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
 INSERT INTO `mob_skills` VALUES (3436,383,'tachi_goten',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
 INSERT INTO `mob_skills` VALUES (3437,384,'tachi_kasha',0,0.0,7.0,2000,1500,4,0,0,0,11,2,0);
-INSERT INTO `mob_skills` VALUES (3438,2430,'dragon_breath',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
-INSERT INTO `mob_skills` VALUES (3439,2429,'hurricane_wing',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
+INSERT INTO `mob_skills` VALUES (3438,2430,'dragon_breath',2,0.0,7.0,2000,1500,4,0,0,0,13,11,0);
+INSERT INTO `mob_skills` VALUES (3439,2429,'hurricane_wing',1,0.0,7.0,2000,1500,4,0,0,0,4,6,0);
 INSERT INTO `mob_skills` VALUES (3440,2317,'pocket_sand',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
 INSERT INTO `mob_skills` VALUES (3441,2316,'tripe_gripe',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
 INSERT INTO `mob_skills` VALUES (3442,2319,'sharp_eye',0,0.0,7.0,2000,1500,4,0,0,0,0,0,0);
