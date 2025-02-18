@@ -1,5 +1,5 @@
 -----------------------------------
--- Area: Promyvion-Dem
+-- Area: Promyvion-Vahzl
 --  Mob: Seether
 -----------------------------------
 mixins = { require('scripts/mixins/families/empty_terroanima') }
