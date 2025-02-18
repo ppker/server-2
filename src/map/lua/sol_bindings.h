@@ -124,6 +124,10 @@ SOL_BIND_DEC_SUB(CLuaItem, CItem, CItemShop);
 SOL_BIND_DEC_SUB(CLuaItem, CItem, CItemUsable);
 SOL_BIND_DEC_SUB(CLuaItem, CItem, CItemWeapon);
 
+class CLuaLootContainer;
+struct LootContainer;
+SOL_BIND_DEC(CLuaLootContainer, LootContainer);
+
 class CLuaMobSkill;
 class CMobSkill;
 SOL_BIND_DEC(CLuaMobSkill, CMobSkill);
