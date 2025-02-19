@@ -1362,16 +1362,20 @@ INSERT INTO `mob_droplist` VALUES (151,0,0,1000,14976,120);       -- Enlils Koll
 INSERT INTO `mob_droplist` VALUES (151,0,0,1000,15636,120);       -- Hikazu Hakama (12.0%)
 INSERT INTO `mob_droplist` VALUES (151,0,0,1000,15718,@UNCOMMON); -- Freyas Ledelsens (Uncommon, 10%)
 
--- ZoneID:  75 - Troll Gemologist -- TODO: Salvage
 -- ZoneID:  75 - Troll Smelter
 -- ZoneID:  75 - Troll Stoneworker
--- ZoneID:  75 - Troll Cameist
--- ZoneID:  75 - Archaic Chariot
-INSERT INTO `mob_droplist` VALUES (152,0,0,1000,14970,@UNCOMMON); -- Hoshikazu Tekko (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (152,0,0,1000,15630,@UNCOMMON); -- Njords Trousers (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (152,0,0,1000,15712,@UNCOMMON); -- Enyos Leggings (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (152,0,0,1000,15728,@UNCOMMON); -- Nemains Sabots (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (152,0,0,1000,16097,@UNCOMMON); -- Anus Tiara (Uncommon, 10%)
+-- ZoneID:  75 - Troll_Cameist
+-- ZoneID:  75 - Wandering_Wamoura
+-- ZoneID:  75 - Troll_Engraver
+-- ZoneID:  75 - Troll_Gemologist
+-- ZoneID:  75 - Troll_Lapidarist
+-- ZoneID:  75 - Troll Ironworker
+-- ZoneID:  75 - Black Pudding
+INSERT INTO `mob_droplist` VALUES (152,1,1,200,14970,@URARE); -- Hoshikazu Tekko (Ultra rare, .1%)
+INSERT INTO `mob_droplist` VALUES (152,1,1,200,15712,@URARE); -- Enyo's Leggings (Ultra rare, .1%)
+INSERT INTO `mob_droplist` VALUES (152,1,1,200,15728,@URARE); -- Nemain's Sabots (Ultra rare, .1%)
+INSERT INTO `mob_droplist` VALUES (152,1,1,200,15630,@URARE); -- Njord's Trousers (Ultra rare, .1%)
+INSERT INTO `mob_droplist` VALUES (152,1,1,200,16097,@URARE); -- Anu's Tiara (Ultra rare, .1%)
 
 -- ZoneID:   9 - Archaic Chest
 INSERT INTO `mob_droplist` VALUES (153,0,0,1000,1693,@VCOMMON); -- Cyan Chip (Very Common, 24%)
@@ -1392,13 +1396,11 @@ INSERT INTO `mob_droplist` VALUES (155,0,0,1000,15724,60);       -- Anus Gaiters
 INSERT INTO `mob_droplist` VALUES (155,0,0,1000,15626,20);       -- Enyos Cuisses (2.0%)
 INSERT INTO `mob_droplist` VALUES (155,0,0,1000,16093,20);       -- Hoshikazu Hachimaki (2.0%)
 
--- ZoneID:  75 - Archaic Gear -- TODO: Salvage
-INSERT INTO `mob_droplist` VALUES (156,0,0,1000,2488,@UNCOMMON);  -- Piece Of Alexandrite (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (156,0,0,1000,14970,@UNCOMMON); -- Hoshikazu Tekko (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (156,0,0,1000,15630,@UNCOMMON); -- Njords Trousers (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (156,0,0,1000,15712,@UNCOMMON); -- Enyos Leggings (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (156,0,0,1000,15728,@UNCOMMON); -- Nemains Sabots (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (156,0,0,1000,16097,@UNCOMMON); -- Anus Tiara (Uncommon, 10%)
+-- ZoneID:  75 - Zebra Zachary
+INSERT INTO `mob_droplist` VALUES (156,0,0,1000,5735,@ALWAYS); -- Cotton Coin Purse (Always, 100%)
+INSERT INTO `mob_droplist` VALUES (156,0,0,1000,5735,@SRARE);  -- Cotton Coin Purse (Super Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (156,0,0,1000,14964,@RARE);  -- Deimos's Gauntlets (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (156,0,0,1000,16091,@RARE);  -- Freya's Mask (Rare, 5%)
 
 -- ZoneID:  73 - Fourth Rampart -- TODO: Salvage
 -- ZoneID:  73 - Archaic Gears
@@ -1416,13 +1418,17 @@ INSERT INTO `mob_droplist` VALUES (158,0,0,1000,15642,@UNCOMMON); -- Nemains Slo
 INSERT INTO `mob_droplist` VALUES (158,0,0,1000,15724,@UNCOMMON); -- Anus Gaiters (Uncommon, 10%)
 INSERT INTO `mob_droplist` VALUES (158,0,0,1000,16093,@UNCOMMON); -- Hoshikazu Hachimaki (Uncommon, 10%)
 
--- ZoneID:  75 - Archaic Gears -- TODO: Salvage
-INSERT INTO `mob_droplist` VALUES (159,0,0,1000,2488,@UNCOMMON);  -- Piece Of Alexandrite (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (159,0,0,1000,14970,@UNCOMMON); -- Hoshikazu Tekko (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (159,0,0,1000,15626,@UNCOMMON); -- Enyos Cuisses (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (159,0,0,1000,15630,@UNCOMMON); -- Njords Trousers (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (159,0,0,1000,15728,@UNCOMMON); -- Nemains Sabots (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (159,0,0,1000,16097,@UNCOMMON); -- Anus Tiara (Uncommon, 10%)
+-- ZoneID:  75 - Archaic Gears
+-- ZoneID:  75 - Archaic Gear
+INSERT INTO `mob_droplist` VALUES (159,0,0,1000,2488,@UNCOMMON); -- Piece Of Alexandrite (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (159,0,0,1000,2488,@SRARE);    -- Piece Of Alexandrite (Super Rare, .5%)
+INSERT INTO `mob_droplist` VALUES (159,0,0,1000,5374,@RARE);     -- Opacus Cell (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (159,0,0,1000,5375,@RARE);     -- Praecipitatio Cell (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (159,1,1,200,14970,@RARE);     -- Hoshikazu Tekko (Very rare, 5%)
+INSERT INTO `mob_droplist` VALUES (159,1,1,200,15712,@RARE);     -- Enyo's Leggings (Very rare, 5%)
+INSERT INTO `mob_droplist` VALUES (159,1,1,200,15728,@RARE);     -- Nemain's Sabots (Very rare, 5%)
+INSERT INTO `mob_droplist` VALUES (159,1,1,200,15630,@RARE);     -- Njord's Trousers (Very rare, 5%)
+INSERT INTO `mob_droplist` VALUES (159,1,1,200,16097,@RARE);     -- Anu's Tiara (Very rare, 5%)
 
 -- ZoneID:  54 - Archaic Mirror
 -- ZoneID:  62 - Archaic Mirror
@@ -2488,16 +2494,18 @@ INSERT INTO `mob_droplist` VALUES (268,0,0,1000,17316,@COMMON); -- Bomb Arm (Com
 INSERT INTO `mob_droplist` VALUES (268,2,0,1000,17316,0);       -- Bomb Arm (Steal)
 INSERT INTO `mob_droplist` VALUES (268,4,0,1000,928,0);         -- Pinch Of Bomb Ash (Despoil)
 
--- ZoneID:  75 - Bifrons -- TODO: Salvage
-INSERT INTO `mob_droplist` VALUES (269,0,0,1000,5365,@UNCOMMON);  -- Incus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (269,0,0,1000,5373,@UNCOMMON);  -- Duplicatus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (269,0,0,1000,5383,@UNCOMMON);  -- Humilus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (269,0,0,1000,5384,@UNCOMMON);  -- Spissatus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (269,0,0,1000,14970,@UNCOMMON); -- Hoshikazu Tekko (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (269,0,0,1000,15630,@UNCOMMON); -- Njords Trousers (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (269,0,0,1000,15712,@UNCOMMON); -- Enyos Leggings (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (269,0,0,1000,15728,@UNCOMMON); -- Nemains Sabots (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (269,0,0,1000,16097,@UNCOMMON); -- Anus Tiara (Uncommon, 10%)
+-- ZoneID:  75 - Archaic Gear
+INSERT INTO `mob_droplist` VALUES (269,0,0,1000,2377,@URARE);  -- Bhaflau Card (Ultra Rare, .1%)
+INSERT INTO `mob_droplist` VALUES (269,0,0,1000,2488,@COMMON); -- Alexandrite (Common, 10%)
+INSERT INTO `mob_droplist` VALUES (269,0,0,1000,2488,@SRARE);  -- Alexandrite (Super Rare, .5%)
+INSERT INTO `mob_droplist` VALUES (269,1,1,334,5374,@RARE);    -- Opacus Cell (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (269,1,1,333,5375,@RARE);    -- Praecipitatio cell (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (269,1,1,333,5382,@RARE);    -- Mediocris cell (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (269,1,2,200,16097,@SRARE);  -- Anu's Tiara (Super Rare .5%)
+INSERT INTO `mob_droplist` VALUES (269,1,2,200,15712,@SRARE);  -- Enyo's Leggings (Super Rare .5%)
+INSERT INTO `mob_droplist` VALUES (269,1,2,200,14970,@SRARE);  -- Hoshikazu Tekko (Super Rare .5%)
+INSERT INTO `mob_droplist` VALUES (269,1,2,200,15728,@SRARE);  -- Nemain's Sabots (Super Rare .5%)
+INSERT INTO `mob_droplist` VALUES (269,1,2,200,15630,@SRARE);  -- Njord's Trousers (Super Rare .5%)
 
 -- ZoneID: 160 - Bifrons
 INSERT INTO `mob_droplist` VALUES (270,0,0,1000,928,@COMMON);     -- Pinch Of Bomb Ash (Common, 15%)
@@ -3682,14 +3690,12 @@ INSERT INTO `mob_droplist` VALUES (419,0,0,1000,4357,@COMMON);  -- Crawler Egg (
 INSERT INTO `mob_droplist` VALUES (419,4,0,1000,839,0);         -- Piece Of Crawler Cocoon (Despoil)
 INSERT INTO `mob_droplist` VALUES (419,4,0,1000,4357,0);        -- Crawler Egg (Despoil)
 
--- ZoneID:  75 - Carmine Eruca
-INSERT INTO `mob_droplist` VALUES (420,0,0,1000,5376,@UNCOMMON); -- Pannus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (420,0,0,1000,5377,@UNCOMMON); -- Fractus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (420,0,0,1000,5378,@UNCOMMON); -- Congestus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (420,0,0,1000,5379,@UNCOMMON); -- Nimbus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (420,0,0,1000,5380,@UNCOMMON); -- Velum Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (420,0,0,1000,5381,@UNCOMMON); -- Pileus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (420,0,0,1000,5382,@UNCOMMON); -- Mediocris Cell (Uncommon, 10%)
+-- ZoneID:  75 - Common Bhafalu Remnants Drops
+INSERT INTO `mob_droplist` VALUES (420,1,1,200,14970,@SRARE); -- Hoshikazu Tekko (Super Rare, .5%)
+INSERT INTO `mob_droplist` VALUES (420,1,1,200,15712,@SRARE); -- Enyo's Leggings (Super Rare, .5%)
+INSERT INTO `mob_droplist` VALUES (420,1,1,200,15728,@SRARE); -- Nemain's Sabots (Super Rare, .5%)
+INSERT INTO `mob_droplist` VALUES (420,1,1,200,15630,@SRARE); -- Njord's Trousers (Super Rare, .5%)
+INSERT INTO `mob_droplist` VALUES (420,1,1,200,16097,@SRARE); -- Anu's Tiara (Super Rare, .5%)
 
 -- ZoneID: 107 - Carnero
 INSERT INTO `mob_droplist` VALUES (421,0,0,1000,17811,@ALWAYS);  -- Katayama Ichimonji (Always, 100%)
@@ -6201,13 +6207,17 @@ INSERT INTO `mob_droplist` VALUES (764,0,0,1000,18386,200);       -- Gloom Claym
 INSERT INTO `mob_droplist` VALUES (764,0,0,1000,15701,@UNCOMMON); -- Arborist Nails (Uncommon, 10%)
 
 -- ZoneID:  75 - Wandering Wamoura
+-- ZoneID:  75 - Sulfur Scorpion
 -- ZoneID:  75 - Empathic Flan
 INSERT INTO `mob_droplist` VALUES (765,0,0,1000,5374,@UNCOMMON);  -- Opacus Cell (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (765,0,0,1000,5374,@UNCOMMON);  -- Opacus Cell (Uncommon, 10%)
 INSERT INTO `mob_droplist` VALUES (765,0,0,1000,5375,@UNCOMMON);  -- Praecipitatio Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (765,0,0,1000,14970,@UNCOMMON); -- Hoshikazu Tekko (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (765,0,0,1000,15630,@UNCOMMON); -- Njords Trousers (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (765,0,0,1000,15712,@UNCOMMON); -- Enyos Leggings (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (765,0,0,1000,16097,@UNCOMMON); -- Anus Tiara (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (765,0,0,1000,5375,@UNCOMMON);  -- Praecipitatio Cell (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (765,1,1,200,14970,@SRARE);     -- Hoshikazu Tekko (Super Rare, .5%)
+INSERT INTO `mob_droplist` VALUES (765,1,1,200,15712,@SRARE);     -- Enyo's Leggings (Super Rare, .5%)
+INSERT INTO `mob_droplist` VALUES (765,1,1,200,15728,@SRARE);     -- Nemain's Sabots (Super Rare, .5%)
+INSERT INTO `mob_droplist` VALUES (765,1,1,200,15630,@SRARE);     -- Njord's Trousers (Super Rare, .5%)
+INSERT INTO `mob_droplist` VALUES (765,1,1,200,16097,@SRARE);     -- Anu's Tiara (Super Rare, .5%)
 
 -- ZoneID: 218 - Emperador De Altepa
 INSERT INTO `mob_droplist` VALUES (766,0,0,1000,3131,@UNCOMMON);  -- Tantra Seal Body (Uncommon, 10%)
@@ -7536,9 +7546,10 @@ INSERT INTO `mob_droplist` VALUES (938,0,0,1000,842,@VCOMMON); -- Giant Bird Fea
 INSERT INTO `mob_droplist` VALUES (938,0,0,1000,843,40);       -- Giant Bird Plume (4.0%)
 
 -- ZoneID:  75 - Gate Widow
-INSERT INTO `mob_droplist` VALUES (939,0,0,1000,5735,@ALWAYS); -- Cotton Coin Purse (Always, 100%)
-INSERT INTO `mob_droplist` VALUES (939,0,0,1000,14980,120);    -- Machas Cuffs (12.0%)
-INSERT INTO `mob_droplist` VALUES (939,0,0,1000,15640,70);     -- Enlils Brayettes (7.0%)
+INSERT INTO `mob_droplist` VALUES (939,0,0,1000,5735,@ALWAYS);    -- Cotton Coin Purse (Always, 100%)
+INSERT INTO `mob_droplist` VALUES (939,0,0,1000,5735,@SRARE);     -- Cotton Coin Purse (Super Rare, .5%) 
+INSERT INTO `mob_droplist` VALUES (939,0,0,1000,14980,@UNCOMMON); -- Machas Cuffs (Uncommon, 10.0%)
+INSERT INTO `mob_droplist` VALUES (939,0,0,1000,15640,@RARE);     -- Enlils Brayettes (Rare, 5.0%)
 
 -- ZoneID: 136 - Gawper
 INSERT INTO `mob_droplist` VALUES (940,0,0,1000,557,130);        -- Ahriman Lens (13.0%)
@@ -12237,14 +12248,21 @@ INSERT INTO `mob_droplist` VALUES (1532,0,0,1000,11948,@UNCOMMON); -- Stanch Cui
 INSERT INTO `mob_droplist` VALUES (1532,0,0,1000,4761,@RARE);      -- Scroll Of Blizzard V (Rare, 5%)
 
 -- ZoneID:  75 - Long-Bowed Chariot
-INSERT INTO `mob_droplist` VALUES (1533,0,0,1000,15635,340);    -- Tsukikazu Haidate (34.0%)
-INSERT INTO `mob_droplist` VALUES (1533,0,0,1000,15717,310);    -- Freyrs Ledelsens (31.0%)
-INSERT INTO `mob_droplist` VALUES (1533,0,0,1000,16086,310);    -- Phoboss Mask (31.0%)
-INSERT INTO `mob_droplist` VALUES (1533,0,0,1000,14975,290);    -- Eas Dastanas (29.0%)
-INSERT INTO `mob_droplist` VALUES (1533,0,0,1000,14548,280);    -- Phoboss Cuirass (28.0%)
-INSERT INTO `mob_droplist` VALUES (1533,0,0,1000,16102,250);    -- Bodbs Crown (25.0%)
-INSERT INTO `mob_droplist` VALUES (1533,0,0,1000,14564,230);    -- Bodbs Robe (23.0%)
 INSERT INTO `mob_droplist` VALUES (1533,0,0,1000,5736,@COMMON); -- Linen Coin Purse (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (1533,1,1,150,15635,340);    -- Tsukikazu Haidate (34.0%)
+INSERT INTO `mob_droplist` VALUES (1533,1,1,150,15717,310);    -- Freyrs Ledelsens (31.0%)
+INSERT INTO `mob_droplist` VALUES (1533,1,1,150,16086,310);    -- Phoboss Mask (31.0%)
+INSERT INTO `mob_droplist` VALUES (1533,1,1,150,14975,290);    -- Eas Dastanas (29.0%)
+INSERT INTO `mob_droplist` VALUES (1533,1,1,150,14548,280);    -- Phoboss Cuirass (28.0%)
+INSERT INTO `mob_droplist` VALUES (1533,1,1,150,16102,250);    -- Bodbs Crown (25.0%)
+INSERT INTO `mob_droplist` VALUES (1533,1,1,150,14564,230);    -- Bodbs Robe (23.0%)
+INSERT INTO `mob_droplist` VALUES (1533,1,2,150,15635,340);    -- Tsukikazu Haidate (34.0%)
+INSERT INTO `mob_droplist` VALUES (1533,1,2,150,15717,310);    -- Freyrs Ledelsens (31.0%)
+INSERT INTO `mob_droplist` VALUES (1533,1,2,150,16086,310);    -- Phoboss Mask (31.0%)
+INSERT INTO `mob_droplist` VALUES (1533,1,2,150,14975,290);    -- Eas Dastanas (29.0%)
+INSERT INTO `mob_droplist` VALUES (1533,1,2,150,14548,280);    -- Phoboss Cuirass (28.0%)
+INSERT INTO `mob_droplist` VALUES (1533,1,2,150,16102,250);    -- Bodbs Crown (25.0%)
+INSERT INTO `mob_droplist` VALUES (1533,1,2,150,14564,230);    -- Bodbs Robe (23.0%)
 
 -- ZoneID: 187 - Loo Hepe The Eyepiercer
 INSERT INTO `mob_droplist` VALUES (1534,0,0,1000,3355,@VCOMMON); -- Divine Bijou (Very Common, 24%)
@@ -15868,8 +15886,9 @@ INSERT INTO `mob_droplist` VALUES (1988,0,0,1000,854,30);        -- Cockatrice S
 
 -- ZoneID:  75 - Peryton
 INSERT INTO `mob_droplist` VALUES (1989,0,0,1000,5735,@ALWAYS); -- Cotton Coin Purse (Always, 100%)
-INSERT INTO `mob_droplist` VALUES (1989,0,0,1000,14553,190);    -- Freyas Jerkin (19.0%)
-INSERT INTO `mob_droplist` VALUES (1989,0,0,1000,15640,60);     -- Enlils Brayettes (6.0%)
+INSERT INTO `mob_droplist` VALUES (1989,0,0,1000,5735,@SRARE); -- Cotton Coin Purse (Super Rare, .5%)
+INSERT INTO `mob_droplist` VALUES (1989,0,0,1000,14553,@RARE);  -- Freyas Jerkin (5.0%)
+INSERT INTO `mob_droplist` VALUES (1989,0,0,1000,15640,@RARE);  -- Enlils Brayettes (5.0%)
 
 -- ZoneID:  77 - Peryton
 -- ZoneID: 125 - Phorusrhacos
@@ -17772,8 +17791,9 @@ INSERT INTO `mob_droplist` VALUES (2266,2,0,1000,842,0);       -- Giant Bird Fea
 
 -- ZoneID:  75 - Skirmish Pephredo
 INSERT INTO `mob_droplist` VALUES (2267,0,0,1000,5735,@ALWAYS); -- Cotton Coin Purse (Always, 100%)
-INSERT INTO `mob_droplist` VALUES (2267,0,0,1000,15722,90);     -- Hikazu Sune-Ate (9.0%)
-INSERT INTO `mob_droplist` VALUES (2267,0,0,1000,16091,70);     -- Freyas Mask (7.0%)
+INSERT INTO `mob_droplist` VALUES (2267,0,0,1000,5735,@SRARE);  -- Cotton Coin Purse (Super Rare, .5%)
+INSERT INTO `mob_droplist` VALUES (2267,0,0,1000,15722,@RARE);  -- Hikazu Sune-Ate (Rare, 5.0%)
+INSERT INTO `mob_droplist` VALUES (2267,0,0,1000,16091,@RARE);  -- Freyas Mask (Rare, 5.0%)
 
 -- ZoneID:  52 - Skoffin
 INSERT INTO `mob_droplist` VALUES (2268,0,0,1000,1122,@UNCOMMON); -- Wyvern Skin (Uncommon, 10%)
@@ -18384,14 +18404,11 @@ INSERT INTO `mob_droplist` VALUES (2359,0,0,1000,868,140);  -- Handful Of Pugil 
 INSERT INTO `mob_droplist` VALUES (2359,2,0,1000,864,0);    -- Handful Of Fish Scales (Steal)
 
 -- ZoneID:  75 - Sulfur Scorpion
-INSERT INTO `mob_droplist` VALUES (2360,0,0,1000,5372,@UNCOMMON);  -- Virga Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2360,0,0,1000,5374,@UNCOMMON);  -- Opacus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2360,0,0,1000,5375,@UNCOMMON);  -- Praecipitatio Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2360,0,0,1000,14970,@UNCOMMON); -- Hoshikazu Tekko (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2360,0,0,1000,15630,@UNCOMMON); -- Njords Trousers (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2360,0,0,1000,15712,@UNCOMMON); -- Enyos Leggings (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2360,0,0,1000,15728,@UNCOMMON); -- Nemains Sabots (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2360,0,0,1000,16097,@UNCOMMON); -- Anus Tiara (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (2360,1,1,200,14970,@VRARE); -- Hoshikazu Tekko (Very rare, 1%)
+INSERT INTO `mob_droplist` VALUES (2360,1,1,200,15712,@VRARE); -- Enyo's Leggings (Very rare, 1%)
+INSERT INTO `mob_droplist` VALUES (2360,1,1,200,15728,@VRARE); -- Nemain's Sabots (Very rare, 1%)
+INSERT INTO `mob_droplist` VALUES (2360,1,1,200,15630,@VRARE); -- Njord's Trousers (Very rare, 1%)
+INSERT INTO `mob_droplist` VALUES (2360,1,1,200,16097,@VRARE); -- Anu's Tiara (Very rare, 1%)
 
 -- ZoneID:  99 - Suu Xicu The Cantabile
 INSERT INTO `mob_droplist` VALUES (2361,0,0,1000,2701,@ALWAYS); -- Bamboo Snakecage (Always, 100%)
@@ -19328,10 +19345,17 @@ INSERT INTO `mob_droplist` VALUES (2480,0,0,1000,2860,@UNCOMMON); -- Slab Of Plu
 INSERT INTO `mob_droplist` VALUES (2480,0,0,1000,2223,80);        -- Halvung Brass Key (8.0%)
 INSERT INTO `mob_droplist` VALUES (2480,0,0,1000,2161,20);        -- Troll Vambrace (2.0%)
 
--- ZoneID:  75 - Troll Ironworker
-INSERT INTO `mob_droplist` VALUES (2481,0,0,1000,5365,@UNCOMMON); -- Incus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2481,0,0,1000,5373,@UNCOMMON); -- Duplicatus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2481,0,0,1000,5383,@UNCOMMON); -- Humilus Cell (Uncommon, 10%)
+-- ZoneID:  75 Archain Chariot
+INSERT INTO `mob_droplist` VALUES (2481,0,0,1000,2377,@URARE);  -- Bhaflau Card (Ultra Rare, .1%)
+INSERT INTO `mob_droplist` VALUES (2481,0,0,1000,2488,@COMMON); -- Alexandrite (Common, 10%)
+INSERT INTO `mob_droplist` VALUES (2481,0,0,1000,2488,@SRARE);  -- Alexandrite (Super Rare, .5%)
+INSERT INTO `mob_droplist` VALUES (2481,1,1,500,5374,@RARE);    -- Opacus Cell (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (2481,1,1,500,5375,@RARE);    -- Praecipitatio cell (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (2481,1,2,200,16097,@SRARE);  -- Anu's Tiara (Super Rare .5%)
+INSERT INTO `mob_droplist` VALUES (2481,1,2,200,15712,@SRARE);  -- Enyo's Leggings (Super Rare .5%)
+INSERT INTO `mob_droplist` VALUES (2481,1,2,200,14970,@SRARE);  -- Hoshikazu Tekko (Super Rare .5%)
+INSERT INTO `mob_droplist` VALUES (2481,1,2,200,15728,@SRARE);  -- Nemain's Sabots (Super Rare .5%)
+INSERT INTO `mob_droplist` VALUES (2481,1,2,200,15630,@SRARE);  -- Njord's Trousers (Super Rare .5%)
 
 -- ZoneID:  51 - Woodtroll Warrior
 -- ZoneID:  62 - Troll Lapidarist
@@ -19339,11 +19363,7 @@ INSERT INTO `mob_droplist` VALUES (2481,0,0,1000,5383,@UNCOMMON); -- Humilus Cel
 INSERT INTO `mob_droplist` VALUES (2482,0,0,1000,2860,@UNCOMMON); -- Slab Of Plumbago (Uncommon, 10%)
 INSERT INTO `mob_droplist` VALUES (2482,0,0,1000,2223,80);        -- Halvung Brass Key (8.0%)
 
--- ZoneID:  75 - Troll Lapidarist
-INSERT INTO `mob_droplist` VALUES (2483,0,0,1000,5365,@UNCOMMON); -- Incus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2483,0,0,1000,5373,@UNCOMMON); -- Duplicatus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2483,0,0,1000,5383,@UNCOMMON); -- Humilus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2483,0,0,1000,5384,@UNCOMMON); -- Spissatus Cell (Uncommon, 10%)
+-- 2483 free
 
 -- ZoneID:  62 - Troll Machinist
 INSERT INTO `mob_droplist` VALUES (2484,0,0,1000,2248,@UNCOMMON); -- Pattern Reader (Uncommon, 10%)
@@ -21200,19 +21220,7 @@ INSERT INTO `mob_droplist` VALUES (2608,0,0,1000,2338,80);  -- Wamoura Scale (8.
 -- ZoneID:  62 - Wamouracampa
 INSERT INTO `mob_droplist` VALUES (2609,0,0,1000,2173,110); -- Wamoura Cocoon (11.0%)
 
--- ZoneID:  75 - Wamouracampa
-INSERT INTO `mob_droplist` VALUES (2610,0,0,1000,5366,@UNCOMMON);  -- Castellanus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2610,0,0,1000,5367,@UNCOMMON);  -- Cumulus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2610,0,0,1000,5368,@UNCOMMON);  -- Radiatus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2610,0,0,1000,5369,@UNCOMMON);  -- Stratus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2610,0,0,1000,5370,@UNCOMMON);  -- Cirrocumulus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2610,0,0,1000,5371,@UNCOMMON);  -- Undulatus Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2610,0,0,1000,5372,@UNCOMMON);  -- Virga Cell (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2610,0,0,1000,14970,@UNCOMMON); -- Hoshikazu Tekko (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2610,0,0,1000,15630,@UNCOMMON); -- Njords Trousers (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2610,0,0,1000,15712,@UNCOMMON); -- Enyos Leggings (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2610,0,0,1000,15728,@UNCOMMON); -- Nemains Sabots (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (2610,0,0,1000,16097,@UNCOMMON); -- Anus Tiara (Uncommon, 10%)
+-- 2610 free
 
 -- ZoneID:  61 - Wamoura Prince
 INSERT INTO `mob_droplist` VALUES (2611,0,0,1000,2173,@UNCOMMON); -- Wamoura Cocoon (Uncommon, 10%)
