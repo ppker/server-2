@@ -226,23 +226,20 @@ namespace zoneutils
         char address[INET_ADDRSTRLEN];
         inet_ntop(AF_INET, &map_ip, address, INET_ADDRSTRLEN);
 
-        // clang-format off
-        auto zonesQuery = fmt::sprintf(R"(
+        const auto zonesQuery = R"(
             SELECT zoneid
             FROM zone_settings
-            WHERE IF(%d <> 0, '%s' = zoneip AND %d = zoneport, TRUE);
-        )", map_ip.s_addr, address, map_port);
-        // clang-format on
+            WHERE IF(? <> 0, ? = zoneip AND ? = zoneport, TRUE);
+        )";
 
         std::vector<uint16> zonesOnThisProcess;
 
-        int32 ret = _sql->Query(zonesQuery.c_str());
-        if (ret != SQL_ERROR && _sql->NumRows() != 0)
+        const auto rset = db::preparedStmt(zonesQuery, (uint32)map_ip.s_addr, address, map_port);
+        if (rset && rset->rowsCount())
         {
-            while (_sql->NextRow() == SQL_SUCCESS)
+            while (rset->next())
             {
-                uint16 zoneId = static_cast<uint16>(_sql->GetUIntData(0));
-                zonesOnThisProcess.emplace_back(zoneId);
+                zonesOnThisProcess.emplace_back(rset->get<uint16>("zoneid"));
             }
         }
 
@@ -700,13 +697,15 @@ namespace zoneutils
 
     CZone* CreateZone(uint16 ZoneID)
     {
-        const char* Query = "SELECT zonetype, restriction FROM zone_settings "
-                            "WHERE zoneid = %u LIMIT 1";
+        const auto query = "SELECT zonetype, restriction FROM zone_settings "
+                           "WHERE zoneid = ? LIMIT 1";
 
-        if (_sql->Query(Query, ZoneID) != SQL_ERROR && _sql->NumRows() != 0 && _sql->NextRow() == SQL_SUCCESS)
+        const auto rset = db::preparedStmt(query, ZoneID);
+        if (rset && rset->rowsCount() && rset->next())
         {
-            ZONE_TYPE zoneType    = static_cast<ZONE_TYPE>(_sql->GetUIntData(0));
-            uint8     restriction = static_cast<uint8>(_sql->GetUIntData(1));
+            const auto zoneType    = static_cast<ZONE_TYPE>(rset->get<uint8>("zonetype"));
+            const auto restriction = rset->get<uint8>("restriction");
+
             if (zoneType & ZONE_TYPE::INSTANCED)
             {
                 return new CZoneInstance((ZONEID)ZoneID, GetCurrentRegion(ZoneID), GetCurrentContinent(ZoneID), restriction);
@@ -738,17 +737,18 @@ namespace zoneutils
         g_PTrigger = new CNpcEntity(); // you need to set the default model in the CNpcEntity constructor
 
         std::vector<uint16> zones;
-        const char*         query = "SELECT zoneid FROM zone_settings WHERE IF(%d <> 0, '%s' = zoneip AND %d = zoneport, TRUE)";
+
+        const auto query = "SELECT zoneid FROM zone_settings WHERE IF(? <> 0, ? = zoneip AND ? = zoneport, TRUE)";
 
         char address[INET_ADDRSTRLEN];
         inet_ntop(AF_INET, &map_ip, address, INET_ADDRSTRLEN);
-        int ret = _sql->Query(query, map_ip.s_addr, address, map_port);
 
-        if (ret != SQL_ERROR && _sql->NumRows() != 0)
+        const auto rset = db::preparedStmt(query, (uint32)map_ip.s_addr, address, map_port);
+        if (rset && rset->rowsCount())
         {
-            while (_sql->NextRow() == SQL_SUCCESS)
+            while (rset->next())
             {
-                zones.emplace_back(static_cast<uint16>(_sql->GetUIntData(0)));
+                zones.emplace_back(rset->get<uint16>("zoneid"));
             }
         }
         else
@@ -1190,21 +1190,25 @@ namespace zoneutils
 
     uint64 GetZoneIPP(uint16 zoneID)
     {
-        uint64      ipp   = 0;
-        const char* query = "SELECT zoneip, zoneport FROM zone_settings WHERE zoneid = %u";
+        uint64 ipp = 0;
 
-        int ret = _sql->Query(query, zoneID);
+        const auto query = "SELECT zoneip, zoneport FROM zone_settings WHERE zoneid = ?";
 
-        if (ret != SQL_ERROR && _sql->NumRows() != 0 && _sql->NextRow() == SQL_SUCCESS)
+        const auto rset = db::preparedStmt(query, zoneID);
+        if (rset && rset->rowsCount() && rset->next())
         {
-            inet_pton(AF_INET, (const char*)_sql->GetData(0), &ipp);
-            uint64 port = _sql->GetUIntData(1);
-            ipp |= (port << 32);
+            const auto zoneip = rset->get<std::string>("zoneip");
+            const auto port   = rset->get<uint16>("zoneport");
+
+            inet_pton(AF_INET, zoneip.c_str(), &ipp);
+
+            ipp |= (static_cast<uint64>(port) << 32);
         }
         else
         {
             ShowCritical("zoneutils::GetZoneIPP: Cannot find zone %u", zoneID);
         }
+
         return ipp;
     }
 
