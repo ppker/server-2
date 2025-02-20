@@ -484,6 +484,12 @@ namespace blueutils
                                         break;
                                     }
                                 }
+                                else if (PTrait->getMod() == Mod::DOUBLE_ATTACK && iter->getMod() == Mod::TRIPLE_ATTACK)
+                                {
+                                    // Triple Attack (16 pts) overwrites Double Attack (8 pts)
+                                    add = false;
+                                    break;
+                                }
                             }
 
                             if (add)
