@@ -704,7 +704,7 @@ xi.quest.id =
     {
         LOST_IN_TRANSLOCATION            = 0,  -- + Converted
         MESSAGE_ON_THE_WINDS             = 1,  -- + Converted
-        THE_WEEKLY_ADVENTURER            = 2,
+        THE_WEEKLY_ADVENTURER            = 2,  -- + Converted
         HEALING_HERBS                    = 3,
         REDEEMING_ROCKS                  = 4,
         THE_DAWN_OF_DELECTABILITY        = 5,  -- + Converted
