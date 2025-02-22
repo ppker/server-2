@@ -33,11 +33,11 @@
 #include "packets/message_system.h"
 
 #include "conquest_system.h"
+#include "ipc_client.h"
 #include "item_container.h"
 #include "items/item_linkshell.h"
 #include "linkshell.h"
 #include "map.h"
-#include "message.h"
 #include "packets/linkshell_message.h"
 #include "utils/charutils.h"
 #include "utils/itemutils.h"
@@ -91,13 +91,13 @@ void CLinkshell::setMessage(const std::string& message, const std::string& poste
         return;
     }
 
-    int8 packetData[8]{};
-    ref<uint32>(packetData, 0) = m_id;
-    ref<uint32>(packetData, 4) = 0;
     if (message.size() != 0)
     {
-        message::send(MSG_CHAT_LINKSHELL, packetData, sizeof(packetData),
-                      std::make_unique<CLinkshellMessagePacket>(poster, message, m_name, std::numeric_limits<uint32>::min(), true));
+        message::send(ipc::LinkshellSetMessage{
+            .linkshellId = m_id,
+            .poster      = poster,
+            .message     = message,
+        });
     }
 }
 

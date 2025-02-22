@@ -22,6 +22,7 @@
 #include "luautils.h"
 
 #include "common/filewatcher.h"
+#include "common/ipc.h"
 #include "common/logging.h"
 #include "common/utils.h"
 #include "common/vana_time.h"
@@ -72,9 +73,9 @@
 #include "entities/mobentity.h"
 #include "fishingcontest.h"
 #include "instance.h"
+#include "ipc_client.h"
 #include "items/item_puppet.h"
 #include "map.h"
-#include "message.h"
 #include "mobskill.h"
 #include "monstrosity.h"
 #include "packets/action.h"
@@ -1388,7 +1389,10 @@ namespace luautils
 
     void SendLuaFuncStringToZone(uint16 zoneId, std::string const& str)
     {
-        message::send(zoneId, str);
+        message::send(ipc::LuaFunction{
+            .zoneId     = zoneId,
+            .funcString = str,
+        });
     }
 
     uint32 VanadielTime()

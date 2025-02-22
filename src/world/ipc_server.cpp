@@ -1,7 +1,7 @@
 ﻿/*
 ===========================================================================
 
-  Copyright (c) 2010-2015 Darkstar Dev Teams
+  Copyright (c) 2025 LandSandBoat Dev Teams
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,6 +19,14 @@
 ===========================================================================
 */
 
+#include "ipc_server.h"
+
+#include "besieged_system.h"
+#include "campaign_system.h"
+#include "colonization_system.h"
+#include "conquest_system.h"
+#include "world_server.h"
+
 #include <concurrentqueue.h>
 #include <memory>
 #include <queue>
@@ -26,424 +34,578 @@
 
 #include "common/database.h"
 #include "common/logging.h"
-#include "conquest_system.h"
-#include "message_server.h"
-
-struct chat_message_t
-{
-    uint64         dest = 0;
-    MSGSERVTYPE    type{};
-    zmq::message_t data{};
-    zmq::message_t packet{};
-};
-
-struct zone_settings_t
-{
-    uint16 zoneid = 0;
-    uint64 ipp    = 0;
-    uint32 misc   = 0;
-};
+#include "common/regional_event.h"
 
 namespace
 {
-    zmq::context_t                 zContext;
-    std::unique_ptr<zmq::socket_t> zSocket;
-
-    moodycamel::ConcurrentQueue<chat_message_t>    outgoing_queue;
-    moodycamel::ConcurrentQueue<HandleableMessage> external_processing_queue;
-
-    std::unordered_map<uint16, zone_settings_t> zoneSettingsMap;
-    std::vector<uint64>                         mapEndpoints;
-    std::vector<uint64>                         yellMapEndpoints;
+    auto getZMQEndpointString() -> std::string
+    {
+        return fmt::format("tcp://{}:{}", settings::get<std::string>("network.ZMQ_IP"), settings::get<uint16>("network.ZMQ_PORT"));
+    }
 } // namespace
 
-void queue_message(uint64 ipp, MSGSERVTYPE type, zmq::message_t* extra, zmq::message_t* packet)
+IPCServer::IPCServer(WorldServer& worldServer)
+: worldServer_(worldServer)
+, zmqRouterWrapper_(getZMQEndpointString())
 {
-    chat_message_t msg;
-    msg.dest = ipp;
-    msg.type = type;
-
-    msg.data.copy(*extra);
-    if (packet != nullptr)
-    {
-        msg.packet.copy(*packet);
-    }
-
-    outgoing_queue.enqueue(std::move(msg));
+    TracyZoneScoped;
 }
 
-void queue_message_broadcast(MSGSERVTYPE type, zmq::message_t* extra, zmq::message_t* packet)
+//
+// IPP Lookup
+//
+
+auto IPCServer::getIPPForCharId(uint32 charId) -> std::optional<IPP>
 {
-    for (const auto& ipp : mapEndpoints)
+    TracyZoneScoped;
+
+    // TODO: We know when chars move, we could be caching this information
+
+    const auto rset = db::preparedStmt("SELECT server_addr, server_port FROM accounts_sessions WHERE charid = ? LIMIT 1", charId);
+    if (rset && rset->rowsCount() && rset->next())
     {
-        queue_message(ipp, type, extra, packet);
-    }
-}
-
-auto pop_external_processing_message() -> std::optional<HandleableMessage>
-{
-    HandleableMessage out;
-    return external_processing_queue.try_dequeue(out) ? std::optional<HandleableMessage>(out) : std::nullopt;
-}
-
-void message_server_send(uint64 ipp, MSGSERVTYPE type, zmq::message_t* extra, zmq::message_t* packet)
-{
-    try
-    {
-        std::array<zmq::message_t, 4> msgs;
-        msgs[0] = zmq::message_t(&ipp, sizeof(ipp));
-        msgs[1] = zmq::message_t(&type, sizeof(type));
-        msgs[2].copy(*extra);
-        msgs[3].copy(*packet);
-        zmq::send_multipart(*zSocket, msgs);
-    }
-    catch (zmq::error_t& e)
-    {
-        ShowError(fmt::format("Message: {}", e.what()));
-    }
-}
-
-std::string ipp_to_string(uint64 ipp)
-{
-    // Ip / port pair is stored as uint32 port MSB and uint32 Ip LSB
-    uint32  port = (uint32)(ipp >> 32);
-    uint32  ip   = (uint32)(ipp);
-    in_addr target{};
-    target.s_addr = ip;
-    char target_address[INET_ADDRSTRLEN];
-    inet_ntop(AF_INET, &target, target_address, INET_ADDRSTRLEN);
-
-    // This is internal, so we can trust it.
-    return fmt::format("{}:{}", asStringFromUntrustedSource(target_address), port);
-}
-
-void message_server_parse(MSGSERVTYPE type, zmq::message_t* extra, zmq::message_t* packet, zmq::message_t* from)
-{
-    in_addr from_ip{};
-    uint16  from_port = 0;
-    char    from_address[INET_ADDRSTRLEN];
-
-    if (from)
-    {
-        from_ip.s_addr = ref<uint32>((uint8*)from->data(), 0);
-        from_port      = ref<uint16>((uint8*)from->data(), 4);
-        inet_ntop(AF_INET, &from_ip, from_address, INET_ADDRSTRLEN);
+        const auto ip   = rset->get<uint64>("server_addr");
+        const auto port = rset->get<uint64>("server_port");
+        return IPP(ip, port);
     }
 
-    auto forward_message = [&](std::unique_ptr<db::detail::ResultSetWrapper>&& rset)
+    return std::nullopt;
+}
+
+auto IPCServer::getIPPForCharName(const std::string& charName) -> std::optional<IPP>
+{
+    TracyZoneScoped;
+
+    // TODO: We know when chars move, we could be caching this information
+
+    const auto rset = db::preparedStmt("SELECT server_addr, server_port FROM accounts_sessions LEFT JOIN chars ON "
+                                       "accounts_sessions.charid = chars.charid WHERE charname = ? LIMIT 1",
+                                       charName);
+    if (rset && rset->rowsCount() && rset->next())
     {
-        // This is only used for cases where SQL is used to get the IPs (not cached).
-        // E.g: When we get ips for a specific account_session.
-        // Consider moving this logic to a helper method and call it from each case instead.
-        if (!rset)
-        {
-            return;
-        }
+        const auto ip   = rset->get<uint64>("server_addr");
+        const auto port = rset->get<uint64>("server_port");
+        return IPP(ip, port);
+    }
 
-        // This is internal, so we can trust it.
-        ShowDebug(fmt::format("Message: Received message {} ({}) from {}:{}",
-                              msgTypeToStr(type), static_cast<uint8>(type), asStringFromUntrustedSource(from_address), from_port));
+    return std::nullopt;
+}
 
+auto IPCServer::getIPPForZoneId(uint16 zoneId) -> std::optional<IPP>
+{
+    TracyZoneScoped;
+
+    if (const auto it = zoneSettings_.zoneSettingsMap_.find(zoneId); it != zoneSettings_.zoneSettingsMap_.end())
+    {
+        return it->second.ipp;
+    }
+
+    return std::nullopt;
+}
+
+auto IPCServer::getIPPsForParty(uint32 partyId) -> std::vector<IPP>
+{
+    TracyZoneScoped;
+
+    // TODO: We know when chars move, we could be caching this infor
+
+    // TODO: Simplify query now that there's alliance versions?
+    const auto query = "SELECT server_addr, server_port, MIN(charid) FROM accounts_sessions JOIN accounts_parties USING (charid) "
+                       "WHERE IF (allianceid <> 0, allianceid = (SELECT MAX(allianceid) FROM accounts_parties WHERE partyid = ?), "
+                       "partyid = ?) GROUP BY server_addr, server_port";
+
+    const auto rset = db::preparedStmt(query, partyId, partyId);
+    if (rset && rset->rowsCount())
+    {
+        std::vector<IPP> ippList;
         while (rset->next())
         {
-            uint64      ip       = rset->get<uint64>("server_addr");
-            uint64      port     = rset->get<uint64>("server_port");
-            uint64      ipp      = ip | (port << 32);
-            std::string ipString = ipp_to_string(ipp);
-
-            ShowDebug(fmt::format("Message: -> rerouting to {}", ipString));
-            message_server_send(ipp, type, extra, packet);
+            const auto ip   = rset->get<uint64>("server_addr");
+            const auto port = rset->get<uint64>("server_port");
+            ippList.emplace_back(ip, port);
         }
-    };
 
-    switch (type)
+        return ippList;
+    }
+
+    return {};
+}
+
+auto IPCServer::getIPPsForAlliance(uint32 allianceId) -> std::vector<IPP>
+{
+    TracyZoneScoped;
+
+    // TODO: We know when chars move, we could be caching this infor
+
+    const auto query = "SELECT server_addr, server_port, MIN(charid) FROM accounts_sessions JOIN accounts_parties USING (charid) "
+                       "WHERE allianceid = ? "
+                       "GROUP BY server_addr, server_port";
+
+    const auto rset = db::preparedStmt(query, allianceId);
+    if (rset && rset->rowsCount())
     {
-        case MSG_CHAT_TELL:
-        case MSG_LINKSHELL_RANK_CHANGE:
-        case MSG_LINKSHELL_REMOVE:
-        case MSG_CHARVAR_UPDATE:
+        std::vector<IPP> ippList;
+        while (rset->next())
         {
-            const char* query = "SELECT server_addr, server_port FROM accounts_sessions LEFT JOIN chars ON "
-                                "accounts_sessions.charid = chars.charid WHERE charname = ? LIMIT 1";
-
-            // This is going straight into a prepared statement, so we can trust it.
-            auto rset = db::preparedStmt(query, asStringFromUntrustedSource((uint8*)extra->data() + 4));
-            if (rset)
-            {
-                forward_message(std::move(rset));
-            }
-            else
-            {
-                query = "SELECT server_addr, server_port FROM accounts_sessions WHERE charid = ? LIMIT 1";
-
-                uint32 charId = ref<uint32>((uint8*)extra->data(), 0);
-                forward_message(db::preparedStmt(query, charId));
-            }
-            break;
+            const auto ip   = rset->get<uint64>("server_addr");
+            const auto port = rset->get<uint64>("server_port");
+            ippList.emplace_back(ip, port);
         }
-        case MSG_CHAT_PARTY:
-        case MSG_PT_RELOAD:
-        case MSG_PT_DISBAND:
+
+        return ippList;
+    }
+
+    return {};
+}
+
+auto IPCServer::getIPPsForLinkshell(uint32 linkshellId) -> std::vector<IPP>
+{
+    TracyZoneScoped;
+
+    // TODO: We know when chars move, we could be caching this infor
+
+    const auto query = "SELECT server_addr, server_port FROM accounts_sessions "
+                       "WHERE linkshellid1 = ? OR linkshellid2 = ? GROUP BY server_addr, server_port";
+
+    const auto rset = db::preparedStmt(query, linkshellId, linkshellId);
+    if (rset && rset->rowsCount())
+    {
+        std::vector<IPP> ippList;
+        while (rset->next())
         {
-            // TODO: simplify query now that there's alliance versions?
-            const char* query = "SELECT server_addr, server_port, MIN(charid) FROM accounts_sessions JOIN accounts_parties USING (charid) "
-                                "WHERE IF (allianceid <> 0, allianceid = (SELECT MAX(allianceid) FROM accounts_parties WHERE partyid = ?), "
-                                "partyid = ?) GROUP BY server_addr, server_port";
-
-            uint32 partyid = ref<uint32>((uint8*)extra->data(), 0);
-            forward_message(db::preparedStmt(query, partyid, partyid));
-            break;
+            const auto ip   = rset->get<uint64>("server_addr");
+            const auto port = rset->get<uint64>("server_port");
+            ippList.emplace_back(ip, port);
         }
-        case MSG_CHAT_ALLIANCE:
-        case MSG_ALLIANCE_RELOAD:
-        case MSG_ALLIANCE_DISSOLVE:
+
+        return ippList;
+    }
+
+    return {};
+}
+
+auto IPCServer::getIPPsForUnity(uint32 unityId) -> std::vector<IPP>
+{
+    TracyZoneScoped;
+
+    // TODO: We know when chars move, we could be caching this infor
+
+    const auto query = "SELECT server_addr, server_port FROM accounts_sessions "
+                       "WHERE unitychat = ? GROUP BY server_addr, server_port";
+
+    const auto rset = db::preparedStmt(query, unityId);
+    if (rset && rset->rowsCount())
+    {
+        std::vector<IPP> ippList;
+        while (rset->next())
         {
-            const char* query = "SELECT server_addr, server_port, MIN(charid) FROM accounts_sessions JOIN accounts_parties USING (charid) "
-                                "WHERE allianceid = ? "
-                                "GROUP BY server_addr, server_port";
-
-            uint32 allianceid = ref<uint32>((uint8*)extra->data(), 0);
-            forward_message(db::preparedStmt(query, allianceid));
-            break;
+            const auto ip   = rset->get<uint64>("server_addr");
+            const auto port = rset->get<uint64>("server_port");
+            ippList.emplace_back(ip, port);
         }
-        case MSG_CHAT_LINKSHELL:
+
+        return ippList;
+    }
+
+    return {};
+}
+
+auto IPCServer::getIPPsForYellZones() -> std::vector<IPP>
+{
+    TracyZoneScoped;
+
+    return zoneSettings_.yellMapEndpoints_;
+}
+
+auto IPCServer::getIPPsForAllZones() -> std::vector<IPP>
+{
+    TracyZoneScoped;
+
+    return zoneSettings_.mapEndpoints_;
+}
+
+//
+// Message routing
+//
+
+void IPCServer::rerouteMessageToCharId(uint32 charId, const auto& message)
+{
+    TracyZoneScoped;
+
+    if (const auto maybeCharIPP = getIPPForCharId(charId))
+    {
+        const auto charIPP = *maybeCharIPP;
+        DebugIPCFmt("Message: -> rerouting to char<{}> on {}", charId, charIPP.toString());
+        sendMessage(charIPP, std::move(message));
+    }
+}
+
+void IPCServer::rerouteMessageToCharName(const std::string& charName, const auto& message)
+{
+    TracyZoneScoped;
+
+    if (const auto maybeCharIPP = getIPPForCharName(charName))
+    {
+        const auto charIPP = *maybeCharIPP;
+        DebugIPCFmt("Message: -> rerouting to char<{}> on {}", charName, charIPP.toString());
+        sendMessage(charIPP, std::move(message));
+    }
+}
+
+void IPCServer::rerouteMessageToZoneId(uint16 zoneId, const auto& message)
+{
+    TracyZoneScoped;
+
+    if (const auto maybeZoneIPP = getIPPForZoneId(zoneId))
+    {
+        const auto zoneIPP = *maybeZoneIPP;
+        DebugIPCFmt("Message: -> rerouting to zone<{}> on {}", zoneId, zoneIPP.toString());
+        sendMessage(zoneIPP, std::move(message));
+    }
+}
+
+void IPCServer::rerouteMessageToPartyMembers(uint32 partyId, const auto& message)
+{
+    TracyZoneScoped;
+
+    for (const auto& ipp : getIPPsForParty(partyId))
+    {
+        DebugIPCFmt("Message: -> rerouting to party<{}> on {}", partyId, ipp.toString());
+        sendMessage(ipp, message);
+    }
+}
+
+void IPCServer::rerouteMessageToAllianceMembers(uint32 allianceId, const auto& message)
+{
+    TracyZoneScoped;
+
+    for (const auto& ipp : getIPPsForAlliance(allianceId))
+    {
+        DebugIPCFmt("Message: -> rerouting to alliance<{}> on {}", allianceId, ipp.toString());
+        sendMessage(ipp, message);
+    }
+}
+
+void IPCServer::rerouteMessageToLinkshellMembers(uint32 linkshellId, const auto& message)
+{
+    TracyZoneScoped;
+
+    for (const auto& ipp : getIPPsForLinkshell(linkshellId))
+    {
+        DebugIPCFmt("Message: -> rerouting to linkshell<{}> on {}", linkshellId, ipp.toString());
+        sendMessage(ipp, message);
+    }
+}
+
+void IPCServer::rerouteMessageToUnityMembers(uint32 unityId, const auto& message)
+{
+    TracyZoneScoped;
+
+    for (const auto& ipp : getIPPsForUnity(unityId))
+    {
+        DebugIPCFmt("Message: -> rerouting to unity<{}> on {}", unityId, ipp.toString());
+        sendMessage(ipp, message);
+    }
+}
+
+void IPCServer::rerouteMessageToYellZones(const auto& message)
+{
+    TracyZoneScoped;
+
+    for (const auto& ipp : getIPPsForYellZones())
+    {
+        DebugIPCFmt("Message: -> rerouting to yell zone on {}", ipp.toString());
+        sendMessage(ipp, message);
+    }
+}
+
+void IPCServer::rerouteMessageToAllZones(const auto& message)
+{
+    TracyZoneScoped;
+
+    for (const auto& ipp : getIPPsForAllZones())
+    {
+        DebugIPCFmt("Message: -> rerouting to all zones on {}", ipp.toString());
+        sendMessage(ipp, message);
+    }
+}
+
+void IPCServer::handleIncomingMessages()
+{
+    TracyZoneScoped;
+
+    // TODO: Can we stop more messages appearing on the queue while we're processing?
+    HandleableMessage out;
+    while (zmqRouterWrapper_.incomingQueue_.try_dequeue(out))
+    {
+        const auto firstByte = out.payload[0];
+        const auto msgType   = ipc::toString(static_cast<ipc::MessageType>(firstByte));
+
+        DebugIPCFmt("Incoming {} message from {}", msgType, out.ipp.toString());
+
+        ipc::IIPCMessageHandler::handleMessage(out.ipp, { out.payload.data(), out.payload.size() });
+    }
+}
+
+void IPCServer::handleMessage_EmptyStruct(const IPP& ipp, const ipc::EmptyStruct& message)
+{
+    TracyZoneScoped;
+
+    ShowWarningFmt("Received EmptyStruct message from {} - this is probably a bug", ipp.toString());
+}
+
+void IPCServer::handleMessage_CharLogin(const IPP& ipp, const ipc::CharLogin& message)
+{
+    TracyZoneScoped;
+
+    DebugIPCFmt("Received CharLogin message from {} for account {} char {}", ipp.toString(), message.accountId, message.charId);
+
+    // NOTE: Originally a NO-OP
+}
+
+void IPCServer::handleMessage_CharVarUpdate(const IPP& ipp, const ipc::CharVarUpdate& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToCharId(message.charId, message);
+}
+
+void IPCServer::handleMessage_ChatMessageTell(const IPP& ipp, const ipc::ChatMessageTell& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToCharName(message.recipientName, message);
+}
+
+void IPCServer::handleMessage_ChatMessageParty(const IPP& ipp, const ipc::ChatMessageParty& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToPartyMembers(message.partyId, message);
+}
+
+void IPCServer::handleMessage_ChatMessageAlliance(const IPP& ipp, const ipc::ChatMessageAlliance& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToAllianceMembers(message.allianceId, message);
+}
+
+void IPCServer::handleMessage_ChatMessageLinkshell(const IPP& ipp, const ipc::ChatMessageLinkshell& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToLinkshellMembers(message.linkshellId, message);
+}
+
+void IPCServer::handleMessage_ChatMessageUnity(const IPP& ipp, const ipc::ChatMessageUnity& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToUnityMembers(message.unityLeaderId, message);
+}
+
+void IPCServer::handleMessage_ChatMessageYell(const IPP& ipp, const ipc::ChatMessageYell& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToYellZones(message);
+}
+
+void IPCServer::handleMessage_ChatMessageServerMessage(const IPP& ipp, const ipc::ChatMessageServerMessage& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToAllZones(message);
+}
+
+void IPCServer::handleMessage_ChatMessageCustom(const IPP& ipp, const ipc::ChatMessageCustom& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToCharId(message.recipientId, message);
+}
+
+void IPCServer::handleMessage_PartyInvite(const IPP& ipp, const ipc::PartyInvite& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToCharId(message.inviteeId, message);
+}
+
+void IPCServer::handleMessage_PartyInviteResponse(const IPP& ipp, const ipc::PartyInviteResponse& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToCharId(message.inviterId, message);
+}
+
+void IPCServer::handleMessage_PartyReload(const IPP& ipp, const ipc::PartyReload& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToPartyMembers(message.partyId, message);
+}
+
+void IPCServer::handleMessage_PartyDisband(const IPP& ipp, const ipc::PartyDisband& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToPartyMembers(message.partyId, message);
+}
+
+void IPCServer::handleMessage_AllianceReload(const IPP& ipp, const ipc::AllianceReload& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToAllianceMembers(message.allianceId, message);
+}
+
+void IPCServer::handleMessage_AllianceDissolve(const IPP& ipp, const ipc::AllianceDissolve& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToAllianceMembers(message.allianceId, message);
+}
+
+void IPCServer::handleMessage_PlayerKick(const IPP& ipp, const ipc::PlayerKick& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToCharId(message.charId, message);
+}
+
+void IPCServer::handleMessage_MessageStandard(const IPP& ipp, const ipc::MessageStandard& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToCharId(message.charId, message);
+}
+
+void IPCServer::handleMessage_MessageSystem(const IPP& ipp, const ipc::MessageSystem& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToCharId(message.charId, message);
+}
+
+void IPCServer::handleMessage_LinkshellRankChange(const IPP& ipp, const ipc::LinkshellRankChange& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToCharId(message.charId, message);
+}
+
+void IPCServer::handleMessage_LinkshellRemove(const IPP& ipp, const ipc::LinkshellRemove& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToCharId(message.charId, message);
+}
+
+void IPCServer::handleMessage_LinkshellSetMessage(const IPP& ipp, const ipc::LinkshellSetMessage& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToLinkshellMembers(message.linkshellId, message);
+}
+
+void IPCServer::handleMessage_LuaFunction(const IPP& ipp, const ipc::LuaFunction& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToZoneId(message.zoneId, message);
+}
+
+void IPCServer::handleMessage_KillSession(const IPP& ipp, const ipc::KillSession& message)
+{
+    TracyZoneScoped;
+
+    const auto rset = db::preparedStmt("SELECT pos_prevzone, pos_zone from chars where charid = ? LIMIT 1", message.charId);
+
+    // Get zone ID from query and try to send to _just_ the previous zone
+    if (rset && rset->rowsCount() && rset->next())
+    {
+        const auto prevZoneID = rset->get<uint32>("pos_prevzone");
+        const auto nextZoneID = rset->get<uint32>("pos_zone");
+
+        if (prevZoneID != nextZoneID)
         {
-            const char* query = "SELECT server_addr, server_port FROM accounts_sessions "
-                                "WHERE linkshellid1 = ? OR linkshellid2 = ? GROUP BY server_addr, server_port";
+            const auto zoneSettings = zoneSettings_.zoneSettingsMap_.at(prevZoneID);
 
-            uint32 linkshellId = ref<uint32>((uint8*)extra->data(), 0);
-            forward_message(db::preparedStmt(query, linkshellId, linkshellId));
-            break;
+            DebugIPCFmt(fmt::format("Message: -> rerouting to {}", zoneSettings.ipp.toString()));
+
+            sendMessage(zoneSettings.ipp, message);
         }
-        case MSG_CHAT_UNITY:
+    }
+    else // Otherwise, send to all zones
+    {
+        // TODO: Is this insane, do we need to send this to _every_ zone?
+        for (const auto& ipp : zoneSettings_.mapEndpoints_)
         {
-            const char* query = "SELECT server_addr, server_port FROM accounts_sessions "
-                                "WHERE unitychat = ? GROUP BY server_addr, server_port";
+            DebugIPCFmt(fmt::format("Message: -> rerouting to {}", ipp.toString()));
 
-            uint32 unityId = ref<uint32>((uint8*)extra->data(), 0);
-            forward_message(db::preparedStmt(query, unityId));
-            break;
+            sendMessage(ipp, message);
         }
-        case MSG_CHAT_YELL:
-        {
-            for (const auto& ipp : yellMapEndpoints)
-            {
-                ShowDebug(fmt::format("Message: -> rerouting to {}", ipp_to_string(ipp)));
-                message_server_send(ipp, type, extra, packet);
-            }
+    }
+}
+
+void IPCServer::handleMessage_RegionalEvent(const IPP& ipp, const ipc::RegionalEvent& message)
+{
+    TracyZoneScoped;
+
+    // Dispatch to relevant system
+    switch (message.type)
+    {
+        case RegionalEventType::Conquest:
+            worldServer_.conquestSystem_->handleMessage(message.subType, { ipp, message.payload });
             break;
-        }
-        case MSG_CHAT_SERVMES:
-        {
-            for (const auto& ipp : mapEndpoints)
-            {
-                ShowDebug(fmt::format("Message: -> rerouting to {}", ipp_to_string(ipp)));
-                message_server_send(ipp, type, extra, packet);
-            }
+        case RegionalEventType::Besieged:
+            worldServer_.besiegedSystem_->handleMessage(message.subType, { ipp, message.payload });
             break;
-        }
-        case MSG_PT_INVITE:
-        case MSG_PT_INV_RES:
-        case MSG_PLAYER_KICK:
-        case MSG_DIRECT:
-        case MSG_SEND_TO_ZONE:
-        {
-            const char* query = "SELECT server_addr, server_port FROM accounts_sessions WHERE charid = ?";
-
-            uint32 charId = ref<uint32>((uint8*)extra->data(), 0);
-            forward_message(db::preparedStmt(query, charId));
+        case RegionalEventType::Campaign:
+            worldServer_.campaignSystem_->handleMessage(message.subType, { ipp, message.payload });
             break;
-        }
-        case MSG_SEND_TO_ENTITY:
-        case MSG_LUA_FUNCTION:
-        case MSG_RPC_SEND:
-        case MSG_RPC_RECV:
-        {
-            uint16 zoneId = ref<uint16>((uint8*)extra->data(), 2);
-            try
-            {
-                auto zoneSettings = zoneSettingsMap.at(zoneId);
-                ShowDebug(fmt::format("Message: -> rerouting to {}", ipp_to_string(zoneSettings.ipp)));
-                message_server_send(zoneSettings.ipp, type, extra, packet);
-            }
-            catch (const std::out_of_range&)
-            {
-                ShowError("Requested ZoneId not in cache: %d", zoneId);
-            }
-
+        case RegionalEventType::Colonization:
+            worldServer_.colonizationSystem_->handleMessage(message.subType, { ipp, message.payload });
             break;
-        }
-        case MSG_LOGIN:
-        {
-            // no op
-            break;
-        }
-        case MSG_KILL_SESSION:
-        {
-            uint32      charid = ref<uint32>((uint8*)extra->data(), 0);
-            const char* query  = "SELECT pos_prevzone, pos_zone from chars where charid = ? LIMIT 1";
-            auto        rset   = db::preparedStmt(query, charid);
-
-            // Get zone ID from query and try to send to _just_ the previous zone
-            if (rset && rset->rowsCount() && rset->next())
-            {
-                uint32 prevZoneID = rset->get<uint32>("pos_prevzone");
-                uint32 nextZoneID = rset->get<uint32>("pos_zone");
-
-                if (prevZoneID != nextZoneID)
-                {
-                    auto zoneSettings = zoneSettingsMap.at(prevZoneID);
-
-                    ShowDebug(fmt::format("Message: -> rerouting to {}", ipp_to_string(zoneSettings.ipp)));
-                    message_server_send(zoneSettings.ipp, type, extra, packet);
-                }
-            }
-            else
-            {
-                for (const auto& ipp : mapEndpoints)
-                {
-                    ShowDebug(fmt::format("Message: -> rerouting to {}", ipp_to_string(ipp)));
-                    message_server_send(ipp, type, extra, packet);
-                }
-            }
-
-            break;
-        }
-        case MSG_MAP2WORLD_REGIONAL_EVENT:
-        {
-            uint8* data = (uint8*)extra->data();
-
-            // Create a copy
-            std::vector<uint8> bytes(data, data + extra->size());
-
-            external_processing_queue.enqueue(HandleableMessage{ bytes, from_ip, from_port });
-            break;
-        }
         default:
-        {
-            // This is internal, so we can trust it.
-            ShowDebug(fmt::format("Message: unknown type received: {} from {}:{}", static_cast<uint8>(type), asStringFromUntrustedSource(from_address), from_port));
+            ShowWarning("Received unknown RegionalEvent type {}", static_cast<uint8>(message.type));
             break;
-        }
     }
 }
 
-void message_server_listen(bool const& requestExit)
+void IPCServer::handleMessage_GMSendToZone(const IPP& ipp, const ipc::GMSendToZone& message)
 {
-    while (!requestExit)
-    {
-        std::array<zmq::message_t, 4> msgs;
-        try
-        {
-            const auto ret = zmq::recv_multipart_n(*zSocket, msgs.data(), msgs.size());
-            if (!ret)
-            {
-                chat_message_t msg;
-                while (outgoing_queue.try_dequeue(msg))
-                {
-                    message_server_send(msg.dest, msg.type, &msg.data, &msg.packet);
-                }
-                continue;
-            }
-        }
-        catch (zmq::error_t& e)
-        {
-            // Context was terminated
-            // Exit loop
-            if (!zSocket || e.num() == 156384765) // ETERM
-            {
-                return;
-            }
+    TracyZoneScoped;
 
-            ShowError(fmt::format("Message: {}", e.what()));
-            continue;
-        }
-
-        // 0: zmq::message_t from
-        // 1: zmq::message_t type
-        // 2: zmq::message_t extra
-        // 3: zmq::message_t packet
-        message_server_parse((MSGSERVTYPE)ref<uint8>((uint8*)msgs[1].data(), 0), &msgs[2], &msgs[3], &msgs[0]);
-    }
+    rerouteMessageToCharId(message.targetId, message);
 }
 
-void cache_zone_settings()
+void IPCServer::handleMessage_GMSendToEntity(const IPP& ipp, const ipc::GMSendToEntity& message)
 {
-    auto rset = db::preparedStmt("SELECT zoneid, zoneip, zoneport, misc FROM zone_settings");
-    if (!rset)
-    {
-        ShowCritical("Error loading zone settings from DB");
-        throw std::runtime_error("Message Server: Failed to load zone settings from database");
-    }
+    TracyZoneScoped;
 
-    // Keep track of the zones, as well as a list of unique ip / port combinations.
-    std::set<uint64> mapEndpointSet;
-    std::set<uint64> yellMapEndpointSet;
-    zoneSettingsMap = std::unordered_map<uint16, zone_settings_t>();
-    while (rset->next())
-    {
-        uint64 ip = 0;
-        inet_pton(AF_INET, rset->get<std::string>("zoneip").c_str(), &ip);
-        uint64 port = rset->get<uint64>("zoneport");
-
-        zone_settings_t zone_settings{};
-        zone_settings.zoneid = rset->get<uint16>("zoneid");
-        zone_settings.ipp    = ip | (port << 32);
-        zone_settings.misc   = rset->get<uint32>("misc");
-
-        mapEndpointSet.insert(zone_settings.ipp);
-
-        if (zone_settings.misc & ZONEMISC::MISC_YELL)
-        {
-            yellMapEndpointSet.insert(zone_settings.ipp);
-        }
-
-        zoneSettingsMap[zone_settings.zoneid] = zone_settings;
-    }
-
-    // Now copy the zone ipp sets to vectors for easier iteration
-    std::copy(mapEndpointSet.begin(), mapEndpointSet.end(), std::back_inserter(mapEndpoints));
-    std::copy(yellMapEndpointSet.begin(), yellMapEndpointSet.end(), std::back_inserter(yellMapEndpoints));
+    rerouteMessageToZoneId(message.zoneId, message);
 }
 
-void message_server_init(bool const& requestExit)
+void IPCServer::handleMessage_RPCSend(const IPP& ipp, const ipc::RPCSend& message)
 {
-    TracySetThreadName("Message Server (ZMQ)");
+    TracyZoneScoped;
 
-    cache_zone_settings();
-
-    // Zmql
-    zContext = zmq::context_t(1);
-    zSocket  = std::make_unique<zmq::socket_t>(zContext, zmq::socket_type::router);
-
-    zSocket->set(zmq::sockopt::rcvtimeo, 500);
-
-    auto server = fmt::format("tcp://{}:{}",
-                              settings::get<std::string>("network.ZMQ_IP"),
-                              settings::get<std::string>("network.ZMQ_PORT"));
-
-    ShowInfo("Starting ZMQ Server on %s", server.c_str());
-
-    try
-    {
-        zSocket->bind(server.c_str());
-    }
-    catch (zmq::error_t& err)
-    {
-        ShowCritical(fmt::format("Unable to bind chat socket: {}", err.what()));
-    }
-
-    ShowInfo("ZMQ Server listening...");
-    message_server_listen(requestExit);
+    rerouteMessageToZoneId(message.zoneId, message);
 }
 
-void message_server_close()
+void IPCServer::handleMessage_RPCRecv(const IPP& ipp, const ipc::RPCRecv& message)
 {
-    if (zSocket)
-    {
-        zSocket->close();
-        zSocket = nullptr;
-    }
+    TracyZoneScoped;
 
-    zContext.close();
+    rerouteMessageToZoneId(message.zoneId, message);
+}
+
+void IPCServer::handleUnknownMessage(const IPP& ipp, const std::span<uint8_t> message)
+{
+    TracyZoneScoped;
+
+    ShowWarningFmt("Received unknown message from {} with code {} and size {}", ipp.toString(), message[0], message.size());
 }

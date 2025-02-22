@@ -24,7 +24,7 @@
 #include "common/mmo.h"
 #include "common/vana_time.h"
 #include "entities/charentity.h"
-#include "message.h"
+#include "ipc_client.h"
 #include "utils/charutils.h"
 #include "utils/zoneutils.h"
 
@@ -47,77 +47,44 @@ namespace conquest
         return conquestData;
     }
 
-    void HandleZMQMessage(uint8* data)
+    void HandleZMQMessage(uint8 subType, const std::span<const uint8> data)
     {
-        uint8 subtype = ref<uint8>(data, 1);
-        switch (subtype)
+        switch (static_cast<ConquestMessage>(subType))
         {
-            case CONQUEST_WORLD2MAP_WEEKLY_UPDATE_START:
+            case W2M_WeeklyUpdateStart:
             {
                 HandleWeeklyTallyStart();
-                break;
             }
-            case CONQUEST_WORLD2MAP_WEEKLY_UPDATE_END:
+            break;
+            case W2M_WeeklyUpdateEnd:
             {
-                const std::size_t headerLength = 2 * sizeof(uint8) + sizeof(std::size_t);
-                const std::size_t size         = ref<std::size_t>(data, 2);
-
-                std::vector<region_control_t> regionControls = std::vector<region_control_t>(size);
-                for (std::size_t i = 0; i < size; i++)
+                if (const auto object = ipc::fromBytes<ConquestRegionControlUpdate>(data))
                 {
-                    const std::size_t start = headerLength + i * sizeof(region_control_t);
-
-                    region_control_t regionControl{};
-                    regionControl.current = ref<uint8>(data, start);
-                    regionControl.prev    = ref<uint8>(data, start + 1);
-
-                    regionControls[i] = regionControl;
+                    HandleWeeklyTallyEnd((*object).regionControls);
                 }
-
-                HandleWeeklyTallyEnd(regionControls);
-                break;
             }
-            case CONQUEST_WORLD2MAP_INFLUENCE_POINTS:
+            break;
+            case W2M_BroadcastInfluencePoints:
             {
-                const std::size_t        headerLength      = 2 * sizeof(uint8) + sizeof(bool) + sizeof(std::size_t);
-                bool                     shouldUpdateZones = ref<bool>(data, 2);
-                const std::size_t        size              = ref<std::size_t>(data, 3);
-                std::vector<influence_t> influencePoints   = std::vector<influence_t>(size);
-                for (std::size_t i = 0; i < size; i++)
+                if (const auto object = ipc::fromBytes<ConquestInfluenceUpdate>(data))
                 {
-                    const std::size_t start = headerLength + i * sizeof(influence_t);
-
-                    influence_t influence{};
-                    influence.sandoria_influence = ref<uint16>(data, start);
-                    influence.bastok_influence   = ref<uint16>(data, start + 2);
-                    influence.windurst_influence = ref<uint16>(data, start + 4);
-                    influence.beastmen_influence = ref<uint16>(data, start + 6);
-
-                    influencePoints[i] = influence;
+                    HandleInfluenceUpdate((*object).influences, (*object).shouldUpdateZones);
                 }
-
-                HandleInfluenceUpdate(influencePoints, shouldUpdateZones);
-                break;
             }
-            case CONQUEST_WORLD2MAP_REGION_CONTROL:
+            break;
+            case W2M_BroadcastRegionControls:
             {
-                const std::size_t headerLength = 2 * sizeof(uint8) + sizeof(std::size_t);
-                const std::size_t size         = ref<std::size_t>(data, 2);
-
-                std::vector<region_control_t> regionControls;
-                for (std::size_t i = 0; i < size; i++)
+                if (const auto object = ipc::fromBytes<ConquestRegionControlUpdate>(data))
                 {
-                    const std::size_t start = headerLength + i * sizeof(region_control_t);
-
-                    region_control_t regionControl{};
-                    regionControl.current = ref<uint8_t>(data, start);
-                    regionControl.prev    = ref<uint8_t>(data, start + 1);
-                    regionControls.emplace_back(regionControl);
+                    GetConquestData()->updateRegionControls((*object).regionControls);
                 }
-
-                GetConquestData()->updateRegionControls(regionControls);
-                break;
             }
+            break;
+            default:
+            {
+                ShowWarningFmt("Message: unhandled conquest type message received: {}", subType);
+            }
+            break;
         }
     }
 
@@ -126,27 +93,21 @@ namespace conquest
         // Send update message to world server
         // Note that we do not update local cache, as it would potentially become out of sync from
         // world server due to other map updates anyway. We wait for eventual consistency.
-        const std::size_t headerLength = 2 * sizeof(uint8);
-        const std::size_t dataLength   = headerLength + sizeof(int32) + sizeof(uint32) + sizeof(uint8);
-        uint8             data[dataLength]{};
 
-        // Regional event type + conquest msg type
-        ref<uint8>((uint8*)data, 0) = REGIONAL_EVT_MSG_CONQUEST;
-        ref<uint8>((uint8*)data, 1) = CONQUEST_MAP2WORLD_ADD_INFLUENCE_POINTS;
-
-        // Payload
-        ref<int32>(data, 2)  = points;
-        ref<uint32>(data, 6) = nation;
-        ref<uint8>(data, 10) = (uint8)region;
-
-        // Do send the message
-        message::send(MSG_MAP2WORLD_REGIONAL_EVENT, data, dataLength);
+        message::send(ipc::RegionalEvent{
+            .type    = RegionalEventType::Conquest,
+            .subType = ConquestMessage::M2W_AddInfluencePoints,
+            .payload = ipc::toBytes(ConquestAddInfluencePoints{
+                .points = points,
+                .nation = nation,
+                .region = static_cast<uint8>(region),
+            }),
+        });
     }
 
     /************************************************************************
-     *    GainInfluencePoints                                                *
+     *    GainInfluencePoints                                               *
      *    +1 point for nation                                               *
-     *                                                                      *
      ************************************************************************/
 
     void GainInfluencePoints(CCharEntity* PChar, uint32 points)
@@ -361,38 +322,28 @@ namespace conquest
     }
 
     /************************************************************************
-     *   UpdateConquestGM                                                    *
-     *  Update region control                                               *
-     *   just used by GM command                                                *
+     *   UpdateConquestGM                                                   *
+     *   Update region control                                              *
+     *   just used by GM command                                            *
      ************************************************************************/
 
     void UpdateConquestGM(ConquestUpdate type)
     {
         if (type == Conquest_Tally_Start)
         {
-            // Notify world server that we want to force a weekly update
-            const std::size_t dataLen = 2 * sizeof(uint8);
-            uint8             data[dataLen]{};
-
-            // Create ZMQ message with header and no other payload
-            ref<uint8>((uint8*)data, 0) = REGIONAL_EVT_MSG_CONQUEST;
-            ref<uint8>((uint8*)data, 1) = CONQUEST_MAP2WORLD_GM_WEEKLY_UPDATE;
-
-            // Send to world
-            message::send(MSG_MAP2WORLD_REGIONAL_EVENT, data, dataLen);
+            message::send(ipc::RegionalEvent{
+                .type    = RegionalEventType::Conquest,
+                .subType = ConquestMessage::M2W_GM_WeeklyUpdate,
+                // No payload
+            });
         }
         else if (type == Conquest_Update)
         {
-            // Fetch most recent data from world server
-            const std::size_t dataLen = 2 * sizeof(uint8);
-            uint8             data[dataLen]{};
-
-            // Create ZMQ message with header and no payload
-            ref<uint8>((uint8*)data, 0) = REGIONAL_EVT_MSG_CONQUEST;
-            ref<uint8>((uint8*)data, 1) = CONQUEST_MAP2WORLD_GM_CONQUEST_UPDATE;
-
-            // Send to world
-            message::send(MSG_MAP2WORLD_REGIONAL_EVENT, data, dataLen);
+            message::send(ipc::RegionalEvent{
+                .type    = RegionalEventType::Conquest,
+                .subType = ConquestMessage::M2W_GM_WeeklyUpdate,
+                // No payload
+            });
         }
         else if (type == Conquest_Tally_End)
         {
@@ -424,7 +375,8 @@ namespace conquest
                 // Cities do not have owner or influence
                 uint8 influence = 0;
                 uint8 owner = 0;
-                if (regionId <= REGION_TYPE::TAVNAZIA) {
+                if (regionId <= REGION_TYPE::TAVNAZIA)
+                {
                     influence = conquest::GetInfluenceGraphics(PZone->GetRegionID());
                     owner     = conquest::GetRegionOwner(PZone->GetRegionID());
                 }
@@ -467,7 +419,8 @@ namespace conquest
                 // Cities do not have owner or influence
                 uint8 influence = 0;
                 uint8 owner = 0;
-                if (regionId <= REGION_TYPE::TAVNAZIA) {
+                if (regionId <= REGION_TYPE::TAVNAZIA)
+                {
                     influence = conquest::GetInfluenceGraphics(PZone->GetRegionID());
                     owner     = conquest::GetRegionOwner(PZone->GetRegionID());
                 }
@@ -513,7 +466,8 @@ namespace conquest
                     // Cities do not have owner or influence
                     uint8 influence = 0;
                     uint8 owner = 0;
-                    if (regionId <= REGION_TYPE::TAVNAZIA) {
+                    if (regionId <= REGION_TYPE::TAVNAZIA)
+                    {
                         influence = conquest::GetInfluenceGraphics(PZone->GetRegionID());
                         owner     = conquest::GetRegionOwner(PZone->GetRegionID());
                     }

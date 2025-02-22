@@ -77,11 +77,11 @@
 #include "alliance.h"
 #include "conquest_system.h"
 #include "grades.h"
+#include "ipc_client.h"
 #include "item_container.h"
 #include "latent_effect_container.h"
 #include "linkshell.h"
 #include "map.h"
-#include "message.h"
 #include "mob_modifier.h"
 #include "recast_container.h"
 #include "roe.h"
@@ -6659,7 +6659,13 @@ namespace charutils
         }
 
         PersistCharVar(charId, var, value, expiry);
-        message::send_charvar_update(charId, var, value, expiry);
+
+        message::send(ipc::CharVarUpdate{
+            .charId  = charId,
+            .value   = value,
+            .expiry  = expiry,
+            .varName = var,
+        });
     }
 
     void SetCharVar(CCharEntity* PChar, std::string const& var, int32 value, uint32 expiry /* = 0 */)

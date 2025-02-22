@@ -23,14 +23,23 @@
 
 #include "message_handler.h"
 
+#include "world_server.h"
+
 class BesiegedSystem : public IMessageHandler
 {
 public:
-    BesiegedSystem()  = default;
+    BesiegedSystem(WorldServer& worldServer)
+    : worldServer_(worldServer)
+    {
+    }
+
     ~BesiegedSystem() = default;
 
-    bool handleMessage(HandleableMessage&& message) override
+    bool handleMessage(uint8 messageType, HandleableMessage&& message) override
     {
         return false;
     }
+
+private:
+    WorldServer& worldServer_;
 };

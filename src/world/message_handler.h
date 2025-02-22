@@ -21,15 +21,10 @@
 
 #pragma once
 
+#include "common/ipp.h"
 #include "common/mmo.h"
 #include "common/socket.h"
-
-struct HandleableMessage
-{
-    std::vector<uint8> payload;
-    in_addr            from_addr;
-    uint16             from_port;
-};
+#include "common/zmq_router_wrapper.h"
 
 class IMessageHandler
 {
@@ -38,5 +33,5 @@ public:
     {
     }
 
-    virtual bool handleMessage(HandleableMessage&& message) = 0;
+    virtual bool handleMessage(uint8 messageType, HandleableMessage&& message) = 0;
 };

@@ -10,6 +10,7 @@
 #
 #############################
 
+import socket
 import sys
 import zmq
 import struct
@@ -22,6 +23,18 @@ MESSAGE_OFFSET = 0x17
 
 context = zmq.Context()
 sock = context.socket(zmq.DEALER)
+
+ip_str = "127.0.0.1"
+port = 54003
+
+ip_bytes = socket.inet_aton(ip_str)
+(ip_int,) = struct.unpack("!I", ip_bytes)
+ipp = ip_int | (port << 32)
+ipp_bytes = struct.pack("!Q", ipp)
+
+print(f"Connecting to {ip_str}:{port} ({ipp})")
+
+sock.setsockopt(zmq.ROUTING_ID, ipp_bytes)
 sock.connect("tcp://127.0.0.1:54003")
 
 
@@ -59,9 +72,7 @@ def build_chat_packet(msg_type, gm_flag, zone, sender, msg):
 def send_server_message(msg):
     print(f"Sending '{msg}'")
     buffer = build_chat_packet(MSG_CHAT_SERVMES, 1, 0, "", msg)
-    sock.send_multipart(
-        [struct.pack("!B", MSG_CHAT_SERVMES), b"\0", buffer], zmq.NOBLOCK
-    )
+    sock.send_multipart([buffer], zmq.NOBLOCK)
 
 
 def main():

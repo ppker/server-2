@@ -24,12 +24,18 @@
 #include "common/application.h"
 #include "common/taskmgr.h"
 
-#include "besieged_system.h"
-#include "campaign_system.h"
-#include "colonization_system.h"
-#include "conquest_system.h"
 #include "http_server.h"
-#include "message_server.h"
+
+//
+// Forward declarations
+//
+
+class IPCServer;
+class PartySystem;
+class ConquestSystem;
+class BesiegedSystem;
+class CampaignSystem;
+class ColonizationSystem;
 
 class WorldServer final : public Application
 {
@@ -39,11 +45,14 @@ public:
 
     void Tick() override;
 
-    std::unique_ptr<HTTPServer>               httpServer;
-    std::unique_ptr<message_server_wrapper_t> messageServer;
+    std::unique_ptr<IPCServer> ipcServer_;
 
-    std::unique_ptr<ConquestSystem>     conquestSystem;
-    std::unique_ptr<BesiegedSystem>     besiegedSystem;
-    std::unique_ptr<CampaignSystem>     campaignSystem;
-    std::unique_ptr<ColonizationSystem> colonizationSystem;
+    // TODO: PartySystem
+
+    std::unique_ptr<ConquestSystem>     conquestSystem_;
+    std::unique_ptr<BesiegedSystem>     besiegedSystem_;
+    std::unique_ptr<CampaignSystem>     campaignSystem_;
+    std::unique_ptr<ColonizationSystem> colonizationSystem_;
+
+    std::unique_ptr<HTTPServer> httpServer_;
 };

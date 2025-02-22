@@ -44,11 +44,11 @@
 #include "fishingcontest.h"
 #include "guild.h"
 #include "instance.h"
+#include "ipc_client.h"
 #include "item_container.h"
 #include "latent_effect_container.h"
 #include "linkshell.h"
 #include "map.h"
-#include "message.h"
 #include "mob_modifier.h"
 #include "mob_spell_container.h"
 #include "mobskill.h"
@@ -346,7 +346,13 @@ void CLuaBaseEntity::printToArea(std::string const& message, sol::object const& 
 
     if (messageRange == MESSAGE_AREA_SYSTEM)
     {
-        message::send(MSG_CHAT_SERVMES, nullptr, 0, std::make_unique<CChatMessagePacket>(PChar, messageLook, message, name));
+        // TODO: Support messageLook
+
+        message::send(ipc::ChatMessageServerMessage{
+            .senderId   = PChar->id,
+            .senderName = name,
+            .message    = message,
+        });
     }
     else if (messageRange == MESSAGE_AREA_SAY)
     {
@@ -360,37 +366,60 @@ void CLuaBaseEntity::printToArea(std::string const& message, sol::object const& 
     }
     else if (messageRange == MESSAGE_AREA_PARTY)
     {
-        int8 packetData[8]{};
         if (PChar->PParty->m_PAlliance)
         {
-            ref<uint32>(packetData, 0) = PChar->PParty->m_PAlliance->m_AllianceID;
-            ref<uint32>(packetData, 4) = 0; // No ID so that the PChar sees the message too
-            message::send(MSG_CHAT_ALLIANCE, packetData, sizeof(packetData), std::make_unique<CChatMessagePacket>(PChar, messageLook, message, name));
+            // TODO: Support messageLook
+
+            message::send(ipc::ChatMessageAlliance{
+                .allianceId = PChar->PParty->m_PAlliance->m_AllianceID,
+                .senderId   = PChar->id,
+                .senderName = name,
+                .message    = message,
+            });
         }
         else if (PChar->PParty)
         {
-            ref<uint32>(packetData, 0) = PChar->PParty->GetPartyID();
-            ref<uint32>(packetData, 4) = 0; // No ID so that the PChar sees the message too
-            message::send(MSG_CHAT_PARTY, packetData, sizeof(packetData), std::make_unique<CChatMessagePacket>(PChar, messageLook, message, name));
+            // TODO: Support messageLook
+
+            message::send(ipc::ChatMessageParty{
+                .partyId    = PChar->PParty->GetPartyID(),
+                .senderId   = PChar->id,
+                .senderName = name,
+                .message    = message,
+            });
         }
     }
     else if (messageRange == MESSAGE_AREA_YELL)
     {
-        message::send(MSG_CHAT_YELL, nullptr, 0, std::make_unique<CChatMessagePacket>(PChar, messageLook, message, name));
+        // TODO: Support messageLook
+
+        message::send(ipc::ChatMessageYell{
+            .senderId   = PChar->id,
+            .senderName = name,
+            .message    = message,
+        });
+
         PChar->loc.zone->PushPacket(PChar, CHAR_INRANGE_SELF, std::make_unique<CChatMessagePacket>(PChar, messageLook, message, name));
     }
     else if (messageRange == MESSAGE_AREA_UNITY)
     {
-        message::send(MSG_CHAT_UNITY, nullptr, 0, std::make_unique<CChatMessagePacket>(PChar, messageLook, message, name));
+        // TODO: Support messageLook
+
+        message::send(ipc::ChatMessageUnity{
+            .unityLeaderId = PChar->id,
+            .senderId      = PChar->id,
+            .senderName    = name,
+            .message       = message,
+        });
+
         PChar->loc.zone->PushPacket(PChar, CHAR_INRANGE_SELF, std::make_unique<CChatMessagePacket>(PChar, messageLook, message, name));
     }
     else
     {
         ShowError("CLuaBaseEntity::printToArea : invalid message area/messageRange value %u given by script.", messageRange);
     }
-    /*
-    Todo: Assist channels
-    */
+
+    // TODO: Assist channels
 }
 
 /************************************************************************
@@ -3722,7 +3751,7 @@ void CLuaBaseEntity::goToEntity(uint32 targetID, sol::object const& option)
     ref<uint32>(&buf, 6)  = targetID;
     ref<uint16>(&buf, 10) = playerID;
 
-    message::send(MSG_SEND_TO_ENTITY, &buf[0], sizeof(buf), nullptr);
+    // message::send(MSG_SEND_TO_ENTITY, &buf[0], sizeof(buf), nullptr);
 }
 
 /************************************************************************
@@ -3733,22 +3762,18 @@ void CLuaBaseEntity::goToEntity(uint32 targetID, sol::object const& option)
 
 bool CLuaBaseEntity::gotoPlayer(std::string const& playerName)
 {
-    bool found = false;
-
     uint32 charid = charutils::getCharIdFromName(playerName);
     if (charid != 0)
     {
-        char buf[30];
-        std::memset(&buf[0], 0, sizeof(buf));
+        message::send(ipc::GMSendToZone{
+            .targetId    = charid,            // target char id
+            .requesterId = m_PBaseEntity->id, // warping to target char, their server will send us a zoning message with their pos
+        });
 
-        ref<uint32>(&buf, 0) = charid;            // target char id
-        ref<uint32>(&buf, 4) = m_PBaseEntity->id; // warping to target char, their server will send us a zoning message with their pos
-
-        message::send(MSG_SEND_TO_ZONE, &buf[0], sizeof(buf), nullptr);
-        found = true;
+        return true;
     }
 
-    return found;
+    return false;
 }
 
 /************************************************************************
@@ -3781,7 +3806,7 @@ bool CLuaBaseEntity::bringPlayer(std::string const& playerName)
             ref<uint32>(&buf, 23) = static_cast<CCharEntity*>(m_PBaseEntity)->m_moghouseID;
         }
 
-        message::send(MSG_SEND_TO_ZONE, &buf[0], sizeof(buf), nullptr);
+        // message::send(MSG_SEND_TO_ZONE, &buf[0], sizeof(buf), nullptr);
         found = true;
     }
 

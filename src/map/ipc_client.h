@@ -1,7 +1,7 @@
 ﻿/*
 ===========================================================================
 
-  Copyright (c) 2010-2015 Darkstar Dev Teams
+  Copyright (c) 2025 LandSandBoat Dev Teams
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,74 +19,103 @@
 ===========================================================================
 */
 
-#ifndef _MESSAGE_H_
-#define _MESSAGE_H_
+#pragma once
 
 #include "common/cbasetypes.h"
+#include "common/ipc.h"
 #include "common/lua.h"
 #include "common/mmo.h"
 #include "common/socket.h"
 #include "common/sql.h"
+#include "common/zmq_dealer_wrapper.h"
 
+#include <nonstd/jthread.hpp>
 #include <zmq.hpp>
+#include <zmq_addon.hpp>
 
-class CBasicPacket;
-
-struct chat_message_t
+class IPCClient final : public ipc::IIPCMessageHandler
 {
-    zmq::message_t type;
-    zmq::message_t data;
-    zmq::message_t packet;
+public:
+    IPCClient();
 
-    chat_message_t() noexcept
-    {
-    }
+    void handleIncomingMessages();
 
-    chat_message_t& operator=(chat_message_t&& other) noexcept
-    {
-        this->type.move(other.type);
-        this->packet.move(other.packet);
-        this->data.move(other.data);
-        return *this;
-    }
+    template <typename T>
+    void sendMessage(const T& message);
 
-    chat_message_t(chat_message_t const& other) noexcept
-    {
-        // NOTE: Normally we wouldn't want to use const_cast, but ZMQ has
-        //       deprecated their copy function that uses const&.
-        this->type.copy(*const_cast<zmq::message_t*>(&other.type));
-        this->packet.copy(*const_cast<zmq::message_t*>(&other.packet));
-        this->data.copy(*const_cast<zmq::message_t*>(&other.data));
-    }
+    //
+    // ipc::IIPCMessageHandler
+    //
 
-    chat_message_t(chat_message_t&& other) noexcept
-    : type(std::move(other.type))
-    , data(std::move(other.data))
-    , packet(std::move(other.packet))
-    {
-    }
+    void handleMessage_EmptyStruct(const IPP& ipp, const ipc::EmptyStruct& message) override;
+    void handleMessage_CharLogin(const IPP& ipp, const ipc::CharLogin& message) override;
+    void handleMessage_CharVarUpdate(const IPP& ipp, const ipc::CharVarUpdate& message) override;
+    void handleMessage_ChatMessageTell(const IPP& ipp, const ipc::ChatMessageTell& message) override;
+    void handleMessage_ChatMessageParty(const IPP& ipp, const ipc::ChatMessageParty& message) override;
+    void handleMessage_ChatMessageAlliance(const IPP& ipp, const ipc::ChatMessageAlliance& message) override;
+    void handleMessage_ChatMessageLinkshell(const IPP& ipp, const ipc::ChatMessageLinkshell& message) override;
+    void handleMessage_ChatMessageUnity(const IPP& ipp, const ipc::ChatMessageUnity& message) override;
+    void handleMessage_ChatMessageYell(const IPP& ipp, const ipc::ChatMessageYell& message) override;
+    void handleMessage_ChatMessageServerMessage(const IPP& ipp, const ipc::ChatMessageServerMessage& message) override;
+    void handleMessage_ChatMessageCustom(const IPP& ipp, const ipc::ChatMessageCustom& message) override;
+    void handleMessage_PartyInvite(const IPP& ipp, const ipc::PartyInvite& message) override;
+    void handleMessage_PartyInviteResponse(const IPP& ipp, const ipc::PartyInviteResponse& message) override;
+    void handleMessage_PartyReload(const IPP& ipp, const ipc::PartyReload& message) override;
+    void handleMessage_PartyDisband(const IPP& ipp, const ipc::PartyDisband& message) override;
+    void handleMessage_AllianceReload(const IPP& ipp, const ipc::AllianceReload& message) override;
+    void handleMessage_AllianceDissolve(const IPP& ipp, const ipc::AllianceDissolve& message) override;
+    void handleMessage_PlayerKick(const IPP& ipp, const ipc::PlayerKick& message) override;
+    void handleMessage_MessageStandard(const IPP& ipp, const ipc::MessageStandard& message) override;
+    void handleMessage_MessageSystem(const IPP& ipp, const ipc::MessageSystem& message) override;
+    void handleMessage_LinkshellRankChange(const IPP& ipp, const ipc::LinkshellRankChange& message) override;
+    void handleMessage_LinkshellRemove(const IPP& ipp, const ipc::LinkshellRemove& message) override;
+    void handleMessage_LinkshellSetMessage(const IPP& ipp, const ipc::LinkshellSetMessage& message) override;
+    void handleMessage_LuaFunction(const IPP& ipp, const ipc::LuaFunction& message) override;
+    void handleMessage_KillSession(const IPP& ipp, const ipc::KillSession& message) override;
+    void handleMessage_RegionalEvent(const IPP& ipp, const ipc::RegionalEvent& message) override;
+    void handleMessage_GMSendToZone(const IPP& ipp, const ipc::GMSendToZone& message) override;
+    void handleMessage_GMSendToEntity(const IPP& ipp, const ipc::GMSendToEntity& message) override;
+    void handleMessage_RPCSend(const IPP& ipp, const ipc::RPCSend& message) override;
+    void handleMessage_RPCRecv(const IPP& ipp, const ipc::RPCRecv& message) override;
+
+    void handleUnknownMessage(const IPP& ipp, const std::span<uint8_t> message) override;
+
+private:
+    ZMQDealerWrapper zmqDealerWrapper_;
 };
+
+//
+// Inline implementations
+//
+
+template <typename T>
+void IPCClient::sendMessage(const T& message)
+{
+    TracyZoneScoped;
+
+    // TODO: IPP for World Server
+    DebugIPCFmt("Sending message: {}", ipc::toString(ipc::getEnumType<T>()));
+
+    const auto bytes = ipc::toBytesWithHeader<T>(message);
+    zmqDealerWrapper_.outgoingQueue_.enqueue(zmq::message_t(bytes));
+}
+
+//
+// Convenience namespace
+//
+
+// TODO: Don't do this
+extern std::unique_ptr<IPCClient> ipcClient_;
 
 namespace message
 {
-    // For use on the main thread
-    // NOTE: All SQL operations happen on the main thread
     void init();
-    void init(const char* chatIp, uint16 chatPort);
+
+    template <typename T>
+    void send(const T& message)
+    {
+        ipcClient_->sendMessage(message);
+    }
+
     void handle_incoming();
-    void send(MSGSERVTYPE type, void* data, size_t datalen, const std::unique_ptr<CBasicPacket>& packet = nullptr);
-    void send(uint16 zone, std::string const& luaFunc);
-    void send(uint32 playerId, const std::unique_ptr<CBasicPacket>& packet);
-    void send(std::string const& playerName, const std::unique_ptr<CBasicPacket>& packet);
-    void send_charvar_update(uint32 charId, std::string const& varName, uint32 value, uint32 expiry);
-    void rpc_send(uint16 sendZone, uint16 recvZone, std::string const& sendStr, sol::function recvFunc);
-
-    void close();
-
-    // For use on the zmq thread
-    // NOTE: No SQL operations happen in here
-    void listen();
-    void send_queue();
-}; // namespace message
-
-#endif
+} // namespace message

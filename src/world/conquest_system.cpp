@@ -21,26 +21,34 @@
 
 #include "conquest_system.h"
 
-#include "message_server.h"
+#include "ipc_server.h"
 
 #include "common/database.h"
 
-ConquestSystem::ConquestSystem()
+ConquestSystem::ConquestSystem(WorldServer& worldServer)
+: worldServer_(worldServer)
 {
 }
 
-bool ConquestSystem::handleMessage(HandleableMessage&& message)
+bool ConquestSystem::handleMessage(uint8 messageType, HandleableMessage&& message)
 {
-    const uint8 conquestMsgType = message.payload[1];
+    const auto conquestMsgType = static_cast<ConquestMessage>(messageType);
     switch (conquestMsgType)
     {
-        case CONQUESTMSGTYPE::CONQUEST_MAP2WORLD_GM_WEEKLY_UPDATE:
+        case ConquestMessage::M2W_GM_WeeklyUpdate:
         {
             updateWeekConquest();
             return true;
         }
         break;
-        case CONQUESTMSGTYPE::CONQUEST_MAP2WORLD_ADD_INFLUENCE_POINTS:
+        case ConquestMessage::M2W_GM_ConquestUpdate:
+        {
+            // Send influence data to the requesting map server
+            sendInfluencesMsg(true, message.ipp.getIPP());
+            return true;
+        }
+        break;
+        case ConquestMessage::M2W_AddInfluencePoints:
         {
             int32  points = 0;
             uint32 nation = 0;
@@ -56,23 +64,11 @@ bool ConquestSystem::handleMessage(HandleableMessage&& message)
             return true;
         }
         break;
-        case CONQUESTMSGTYPE::CONQUEST_MAP2WORLD_GM_CONQUEST_UPDATE:
-        {
-            // Convert from_addr to ip + port
-            uint64 ipp = message.from_addr.s_addr;
-            ipp |= (((uint64)message.from_port) << 32);
-
-            // Send influence data to the requesting map server
-            sendInfluencesMsg(true, ipp);
-            return true;
-        }
-        break;
         default:
         {
-            ShowDebug(fmt::format("Message: unknown conquest type received: {} from {}:{}",
-                                  static_cast<uint8>(conquestMsgType),
-                                  message.from_addr.s_addr,
-                                  message.from_port));
+            ShowWarningFmt("Message: unknown conquest type message received: {} from {}",
+                           conquestMsgType,
+                           message.ipp.toString());
         }
         break;
     }
@@ -83,59 +79,32 @@ bool ConquestSystem::handleMessage(HandleableMessage&& message)
 void ConquestSystem::sendTallyStartMsg()
 {
     // 1- Send message to all zones. We are starting update.
-    const std::size_t dataLen = 2 * sizeof(uint8);
-    uint8             data[2 * sizeof(uint8) + sizeof(uint32)]{};
 
-    // Create ZMQ message with header and no other payload
-    ref<uint8>((uint8*)data, 0) = REGIONAL_EVT_MSG_CONQUEST;
-    ref<uint8>((uint8*)data, 1) = CONQUEST_WORLD2MAP_WEEKLY_UPDATE_START;
-
-    // Send to map
-    zmq::message_t dataMsg = zmq::message_t(dataLen);
-    memcpy(dataMsg.data(), data, dataLen);
-    queue_message_broadcast(MSG_WORLD2MAP_REGIONAL_EVENT, &dataMsg);
+    // queue_message_broadcast(MSG_WORLD2MAP_REGIONAL_EVENT, &dataMsg);
+    worldServer_.ipcServer_->sendMessage(IPP(),
+                                         ipc::RegionalEvent{
+                                             .type    = RegionalEventType::Conquest,
+                                             .subType = ConquestMessage::W2M_WeeklyUpdateStart,
+                                             // No payload
+                                         });
 }
 
 void ConquestSystem::sendInfluencesMsg(bool shouldUpdateZones, uint64 ipp)
 {
-    auto influences = getRegionalInfluences();
+    const auto influences = getRegionalInfluences();
 
-    // Base length is the type + subtype + influence size
-    const std::size_t headerLength = 2 * sizeof(uint8) + sizeof(std::size_t) + sizeof(bool);
-    const std::size_t dataLen      = headerLength + sizeof(influence_t) * influences.size();
-    const uint8*      data         = new uint8[dataLen];
-
-    // Regional event type + conquest msg type
-    ref<uint8>((uint8*)data, 0) = REGIONAL_EVT_MSG_CONQUEST;
-    ref<uint8>((uint8*)data, 1) = CONQUEST_WORLD2MAP_INFLUENCE_POINTS;
-    ref<uint8>((uint8*)data, 2) = shouldUpdateZones;
-
-    // Influences controls array
-    ref<std::size_t>((uint8*)data, 3) = influences.size();
-    for (std::size_t i = 0; i < influences.size(); i++)
-    {
-        // Everything is offset by i*size of region control struct + headerLength
-        const std::size_t start              = headerLength + i * sizeof(influence_t);
-        ref<uint16>((uint8*)data, start)     = influences[i].sandoria_influence;
-        ref<uint16>((uint8*)data, start + 2) = influences[i].bastok_influence;
-        ref<uint16>((uint8*)data, start + 4) = influences[i].windurst_influence;
-        ref<uint16>((uint8*)data, start + 6) = influences[i].beastmen_influence;
-    }
-
-    // 3- Create ZMQ Message and queue it
-    zmq::message_t dataMsg = zmq::message_t(dataLen);
-    memcpy(dataMsg.data(), data, dataLen);
-    if (ipp == 0xFFFF)
-    {
-        queue_message_broadcast(MSG_WORLD2MAP_REGIONAL_EVENT, &dataMsg);
-    }
-    else
-    {
-        queue_message(ipp, MSG_WORLD2MAP_REGIONAL_EVENT, &dataMsg);
-    }
+    worldServer_.ipcServer_->sendMessage(IPP(ipp),
+                                         ipc::RegionalEvent{
+                                             .type    = RegionalEventType::Conquest,
+                                             .subType = ConquestMessage::W2M_BroadcastInfluencePoints,
+                                             .payload = ipc::toBytes(ConquestInfluenceUpdate{
+                                                 .shouldUpdateZones = shouldUpdateZones,
+                                                 .influences        = influences,
+                                             }),
+                                         });
 }
 
-void ConquestSystem::sendRegionControlsMsg(CONQUESTMSGTYPE msgType, uint64 ipp)
+void ConquestSystem::sendRegionControlsMsg(ConquestMessage msgType, uint64 ipp)
 {
     // 2- Serialize regional controls with the following schema:
     // - REGIONALMSGTYPE
@@ -144,7 +113,7 @@ void ConquestSystem::sendRegionControlsMsg(CONQUESTMSGTYPE msgType, uint64 ipp)
     // - For N elements we have:
     //      - current control (uint8)
     //      - prev control (uint8)
-    auto regionControls = getRegionControls();
+    const auto regionControls = getRegionControls();
 
     // Header length is the type + subtype + region control size + size of the size_t
     const std::size_t headerLength = 2 * sizeof(uint8) + sizeof(std::size_t);
@@ -152,7 +121,7 @@ void ConquestSystem::sendRegionControlsMsg(CONQUESTMSGTYPE msgType, uint64 ipp)
     const uint8*      data         = new uint8[dataLen];
 
     // Regional event type + conquest msg type
-    ref<uint8>((uint8*)data, 0) = REGIONAL_EVT_MSG_CONQUEST;
+    ref<uint8>((uint8*)data, 0) = RegionalEventType::Conquest;
     ref<uint8>((uint8*)data, 1) = msgType;
 
     // Region controls array
@@ -171,11 +140,11 @@ void ConquestSystem::sendRegionControlsMsg(CONQUESTMSGTYPE msgType, uint64 ipp)
 
     if (ipp == 0xFFFF)
     {
-        queue_message_broadcast(MSG_WORLD2MAP_REGIONAL_EVENT, &dataMsg);
+        // queue_message_broadcast(MSG_WORLD2MAP_REGIONAL_EVENT, &dataMsg);
     }
     else
     {
-        queue_message(ipp, MSG_WORLD2MAP_REGIONAL_EVENT, &dataMsg);
+        // queue_message(ipp, MSG_WORLD2MAP_REGIONAL_EVENT, &dataMsg);
     }
 }
 
@@ -251,7 +220,7 @@ void ConquestSystem::updateWeekConquest()
     }
 
     // 3- Send tally end Msg
-    sendRegionControlsMsg(CONQUEST_WORLD2MAP_WEEKLY_UPDATE_END);
+    sendRegionControlsMsg(ConquestMessage::W2M_WeeklyUpdateEnd);
 }
 
 void ConquestSystem::updateHourlyConquest()
@@ -266,9 +235,7 @@ void ConquestSystem::updateVanaHourlyConquest()
 
 auto ConquestSystem::getRegionalInfluences() -> std::vector<influence_t> const
 {
-    auto query = "SELECT sandoria_influence, bastok_influence, windurst_influence, beastmen_influence FROM conquest_system";
-
-    auto rset = db::preparedStmt(query);
+    const auto rset = db::preparedStmt("SELECT sandoria_influence, bastok_influence, windurst_influence, beastmen_influence FROM conquest_system");
 
     std::vector<influence_t> influences;
     if (rset && rset->rowsCount())
@@ -289,9 +256,7 @@ auto ConquestSystem::getRegionalInfluences() -> std::vector<influence_t> const
 
 auto ConquestSystem::getRegionControls() -> std::vector<region_control_t> const
 {
-    auto query = "SELECT region_control, region_control_prev FROM conquest_system";
-
-    auto rset = db::preparedStmt(query);
+    const auto rset = db::preparedStmt("SELECT region_control, region_control_prev FROM conquest_system");
 
     std::vector<region_control_t> controllers;
     if (rset && rset->rowsCount())

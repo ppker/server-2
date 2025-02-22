@@ -21,24 +21,31 @@
 
 #pragma once
 
-#include "map/conquest_system.h"
-#include "map/zone.h"
 #include "message_handler.h"
 
-/**
- * Conquest System on the world server.
- * This class handles all the DB updates as a response to map server updates.
- */
+#include "world_server.h"
+
+#include "common/regional_event.h"
+
+#include "map/conquest_system.h"
+#include "map/zone.h"
+
+class IPCServer;
+
+//
+// Conquest System on the world server.
+// This class handles all the DB updates as a response to map server updates.
+//
 class ConquestSystem : public IMessageHandler
 {
 public:
-    ConquestSystem();
+    ConquestSystem(WorldServer& worldServer);
     ~ConquestSystem() override = default;
 
     /**
      * IMessageHandler implementation. Used to handle messages from message_server.
      */
-    bool handleMessage(HandleableMessage&& message) override;
+    bool handleMessage(uint8 messageType, HandleableMessage&& message) override;
 
     /**
      * Called weekly, updates conquest data and sends regional control information
@@ -66,5 +73,7 @@ private:
 
     void sendTallyStartMsg();
     void sendInfluencesMsg(bool shouldUpdateZones, uint64 ipp = 0xFFFF);
-    void sendRegionControlsMsg(CONQUESTMSGTYPE msgType, uint64 ipp = 0xFFFF);
+    void sendRegionControlsMsg(ConquestMessage msgType, uint64 ipp = 0xFFFF);
+
+    WorldServer& worldServer_;
 };
