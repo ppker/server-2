@@ -12,10 +12,10 @@ set(SOURCES
     daily_tally.cpp
     http_server.cpp
     http_server.h
+    ipc_server.cpp
+    ipc_server.h
     main.cpp
     message_handler.h
-    message_server.cpp
-    message_server.h
     time_server.h
     time_server.cpp
     world_server.cpp
