@@ -15,7 +15,8 @@ set(SOURCES
     ipc_server.cpp
     ipc_server.h
     main.cpp
-    message_handler.h
+    party_system.cpp
+    party_system.h
     time_server.h
     time_server.cpp
     world_server.cpp

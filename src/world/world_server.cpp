@@ -30,6 +30,7 @@
 #include "conquest_system.h"
 #include "http_server.h"
 #include "ipc_server.h"
+#include "party_system.h"
 #include "time_server.h"
 
 int32 pump_queues(time_point tick, CTaskMgr::CTask* PTask)
@@ -44,6 +45,7 @@ int32 pump_queues(time_point tick, CTaskMgr::CTask* PTask)
 WorldServer::WorldServer(int argc, char** argv)
 : Application("world", argc, argv)
 , ipcServer_(std::make_unique<IPCServer>(*this))
+, partySystem_(std::make_unique<PartySystem>(*this))
 , conquestSystem_(std::make_unique<ConquestSystem>(*this))
 , besiegedSystem_(std::make_unique<BesiegedSystem>(*this))
 , campaignSystem_(std::make_unique<CampaignSystem>(*this))

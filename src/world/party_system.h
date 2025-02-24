@@ -1,7 +1,7 @@
 /*
 ===========================================================================
 
-  Copyright (c) 2023 LandSandBoat Dev Teams
+  Copyright (c) 2025 LandSandBoat Dev Teams
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,17 +21,24 @@
 
 #pragma once
 
-#include "common/ipp.h"
-#include "common/mmo.h"
-#include "common/socket.h"
-#include "common/zmq_router_wrapper.h"
+#include "world_server.h"
 
-class IMessageHandler
+class PartySystem
 {
 public:
-    virtual ~IMessageHandler()
+    PartySystem(WorldServer& worldServer)
+    : worldServer_(worldServer)
     {
+        std::ignore = worldServer_;
     }
 
-    virtual bool handleMessage(uint8 messageType, HandleableMessage&& message) = 0;
+    ~PartySystem() = default;
+
+    bool handleMessage(uint8 messageType, HandleableMessage&& message)
+    {
+        return false;
+    }
+
+private:
+    WorldServer& worldServer_;
 };

@@ -23,6 +23,7 @@
 
 #include "common/application.h"
 #include "common/taskmgr.h"
+#include "common/zmq_router_wrapper.h"
 
 #include "http_server.h"
 
@@ -47,7 +48,7 @@ public:
 
     std::unique_ptr<IPCServer> ipcServer_;
 
-    // TODO: PartySystem
+    std::unique_ptr<PartySystem> partySystem_;
 
     std::unique_ptr<ConquestSystem>     conquestSystem_;
     std::unique_ptr<BesiegedSystem>     besiegedSystem_;

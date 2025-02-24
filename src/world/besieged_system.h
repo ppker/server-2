@@ -21,21 +21,20 @@
 
 #pragma once
 
-#include "message_handler.h"
-
 #include "world_server.h"
 
-class BesiegedSystem : public IMessageHandler
+class BesiegedSystem
 {
 public:
     BesiegedSystem(WorldServer& worldServer)
     : worldServer_(worldServer)
     {
+        std::ignore = worldServer_;
     }
 
     ~BesiegedSystem() = default;
 
-    bool handleMessage(uint8 messageType, HandleableMessage&& message) override
+    bool handleMessage(uint8 messageType, HandleableMessage&& message)
     {
         return false;
     }

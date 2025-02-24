@@ -164,8 +164,9 @@ class AHAnnouncementModule : public CPPModule
                                             // Send message to seller!
                                             message::send(ipc::ChatMessageCustom{
                                                 .recipientId = sellerId,
+                                                .senderName  = "",
                                                 .message     = fmt::format("Your '{}' has sold to {} for {} gil!", name, PChar->getName(), price),
-                                                .type        = MESSAGE_SYSTEM_3,
+                                                .messageType = MESSAGE_SYSTEM_3,
                                             });
                                         }
                                     }

@@ -1,7 +1,7 @@
 /*
 ===========================================================================
 
-  Copyright (c) 2023 LandSandBoat Dev Teams
+  Copyright (c) 2025 LandSandBoat Dev Teams
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,26 +19,4 @@
 ===========================================================================
 */
 
-#pragma once
-
-#include "world_server.h"
-
-class ColonizationSystem
-{
-public:
-    ColonizationSystem(WorldServer& worldServer)
-    : worldServer_(worldServer)
-    {
-        std::ignore = worldServer_;
-    }
-
-    ~ColonizationSystem() = default;
-
-    bool handleMessage(uint8 messageType, HandleableMessage&& message)
-    {
-        return false;
-    }
-
-private:
-    WorldServer& worldServer_;
-};
+#include "party_system.h"

@@ -21,21 +21,20 @@
 
 #pragma once
 
-#include "message_handler.h"
-
 #include "world_server.h"
 
-class CampaignSystem : public IMessageHandler
+class CampaignSystem
 {
 public:
     CampaignSystem(WorldServer& worldServer)
     : worldServer_(worldServer)
     {
+        std::ignore = worldServer_;
     }
 
     ~CampaignSystem() = default;
 
-    bool handleMessage(uint8 messageType, HandleableMessage&& message) override
+    bool handleMessage(uint8 messageType, HandleableMessage&& message)
     {
         return false;
     }

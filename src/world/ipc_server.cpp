@@ -431,6 +431,9 @@ void IPCServer::handleMessage_PartyInvite(const IPP& ipp, const ipc::PartyInvite
     TracyZoneScoped;
 
     rerouteMessageToCharId(message.inviteeId, message);
+
+    // TODO:
+    // worldServer_.partySystem_->handleMessage(message);
 }
 
 void IPCServer::handleMessage_PartyInviteResponse(const IPP& ipp, const ipc::PartyInviteResponse& message)
@@ -438,6 +441,9 @@ void IPCServer::handleMessage_PartyInviteResponse(const IPP& ipp, const ipc::Par
     TracyZoneScoped;
 
     rerouteMessageToCharId(message.inviterId, message);
+
+    // TODO:
+    // worldServer_.partySystem_->handleMessage(message);
 }
 
 void IPCServer::handleMessage_PartyReload(const IPP& ipp, const ipc::PartyReload& message)
@@ -445,6 +451,9 @@ void IPCServer::handleMessage_PartyReload(const IPP& ipp, const ipc::PartyReload
     TracyZoneScoped;
 
     rerouteMessageToPartyMembers(message.partyId, message);
+
+    // TODO:
+    // worldServer_.partySystem_->handleMessage(message);
 }
 
 void IPCServer::handleMessage_PartyDisband(const IPP& ipp, const ipc::PartyDisband& message)
@@ -452,6 +461,9 @@ void IPCServer::handleMessage_PartyDisband(const IPP& ipp, const ipc::PartyDisba
     TracyZoneScoped;
 
     rerouteMessageToPartyMembers(message.partyId, message);
+
+    // TODO:
+    // worldServer_.partySystem_->handleMessage(message);
 }
 
 void IPCServer::handleMessage_AllianceReload(const IPP& ipp, const ipc::AllianceReload& message)
@@ -459,6 +471,9 @@ void IPCServer::handleMessage_AllianceReload(const IPP& ipp, const ipc::Alliance
     TracyZoneScoped;
 
     rerouteMessageToAllianceMembers(message.allianceId, message);
+
+    // TODO:
+    // worldServer_.partySystem_->handleMessage(message);
 }
 
 void IPCServer::handleMessage_AllianceDissolve(const IPP& ipp, const ipc::AllianceDissolve& message)
@@ -466,6 +481,9 @@ void IPCServer::handleMessage_AllianceDissolve(const IPP& ipp, const ipc::Allian
     TracyZoneScoped;
 
     rerouteMessageToAllianceMembers(message.allianceId, message);
+
+    // TODO:
+    // worldServer_.partySystem_->handleMessage(message);
 }
 
 void IPCServer::handleMessage_PlayerKick(const IPP& ipp, const ipc::PlayerKick& message)
@@ -473,6 +491,9 @@ void IPCServer::handleMessage_PlayerKick(const IPP& ipp, const ipc::PlayerKick& 
     TracyZoneScoped;
 
     rerouteMessageToCharId(message.charId, message);
+
+    // TODO:
+    // worldServer_.partySystem_->handleMessage(message);
 }
 
 void IPCServer::handleMessage_MessageStandard(const IPP& ipp, const ipc::MessageStandard& message)

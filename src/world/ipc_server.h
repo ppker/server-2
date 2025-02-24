@@ -28,7 +28,6 @@
 #include "common/zmq_dealer_wrapper.h"
 
 #include "conquest_system.h"
-#include "message_handler.h"
 #include "world_server.h"
 #include "zone_settings.h"
 

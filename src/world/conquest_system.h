@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include "message_handler.h"
-
 #include "world_server.h"
 
 #include "common/regional_event.h"
@@ -36,16 +34,12 @@ class IPCServer;
 // Conquest System on the world server.
 // This class handles all the DB updates as a response to map server updates.
 //
-class ConquestSystem : public IMessageHandler
+class ConquestSystem
 {
 public:
     ConquestSystem(WorldServer& worldServer);
-    ~ConquestSystem() override = default;
 
-    /**
-     * IMessageHandler implementation. Used to handle messages from message_server.
-     */
-    bool handleMessage(uint8 messageType, HandleableMessage&& message) override;
+    bool handleMessage(uint8 messageType, HandleableMessage&& message);
 
     /**
      * Called weekly, updates conquest data and sends regional control information
