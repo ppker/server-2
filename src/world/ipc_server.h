@@ -27,7 +27,7 @@
 #include "common/socket.h"
 #include "common/zmq_dealer_wrapper.h"
 
-#include "conquest_system.h"
+#include "character_cache.h"
 #include "world_server.h"
 #include "zone_settings.h"
 
@@ -114,6 +114,7 @@ public:
 private:
     WorldServer& worldServer_;
 
+    CharacterCache   characterCache_;
     ZoneSettings     zoneSettings_;
     ZMQRouterWrapper zmqRouterWrapper_;
 };

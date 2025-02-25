@@ -23,6 +23,7 @@
 
 #include "besieged_system.h"
 #include "campaign_system.h"
+#include "character_cache.h"
 #include "colonization_system.h"
 #include "conquest_system.h"
 #include "world_server.h"
@@ -59,14 +60,22 @@ auto IPCServer::getIPPForCharId(uint32 charId) -> std::optional<IPP>
 {
     TracyZoneScoped;
 
-    // TODO: We know when chars move, we could be caching this information
+    // TODO: We know when chars move, we could be caching this info
+    // if (const auto cachedIPP = characterCache_.getCharacterIPP(charId))
+    // {
+    //     return *cachedIPP;
+    // }
 
     const auto rset = db::preparedStmt("SELECT server_addr, server_port FROM accounts_sessions WHERE charid = ? LIMIT 1", charId);
     if (rset && rset->rowsCount() && rset->next())
     {
         const auto ip   = rset->get<uint64>("server_addr");
         const auto port = rset->get<uint64>("server_port");
-        return IPP(ip, port);
+        const auto ipp  = IPP(ip, port);
+
+        // characterCache_.updateCharacter(charId, ipp);
+
+        return ipp;
     }
 
     return std::nullopt;
@@ -76,7 +85,7 @@ auto IPCServer::getIPPForCharName(const std::string& charName) -> std::optional<
 {
     TracyZoneScoped;
 
-    // TODO: We know when chars move, we could be caching this information
+    // TODO: We know when chars move, we could be caching this info
 
     const auto rset = db::preparedStmt("SELECT server_addr, server_port FROM accounts_sessions LEFT JOIN chars ON "
                                        "accounts_sessions.charid = chars.charid WHERE charname = ? LIMIT 1",
@@ -107,7 +116,7 @@ auto IPCServer::getIPPsForParty(uint32 partyId) -> std::vector<IPP>
 {
     TracyZoneScoped;
 
-    // TODO: We know when chars move, we could be caching this infor
+    // TODO: We know when chars move, we could be caching this info
 
     // TODO: Simplify query now that there's alliance versions?
     const auto query = "SELECT server_addr, server_port, MIN(charid) FROM accounts_sessions JOIN accounts_parties USING (charid) "
@@ -135,7 +144,7 @@ auto IPCServer::getIPPsForAlliance(uint32 allianceId) -> std::vector<IPP>
 {
     TracyZoneScoped;
 
-    // TODO: We know when chars move, we could be caching this infor
+    // TODO: We know when chars move, we could be caching this info
 
     const auto query = "SELECT server_addr, server_port, MIN(charid) FROM accounts_sessions JOIN accounts_parties USING (charid) "
                        "WHERE allianceid = ? "
@@ -162,7 +171,7 @@ auto IPCServer::getIPPsForLinkshell(uint32 linkshellId) -> std::vector<IPP>
 {
     TracyZoneScoped;
 
-    // TODO: We know when chars move, we could be caching this infor
+    // TODO: We know when chars move, we could be caching this info
 
     const auto query = "SELECT server_addr, server_port FROM accounts_sessions "
                        "WHERE linkshellid1 = ? OR linkshellid2 = ? GROUP BY server_addr, server_port";
@@ -188,7 +197,7 @@ auto IPCServer::getIPPsForUnity(uint32 unityId) -> std::vector<IPP>
 {
     TracyZoneScoped;
 
-    // TODO: We know when chars move, we could be caching this infor
+    // TODO: We know when chars move, we could be caching this info
 
     const auto query = "SELECT server_addr, server_port FROM accounts_sessions "
                        "WHERE unitychat = ? GROUP BY server_addr, server_port";
