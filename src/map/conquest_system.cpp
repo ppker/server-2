@@ -484,9 +484,8 @@ namespace conquest
     }
 
     /************************************************************************
-     *                                                                       *
      *  GetBalance                                                          *
-     *   Ranking for the 3 nations                                           *
+     *  Ranking for the 3 nations                                           *
      ************************************************************************/
 
     uint8 GetBalance(uint8 sandoria, uint8 bastok, uint8 windurst, uint8 sandoria_prev, uint8 bastok_prev, uint8 windurst_prev)

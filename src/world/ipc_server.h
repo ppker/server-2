@@ -46,6 +46,9 @@ public:
     template <typename T>
     void sendMessage(const IPP& ipp, const T& message);
 
+    template <typename T>
+    void broadcastMessage(const T& message);
+
     //
     // IPP Lookup
     //
@@ -134,4 +137,19 @@ void IPCServer::sendMessage(const IPP& ipp, const T& message)
     const auto out   = HandleableMessage{ ipp, std::vector<uint8>{ bytes.begin(), bytes.end() } };
 
     zmqRouterWrapper_.outgoingQueue_.enqueue(std::move(out));
+}
+
+template <typename T>
+void IPCServer::broadcastMessage(const T& message)
+{
+    TracyZoneScoped;
+
+    DebugIPCFmt("Broadcasting {} message to all zone endpoints", ipc::toString(ipc::getEnumType<T>()));
+
+    for (const auto& ipp : zoneSettings_.mapEndpoints_)
+    {
+        const auto bytes = ipc::toBytesWithHeader<T>(message);
+        const auto out   = HandleableMessage{ ipp, std::vector<uint8>{ bytes.begin(), bytes.end() } };
+        zmqRouterWrapper_.outgoingQueue_.enqueue(std::move(out));
+    }
 }

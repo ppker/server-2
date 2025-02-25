@@ -62,13 +62,13 @@ enum ConquestMessage : uint8
     // Used for initialization.
     W2M_BroadcastRegionControls,
 
-    // A GM Triggers a weekly update. From one zone to world.
-    // World should send CONQUEST_WORLD2MAP_WEEKLY_UPDATE_START and
-    // CONQUEST_WORLD2MAP_WEEKLY_UPDATE_END when done
+    // A GM Triggers a weekly update.
+    // World should send W2M_WeeklyUpdateStart and
+    // W2M_WeeklyUpdateEnd to all zones when done.
     M2W_GM_WeeklyUpdate,
 
-    // A GM requests houry conquest data (just influence points).
-    // World server should respond with CONQUEST_WORLD2MAP_INFLUENCE_POINTS triggering a zone update
+    // A GM requests hourly conquest data (just influence points).
+    // World server should send W2M_BroadcastInfluencePoints to all zones.
     M2W_GM_ConquestUpdate,
 
     // Influence point update from any zone to world.

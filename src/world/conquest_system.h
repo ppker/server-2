@@ -28,8 +28,6 @@
 #include "map/conquest_system.h"
 #include "map/zone.h"
 
-class IPCServer;
-
 //
 // Conquest System on the world server.
 // This class handles all the DB updates as a response to map server updates.
@@ -41,22 +39,22 @@ public:
 
     bool handleMessage(uint8 messageType, HandleableMessage&& message);
 
-    /**
-     * Called weekly, updates conquest data and sends regional control information
-     * to maps servers when done.
-     */
+    //
+    // Called weekly, updates conquest data and sends regional control information
+    // to maps servers when done.
+    //
     void updateWeekConquest();
 
-    /**
-     * Called hourly, updates influence data and sends an immediate influence update
-     * message to map servers.
-     */
+    //
+    // Called hourly, updates influence data and sends an immediate influence update
+    // message to map servers.
+    //
     void updateHourlyConquest();
 
-    /**
-     * Called every vana hour (every 2.4 min). Used to send updated influence data
-     * to all map servers. Does not request a zone update.
-     */
+    //
+    // Called every vana hour (every 2.4 min). Used to send updated influence data
+    // to all map servers. Does not request a zone update.
+    //
     void updateVanaHourlyConquest();
 
 private:
@@ -66,8 +64,8 @@ private:
     auto getRegionControls() -> std::vector<region_control_t> const;
 
     void sendTallyStartMsg();
-    void sendInfluencesMsg(bool shouldUpdateZones, uint64 ipp = 0xFFFF);
-    void sendRegionControlsMsg(ConquestMessage msgType, uint64 ipp = 0xFFFF);
+    void sendInfluencesMsg(bool shouldUpdateZones);
+    void sendRegionControlsMsg(ConquestMessage msgType);
 
     WorldServer& worldServer_;
 };
