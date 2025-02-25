@@ -22,7 +22,7 @@
 #pragma once
 
 #include "cbasetypes.h"
-#include "mutex_guarded.h"
+#include "synchronized.h"
 #include "tracy.h"
 #include "xi.h"
 
@@ -356,7 +356,7 @@ namespace db
             std::string                     query;
         };
 
-        auto getState() -> mutex_guarded<db::detail::State>&;
+        auto getState() -> Synchronized<db::detail::State>&;
 
         template <typename T>
         void bindValue(std::unique_ptr<sql::PreparedStatement>& stmt, int& counter, std::vector<std::shared_ptr<BlobWrapper>>& blobs, T&& value)

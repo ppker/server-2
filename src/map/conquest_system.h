@@ -43,7 +43,7 @@ class CCharEntity;
  */
 namespace conquest
 {
-    std::shared_ptr<ConquestData> GetConquestData(); // Cached data with influences / region controls
+    ConquestData& GetConquestData(); // Cached data with influences / region controls
 
     void HandleZMQMessage(uint8 subType, const std::span<const uint8> data);
 

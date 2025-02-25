@@ -1,7 +1,7 @@
 /*
 ===========================================================================
 
-  Copyright (c) 2022 LandSandBoat Dev Teams
+  Copyright (c) 2025 LandSandBoat Dev Teams
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,33 +21,23 @@
 
 #pragma once
 
-#include "common/logging.h"
-#include "common/synchronized.h"
+#include <optional>
 
-#include "map/zone.h"
-
-#include <mutex>
-
-#include <httplib.h>
-
-class HTTPServer
+template <typename T>
+class Lazy
 {
 public:
-    HTTPServer();
-    ~HTTPServer();
+    Lazy() = default;
 
-    void LockingUpdate();
+    auto operator()() -> T&
+    {
+        if (!value_)
+        {
+            value_ = T();
+        }
+        return *value_;
+    }
 
 private:
-    httplib::Server         m_httpServer;
-    std::atomic<time_point> m_lastUpdate;
-
-    struct APIDataCache
-    {
-        uint32                                 activeSessionCount;
-        uint32                                 activeUniqueIPCount;
-        std::array<uint32, ZONEID::MAX_ZONEID> zonePlayerCounts;
-    };
-
-    SynchronizedShared<APIDataCache> m_apiDataCache;
+    std::optional<T> value_;
 };

@@ -21,8 +21,10 @@
 
 #include "conquest_system.h"
 
+#include "common/lazy.h"
 #include "common/mmo.h"
 #include "common/vana_time.h"
+
 #include "entities/charentity.h"
 #include "ipc_client.h"
 #include "utils/charutils.h"
@@ -35,16 +37,11 @@
 
 namespace conquest
 {
-    static std::shared_ptr<ConquestData> conquestData;
+    Lazy<ConquestData> conquestData;
 
-    std::shared_ptr<ConquestData> GetConquestData()
+    ConquestData& GetConquestData()
     {
-        if (conquestData == nullptr)
-        {
-            conquestData = std::make_shared<ConquestData>();
-        }
-
-        return conquestData;
+        return conquestData();
     }
 
     void HandleZMQMessage(uint8 subType, const std::span<const uint8> data)
@@ -76,7 +73,7 @@ namespace conquest
             {
                 if (const auto object = ipc::fromBytes<ConquestRegionControlUpdate>(data))
                 {
-                    GetConquestData()->updateRegionControls((*object).regionControls);
+                    GetConquestData().updateRegionControls((*object).regionControls);
                 }
             }
             break;
@@ -271,10 +268,10 @@ namespace conquest
 
     uint8 GetInfluenceGraphics(REGION_TYPE region)
     {
-        int32 sandoria = GetConquestData()->getInfluence(region, NATION_SANDORIA);
-        int32 bastok   = GetConquestData()->getInfluence(region, NATION_BASTOK);
-        int32 windurst = GetConquestData()->getInfluence(region, NATION_WINDURST);
-        int32 beastmen = GetConquestData()->getInfluence(region, NATION_BEASTMEN);
+        int32 sandoria = GetConquestData().getInfluence(region, NATION_SANDORIA);
+        int32 bastok   = GetConquestData().getInfluence(region, NATION_BASTOK);
+        int32 windurst = GetConquestData().getInfluence(region, NATION_WINDURST);
+        int32 beastmen = GetConquestData().getInfluence(region, NATION_BEASTMEN);
 
         return GetInfluenceGraphics(sandoria, bastok, windurst, beastmen);
     }
@@ -348,7 +345,7 @@ namespace conquest
         else if (type == Conquest_Tally_End)
         {
             // Call conquest callbacks with cached data
-            conquest::HandleWeeklyTallyEnd(GetConquestData()->getRegionControls());
+            conquest::HandleWeeklyTallyEnd(GetConquestData().getRegionControls());
         }
     }
 
@@ -398,7 +395,7 @@ namespace conquest
         TracyZoneScoped;
 
         // 1-  Update local cache
-        GetConquestData()->updateRegionControls(regionControls);
+        GetConquestData().updateRegionControls(regionControls);
 
         // 2- Update zones based on the new data
         // update conquest overseers
@@ -449,7 +446,7 @@ namespace conquest
     {
         TracyZoneScoped;
 
-        GetConquestData()->updateInfluencePoints(influences);
+        GetConquestData().updateInfluencePoints(influences);
 
         if (shouldUpdateZones)
         {
@@ -549,13 +546,13 @@ namespace conquest
 
     uint8 GetBalance()
     {
-        uint8 sandoria = GetConquestData()->getRegionControlCount(NATION_SANDORIA);
-        uint8 bastok   = GetConquestData()->getRegionControlCount(NATION_BASTOK);
-        uint8 windurst = GetConquestData()->getRegionControlCount(NATION_WINDURST);
+        uint8 sandoria = GetConquestData().getRegionControlCount(NATION_SANDORIA);
+        uint8 bastok   = GetConquestData().getRegionControlCount(NATION_BASTOK);
+        uint8 windurst = GetConquestData().getRegionControlCount(NATION_WINDURST);
 
-        uint8 sandoria_prev = GetConquestData()->getPrevRegionControlCount(NATION_SANDORIA);
-        uint8 bastok_prev   = GetConquestData()->getPrevRegionControlCount(NATION_BASTOK);
-        uint8 windurst_prev = GetConquestData()->getPrevRegionControlCount(NATION_WINDURST);
+        uint8 sandoria_prev = GetConquestData().getPrevRegionControlCount(NATION_SANDORIA);
+        uint8 bastok_prev   = GetConquestData().getPrevRegionControlCount(NATION_BASTOK);
+        uint8 windurst_prev = GetConquestData().getPrevRegionControlCount(NATION_WINDURST);
 
         return GetBalance(sandoria, bastok, windurst, sandoria_prev, bastok_prev, windurst_prev);
     }
@@ -602,13 +599,13 @@ namespace conquest
 
     bool IsAlliance()
     {
-        uint8 sandoria = GetConquestData()->getRegionControlCount(NATION_SANDORIA);
-        uint8 bastok   = GetConquestData()->getRegionControlCount(NATION_BASTOK);
-        uint8 windurst = GetConquestData()->getRegionControlCount(NATION_WINDURST);
+        uint8 sandoria = GetConquestData().getRegionControlCount(NATION_SANDORIA);
+        uint8 bastok   = GetConquestData().getRegionControlCount(NATION_BASTOK);
+        uint8 windurst = GetConquestData().getRegionControlCount(NATION_WINDURST);
 
-        uint8 sandoria_prev = GetConquestData()->getPrevRegionControlCount(NATION_SANDORIA);
-        uint8 bastok_prev   = GetConquestData()->getPrevRegionControlCount(NATION_BASTOK);
-        uint8 windurst_prev = GetConquestData()->getPrevRegionControlCount(NATION_WINDURST);
+        uint8 sandoria_prev = GetConquestData().getPrevRegionControlCount(NATION_SANDORIA);
+        uint8 bastok_prev   = GetConquestData().getPrevRegionControlCount(NATION_BASTOK);
+        uint8 windurst_prev = GetConquestData().getPrevRegionControlCount(NATION_WINDURST);
 
         return GetAlliance(sandoria, bastok, windurst, sandoria_prev, bastok_prev, windurst_prev) == 1;
     }
@@ -635,7 +632,7 @@ namespace conquest
 
     uint8 GetRegionOwner(REGION_TYPE region)
     {
-        return GetConquestData()->getRegionOwner(region);
+        return GetConquestData().getRegionOwner(region);
     }
 
     /************************************************************************
