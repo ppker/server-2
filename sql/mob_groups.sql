@@ -11102,7 +11102,7 @@ INSERT INTO `mob_groups` VALUES (3,913,161,'Dark_Elemental',960,4,568,0,0,48,49,
 INSERT INTO `mob_groups` VALUES (4,2043,161,'Ice_Elemental',960,4,1347,0,0,48,49,0);
 INSERT INTO `mob_groups` VALUES (5,988,161,'Demon_Knight',960,0,617,0,0,50,52,0);
 INSERT INTO `mob_groups` VALUES (6,997,161,'Demon_Wizard',960,0,622,0,0,50,52,0);
-INSERT INTO `mob_groups` VALUES (7,2414,161,'Likho',0,128,1522,7000,0,67,67,0);
+INSERT INTO `mob_groups` VALUES (7,2414,161,'Likho',0,128,1522,7000,0,67,68,0);
 INSERT INTO `mob_groups` VALUES (8,1701,161,'Goblin_Poacher',960,0,1140,0,0,47,49,0);
 INSERT INTO `mob_groups` VALUES (9,1741,161,'Goblin_Trader',960,0,1180,0,0,47,49,0);
 INSERT INTO `mob_groups` VALUES (10,1721,161,'Goblins_Bats',0,128,0,0,0,40,42,0);
@@ -11131,17 +11131,17 @@ INSERT INTO `mob_groups` VALUES (32,472,161,'Blood_Demon',960,0,310,0,0,64,66,0)
 INSERT INTO `mob_groups` VALUES (33,1081,161,'Doom_Demon',960,0,674,0,0,64,66,0);
 INSERT INTO `mob_groups` VALUES (34,226,161,'Arch_Demon',960,0,163,0,0,64,66,0);
 INSERT INTO `mob_groups` VALUES (35,22,161,'Abyssal_Demon',960,0,4,0,0,64,66,0);
-INSERT INTO `mob_groups` VALUES (36,5890,161,'Marquis_Naberius',3600,0,3089,0,0,74,74,0);
-INSERT INTO `mob_groups` VALUES (37,5763,161,'Marquis_Sabnock',0,32,3047,9500,0,74,75,0);
+INSERT INTO `mob_groups` VALUES (36,5890,161,'Marquis_Naberius',3600,0,3089,6000,0,63,64,0);
+INSERT INTO `mob_groups` VALUES (37,5763,161,'Marquis_Sabnock',0,32,3047,9500,0,73,75,0);
 INSERT INTO `mob_groups` VALUES (38,65,161,'Ahriman',960,0,32,0,0,63,65,0);
 INSERT INTO `mob_groups` VALUES (39,6612,161,'Dread_Demon',960,0,705,0,0,71,73,0);
 INSERT INTO `mob_groups` VALUES (40,6614,161,'Judicator_Demon',960,0,1416,0,0,71,73,0);
 INSERT INTO `mob_groups` VALUES (41,6634,161,'Stygian_Demon',960,0,2352,0,0,71,73,0);
-INSERT INTO `mob_groups` VALUES (42,2568,161,'Marquis_Allocen',0,128,1622,0,0,76,76,0);
+INSERT INTO `mob_groups` VALUES (42,2568,161,'Marquis_Allocen',0,128,1622,4500,0,76,76,0);
 INSERT INTO `mob_groups` VALUES (43,6613,161,'Gore_Demon',960,0,1206,0,0,71,73,0);
-INSERT INTO `mob_groups` VALUES (44,2569,161,'Marquis_Amon',0,128,1623,0,0,76,76,0);
-INSERT INTO `mob_groups` VALUES (45,1134,161,'Duke_Haborym',0,128,716,0,0,76,76,0);
-INSERT INTO `mob_groups` VALUES (46,1786,161,'Grand_Duke_Batym',0,128,1213,0,0,76,76,0);
+INSERT INTO `mob_groups` VALUES (44,2569,161,'Marquis_Amon',0,128,1623,3500,0,76,76,0);
+INSERT INTO `mob_groups` VALUES (45,1134,161,'Duke_Haborym',0,128,716,4400,0,76,76,0);
+INSERT INTO `mob_groups` VALUES (46,1786,161,'Grand_Duke_Batym',0,128,1213,4000,0,76,76,0);
 INSERT INTO `mob_groups` VALUES (47,993,161,'Demons_Avatar',0,128,0,0,0,52,54,0);
 INSERT INTO `mob_groups` VALUES (48,917,161,'Dark_Spark',0,128,0,8500,0,55,55,0);
 INSERT INTO `mob_groups` VALUES (49,2664,161,'Mimic',0,128,1683,0,0,64,66,0);
@@ -11194,11 +11194,11 @@ INSERT INTO `mob_groups` VALUES (36,4410,162,'Yagudo_Chanter',960,0,2699,0,0,50,
 INSERT INTO `mob_groups` VALUES (37,4427,162,'Yagudo_Inquisitor',960,0,2721,0,0,50,52,0);
 INSERT INTO `mob_groups` VALUES (38,4404,162,'Yagudo_Abbot',960,0,2690,0,0,50,52,0);
 INSERT INTO `mob_groups` VALUES (39,2738,162,'Morbid_Eye',960,0,1732,0,0,52,53,0);
-INSERT INTO `mob_groups` VALUES (40,349,162,'Baron_Vapula',0,32,232,0,0,68,68,0);
-INSERT INTO `mob_groups` VALUES (41,812,162,'Count_Bifrons',0,32,518,0,0,68,68,0);
-INSERT INTO `mob_groups` VALUES (42,4239,162,'Viscount_Morax',0,32,2582,0,0,68,68,0);
+INSERT INTO `mob_groups` VALUES (40,349,162,'Baron_Vapula',0,32,232,6900,0,68,68,0);
+INSERT INTO `mob_groups` VALUES (41,812,162,'Count_Bifrons',0,32,518,7500,0,68,68,0);
+INSERT INTO `mob_groups` VALUES (42,4239,162,'Viscount_Morax',0,32,2582,6600,0,68,68,0);
 INSERT INTO `mob_groups` VALUES (43,993,162,'Demons_Avatar',0,128,0,0,0,42,45,0);
-INSERT INTO `mob_groups` VALUES (44,346,162,'Baronet_Romwe',0,32,229,0,0,68,68,0);
+INSERT INTO `mob_groups` VALUES (44,346,162,'Baronet_Romwe',0,32,229,8000,0,68,68,0);
 INSERT INTO `mob_groups` VALUES (45,932,162,'Deadly_Iris',960,0,579,0,0,55,56,0);
 
 -- ------------------------------------------------------------
