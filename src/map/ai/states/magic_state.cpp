@@ -113,15 +113,38 @@ CMagicState::CMagicState(CBattleEntity* PEntity, uint16 targid, SpellID spellid,
 
 bool CMagicState::Update(time_point tick)
 {
-    if (tick > GetEntryTime() + m_castTime && !IsCompleted())
+    action_t    action;
+    auto*       PTarget = m_PEntity->IsValidTarget(m_targid, m_PSpell->getValidTarget(), m_errorMsg);
+    MSGBASIC_ID msg     = MSGBASIC_IS_INTERRUPTED;
+
+    auto isTargetValid = [&]()
     {
-        auto*       PTarget = m_PEntity->IsValidTarget(m_targid, m_PSpell->getValidTarget(), m_errorMsg);
-        MSGBASIC_ID msg     = MSGBASIC_IS_INTERRUPTED;
-
-        action_t action;
-
+        // m_PEntity->IsValidTarget checks if the target is dead and returns nullptr if so, so we don't need to duplicate it here.
         if (!PTarget || m_errorMsg || !CanCastSpell(PTarget, true) ||
             (HasMoved() && (m_PEntity->objtype != TYPE_PET || static_cast<CPetEntity*>(m_PEntity)->getPetType() != PET_TYPE::AUTOMATON)))
+        {
+            return false;
+        }
+        return true;
+    };
+
+    // Check if target is still valid during mid-cast (mostly to check if the target has died and to cancel.)
+    if (!IsCompleted())
+    {
+        if (!isTargetValid())
+        {
+            // guessed, but cancels correctly.
+            m_PEntity->OnCastInterrupted(*this, action, msg, false);
+            m_PEntity->loc.zone->PushPacket(m_PEntity, CHAR_INRANGE_SELF, std::make_unique<CActionPacket>(action));
+
+            Complete();
+            return false;
+        }
+    }
+
+    if (tick > GetEntryTime() + m_castTime && !IsCompleted())
+    {
+        if (!isTargetValid())
         {
             m_PEntity->OnCastInterrupted(*this, action, msg, false);
             m_PEntity->loc.zone->PushPacket(m_PEntity, CHAR_INRANGE_SELF, std::make_unique<CActionPacket>(action));
