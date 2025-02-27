@@ -344,7 +344,7 @@ void IPCServer::handleIncomingMessages()
     TracyZoneScoped;
 
     // TODO: Can we stop more messages appearing on the queue while we're processing?
-    HandleableMessage out;
+    IPPMessage out;
     while (zmqRouterWrapper_.incomingQueue_.try_dequeue(out))
     {
         const auto firstByte = out.payload[0];
@@ -370,6 +370,25 @@ void IPCServer::handleMessage_CharLogin(const IPP& ipp, const ipc::CharLogin& me
     DebugIPCFmt("Received CharLogin message from {} for account {} char {}", ipp.toString(), message.accountId, message.charId);
 
     // NOTE: Originally a NO-OP
+}
+
+void IPCServer::handleMessage_CharZone(const IPP& ipp, const ipc::CharZone& message)
+{
+    TracyZoneScoped;
+
+    // Update cache
+    if (message.destinationZoneId == 0xFFFF)
+    {
+        characterCache_.removeCharacter(message.charId);
+    }
+    else
+    {
+        if (const auto maybeIPP = getIPPForZoneId(message.destinationZoneId))
+        {
+            characterCache_.updateCharacter(message.charId, *maybeIPP);
+            rerouteMessageToZoneId(message.destinationZoneId, message);
+        }
+    }
 }
 
 void IPCServer::handleMessage_CharVarUpdate(const IPP& ipp, const ipc::CharVarUpdate& message)
@@ -580,29 +599,32 @@ void IPCServer::handleMessage_KillSession(const IPP& ipp, const ipc::KillSession
     }
 }
 
-void IPCServer::handleMessage_RegionalEvent(const IPP& ipp, const ipc::RegionalEvent& message)
+void IPCServer::handleMessage_ConquestEvent(const IPP& ipp, const ipc::ConquestEvent& message)
 {
     TracyZoneScoped;
 
-    // Dispatch to relevant system
-    switch (message.type)
-    {
-        case RegionalEventType::Conquest:
-            worldServer_.conquestSystem_->handleMessage(message.subType, { ipp, message.payload });
-            break;
-        case RegionalEventType::Besieged:
-            worldServer_.besiegedSystem_->handleMessage(message.subType, { ipp, message.payload });
-            break;
-        case RegionalEventType::Campaign:
-            worldServer_.campaignSystem_->handleMessage(message.subType, { ipp, message.payload });
-            break;
-        case RegionalEventType::Colonization:
-            worldServer_.colonizationSystem_->handleMessage(message.subType, { ipp, message.payload });
-            break;
-        default:
-            ShowWarning("Received unknown RegionalEvent type {}", static_cast<uint8>(message.type));
-            break;
-    }
+    worldServer_.conquestSystem_->handleMessage(message.type, { ipp, message.payload });
+}
+
+void IPCServer::handleMessage_BesiegedEvent(const IPP& ipp, const ipc::BesiegedEvent& message)
+{
+    TracyZoneScoped;
+
+    worldServer_.besiegedSystem_->handleMessage(message.type, { ipp, message.payload });
+}
+
+void IPCServer::handleMessage_CampaignEvent(const IPP& ipp, const ipc::CampaignEvent& message)
+{
+    TracyZoneScoped;
+
+    worldServer_.campaignSystem_->handleMessage(message.type, { ipp, message.payload });
+}
+
+void IPCServer::handleMessage_ColonizationEvent(const IPP& ipp, const ipc::ColonizationEvent& message)
+{
+    TracyZoneScoped;
+
+    worldServer_.colonizationSystem_->handleMessage(message.type, { ipp, message.payload });
 }
 
 void IPCServer::handleMessage_GMSendToZone(const IPP& ipp, const ipc::GMSendToZone& message)

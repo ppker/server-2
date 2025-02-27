@@ -34,7 +34,7 @@ public:
 
     ~PartySystem() = default;
 
-    bool handleMessage(uint8 messageType, HandleableMessage&& message)
+    bool handleMessage(uint8 messageType, IPPMessage&& message)
     {
         return false;
     }

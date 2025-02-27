@@ -4,6 +4,8 @@ set(SOURCES
     besieged_system.h
     campaign_system.cpp
     campaign_system.h
+    character_cache.cpp
+    character_cache.h
     colonization_system.cpp
     colonization_system.h
     conquest_system.cpp
@@ -21,6 +23,7 @@ set(SOURCES
     time_server.cpp
     world_server.cpp
     world_server.h
+    zone_settings.h
 )
 
 # Temporarily remove clashing old code

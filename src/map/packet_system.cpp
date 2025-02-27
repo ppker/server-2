@@ -1076,7 +1076,7 @@ void SmallPacket0x01A(map_session_data_t* const PSession, CCharEntity* const PCh
                 PChar->status          = STATUS_TYPE::DISAPPEAR;
                 PChar->loc.boundary    = 0;
                 PChar->clearPacketList();
-                charutils::SendToZone(PChar, 2, zoneutils::GetZoneIPP(PChar->loc.destination));
+                charutils::SendToZone(PChar, ZoningType::Zoning, zoneutils::GetZoneIPP(PChar->loc.destination));
             }
 
             PChar->m_hasTractor = 0;
@@ -3104,7 +3104,7 @@ void SmallPacket0x05E(map_session_data_t* const PSession, CCharEntity* const PCh
         return;
     }
 
-    charutils::SendToZone(PChar, 2, ipp);
+    charutils::SendToZone(PChar, ZoningType::Zoning, ipp);
 }
 
 /************************************************************************
@@ -5279,7 +5279,7 @@ void SmallPacket0x0CB(map_session_data_t* const PSession, CCharEntity* const PCh
             PChar->status          = STATUS_TYPE::DISAPPEAR;
 
             PChar->clearPacketList();
-            charutils::SendToZone(PChar, 2, ipp);
+            charutils::SendToZone(PChar, ZoningType::Zoning, ipp);
         }
     }
     else

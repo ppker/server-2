@@ -83,6 +83,7 @@ public:
 
     void handleMessage_EmptyStruct(const IPP& ipp, const ipc::EmptyStruct& message) override;
     void handleMessage_CharLogin(const IPP& ipp, const ipc::CharLogin& message) override;
+    void handleMessage_CharZone(const IPP& ipp, const ipc::CharZone& message) override;
     void handleMessage_CharVarUpdate(const IPP& ipp, const ipc::CharVarUpdate& message) override;
     void handleMessage_ChatMessageTell(const IPP& ipp, const ipc::ChatMessageTell& message) override;
     void handleMessage_ChatMessageParty(const IPP& ipp, const ipc::ChatMessageParty& message) override;
@@ -106,7 +107,10 @@ public:
     void handleMessage_LinkshellSetMessage(const IPP& ipp, const ipc::LinkshellSetMessage& message) override;
     void handleMessage_LuaFunction(const IPP& ipp, const ipc::LuaFunction& message) override;
     void handleMessage_KillSession(const IPP& ipp, const ipc::KillSession& message) override;
-    void handleMessage_RegionalEvent(const IPP& ipp, const ipc::RegionalEvent& message) override;
+    void handleMessage_ConquestEvent(const IPP& ipp, const ipc::ConquestEvent& message) override;
+    void handleMessage_BesiegedEvent(const IPP& ipp, const ipc::BesiegedEvent& message) override;
+    void handleMessage_CampaignEvent(const IPP& ipp, const ipc::CampaignEvent& message) override;
+    void handleMessage_ColonizationEvent(const IPP& ipp, const ipc::ColonizationEvent& message) override;
     void handleMessage_GMSendToZone(const IPP& ipp, const ipc::GMSendToZone& message) override;
     void handleMessage_GMSendToEntity(const IPP& ipp, const ipc::GMSendToEntity& message) override;
     void handleMessage_RPCSend(const IPP& ipp, const ipc::RPCSend& message) override;
@@ -134,7 +138,7 @@ void IPCServer::sendMessage(const IPP& ipp, const T& message)
     DebugIPCFmt("Sending {} message to {}", ipc::toString(ipc::getEnumType<T>()), ipp.toString());
 
     const auto bytes = ipc::toBytesWithHeader<T>(message);
-    const auto out   = HandleableMessage{ ipp, std::vector<uint8>{ bytes.begin(), bytes.end() } };
+    const auto out   = IPPMessage{ ipp, std::vector<uint8>{ bytes.begin(), bytes.end() } };
 
     zmqRouterWrapper_.outgoingQueue_.enqueue(std::move(out));
 }
@@ -149,7 +153,7 @@ void IPCServer::broadcastMessage(const T& message)
     for (const auto& ipp : zoneSettings_.mapEndpoints_)
     {
         const auto bytes = ipc::toBytesWithHeader<T>(message);
-        const auto out   = HandleableMessage{ ipp, std::vector<uint8>{ bytes.begin(), bytes.end() } };
+        const auto out   = IPPMessage{ ipp, std::vector<uint8>{ bytes.begin(), bytes.end() } };
         zmqRouterWrapper_.outgoingQueue_.enqueue(std::move(out));
     }
 }

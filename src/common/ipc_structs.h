@@ -44,6 +44,12 @@ namespace ipc
         uint32 charId;
     };
 
+    struct CharZone
+    {
+        uint32 charId;
+        uint16 destinationZoneId;
+    };
+
     struct CharVarUpdate
     {
         uint32      charId;

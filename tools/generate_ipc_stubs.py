@@ -18,6 +18,7 @@ IPC_STRUCT_NAMES = [
     "EmptyStruct",
 
     "CharLogin",
+    "CharZone",
     "CharVarUpdate",
 
     "ChatMessageTell",
@@ -50,7 +51,10 @@ IPC_STRUCT_NAMES = [
 
     "KillSession",
 
-    "RegionalEvent",
+    "ConquestEvent",
+    "BesiegedEvent",
+    "CampaignEvent",
+    "ColonizationEvent",
 
     "GMSendToZone",
     "GMSendToEntity",

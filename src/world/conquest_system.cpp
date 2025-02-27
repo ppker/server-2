@@ -30,7 +30,7 @@ ConquestSystem::ConquestSystem(WorldServer& worldServer)
 {
 }
 
-bool ConquestSystem::handleMessage(uint8 messageType, HandleableMessage&& message)
+bool ConquestSystem::handleMessage(uint8 messageType, IPPMessage&& message)
 {
     const auto conquestMsgType = static_cast<ConquestMessage>(messageType);
     switch (conquestMsgType)
@@ -74,18 +74,15 @@ bool ConquestSystem::handleMessage(uint8 messageType, HandleableMessage&& messag
 
 void ConquestSystem::sendTallyStartMsg()
 {
-    worldServer_.ipcServer_->broadcastMessage(ipc::RegionalEvent{
-        .type    = RegionalEventType::Conquest,
-        .subType = ConquestMessage::W2M_WeeklyUpdateStart,
-        // No payload
+    worldServer_.ipcServer_->broadcastMessage(ipc::ConquestEvent{
+        .type = ConquestMessage::W2M_WeeklyUpdateStart,
     });
 }
 
 void ConquestSystem::sendInfluencesMsg(bool shouldUpdateZones)
 {
-    worldServer_.ipcServer_->broadcastMessage(ipc::RegionalEvent{
-        .type    = RegionalEventType::Conquest,
-        .subType = ConquestMessage::W2M_BroadcastInfluencePoints,
+    worldServer_.ipcServer_->broadcastMessage(ipc::ConquestEvent{
+        .type    = ConquestMessage::W2M_BroadcastInfluencePoints,
         .payload = ipc::toBytes(ConquestInfluenceUpdate{
             .shouldUpdateZones = shouldUpdateZones,
             .influences        = getRegionalInfluences(),
@@ -95,9 +92,8 @@ void ConquestSystem::sendInfluencesMsg(bool shouldUpdateZones)
 
 void ConquestSystem::sendRegionControlsMsg(ConquestMessage msgType)
 {
-    worldServer_.ipcServer_->broadcastMessage(ipc::RegionalEvent{
-        .type    = RegionalEventType::Conquest,
-        .subType = msgType,
+    worldServer_.ipcServer_->broadcastMessage(ipc::ConquestEvent{
+        .type    = msgType,
         .payload = ipc::toBytes(ConquestRegionControlUpdate{
             .regionControls = getRegionControls(),
         }),

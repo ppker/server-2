@@ -49,6 +49,7 @@ public:
 
     void handleMessage_EmptyStruct(const IPP& ipp, const ipc::EmptyStruct& message) override;
     void handleMessage_CharLogin(const IPP& ipp, const ipc::CharLogin& message) override;
+    void handleMessage_CharZone(const IPP& ipp, const ipc::CharZone& message) override;
     void handleMessage_CharVarUpdate(const IPP& ipp, const ipc::CharVarUpdate& message) override;
     void handleMessage_ChatMessageTell(const IPP& ipp, const ipc::ChatMessageTell& message) override;
     void handleMessage_ChatMessageParty(const IPP& ipp, const ipc::ChatMessageParty& message) override;

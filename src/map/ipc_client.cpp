@@ -80,6 +80,12 @@ namespace
 
         ipp |= (port << 32);
 
+        if (ipp == 0)
+        {
+            ShowWarning("ZMQ Routing ID IPP calculated as 0 - setting to 1. Check your zone_settings!");
+            ipp = 1;
+        }
+
         return ipp;
     }
 } // namespace
@@ -146,13 +152,23 @@ void IPCClient::handleMessage_CharLogin(const IPP& ipp, const ipc::CharLogin& me
     }
 }
 
+void IPCClient::handleMessage_CharZone(const IPP& ipp, const ipc::CharZone& message)
+{
+    TracyZoneScoped;
+
+    // TODO: This is mainly for telling the world server that a character has zoned,
+    //     : but maybe it would be useful here too?
+
+    std::ignore = message.charId;
+    std::ignore = message.destinationZoneId;
+}
+
 void IPCClient::handleMessage_CharVarUpdate(const IPP& ipp, const ipc::CharVarUpdate& message)
 {
     TracyZoneScoped;
 
     if (auto* PChar = zoneutils::GetChar(message.charId))
     {
-        DebugIPCFmt("Received CharVarUpdate message from {}, char {}: {} = {} (expiry {})", ipp.toString(), message.charId, message.varName, message.value, message.expiry);
         PChar->updateCharVarCache(message.varName, message.value, message.expiry);
     }
 }
@@ -160,8 +176,6 @@ void IPCClient::handleMessage_CharVarUpdate(const IPP& ipp, const ipc::CharVarUp
 void IPCClient::handleMessage_ChatMessageTell(const IPP& ipp, const ipc::ChatMessageTell& message)
 {
     TracyZoneScoped;
-
-    DebugIPCFmt("Received MessageTell message from {}, char {} to char {}: {}", ipp.toString(), message.senderName, message.recipientName, message.message);
 
     CCharEntity* PChar = zoneutils::GetCharByName(message.recipientName);
     if (PChar && PChar->status != STATUS_TYPE::DISAPPEAR && !jailutils::InPrison(PChar))
@@ -325,7 +339,7 @@ void IPCClient::handleMessage_ChatMessageServerMessage(const IPP& ipp, const ipc
 
 void IPCClient::handleMessage_ChatMessageCustom(const IPP& ipp, const ipc::ChatMessageCustom& message)
 {
-    DebugIPCFmt("Received MessageTell message from {}, char {} to char {}: {}", ipp.toString(), message.senderName, message.recipientId, message.message);
+    TracyZoneScoped;
 
     CCharEntity* PChar = zoneutils::GetChar(message.recipientId);
     if (PChar && PChar->status != STATUS_TYPE::DISAPPEAR && !jailutils::InPrison(PChar))
@@ -753,7 +767,7 @@ void IPCClient::handleMessage_GMSendToZone(const IPP& ipp, const ipc::GMSendToZo
         PChar->animation       = ANIMATION_NONE;
         PChar->clearPacketList();
 
-        charutils::SendToZone(PChar, 2, zoneutils::GetZoneIPP(zoneId));
+        charutils::SendToZone(PChar, ZoningType::Zoning, zoneutils::GetZoneIPP(zoneId));
     }
     */
 }
@@ -848,7 +862,7 @@ void IPCClient::handleMessage_GMSendToEntity(const IPP& ipp, const ipc::GMSendTo
 
                 PChar->clearPacketList();
 
-                charutils::SendToZone(PChar, 2, zoneutils::GetZoneIPP(PChar->loc.destination));
+                charutils::SendToZone(PChar, ZoningType::Zoning, zoneutils::GetZoneIPP(PChar->loc.destination));
             }
         }
     }
