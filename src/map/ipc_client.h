@@ -72,7 +72,10 @@ public:
     void handleMessage_LinkshellSetMessage(const IPP& ipp, const ipc::LinkshellSetMessage& message) override;
     void handleMessage_LuaFunction(const IPP& ipp, const ipc::LuaFunction& message) override;
     void handleMessage_KillSession(const IPP& ipp, const ipc::KillSession& message) override;
-    void handleMessage_RegionalEvent(const IPP& ipp, const ipc::RegionalEvent& message) override;
+    void handleMessage_ConquestEvent(const IPP& ipp, const ipc::ConquestEvent& message) override;
+    void handleMessage_BesiegedEvent(const IPP& ipp, const ipc::BesiegedEvent& message) override;
+    void handleMessage_CampaignEvent(const IPP& ipp, const ipc::CampaignEvent& message) override;
+    void handleMessage_ColonizationEvent(const IPP& ipp, const ipc::ColonizationEvent& message) override;
     void handleMessage_GMSendToZone(const IPP& ipp, const ipc::GMSendToZone& message) override;
     void handleMessage_GMSendToEntity(const IPP& ipp, const ipc::GMSendToEntity& message) override;
     void handleMessage_RPCSend(const IPP& ipp, const ipc::RPCSend& message) override;

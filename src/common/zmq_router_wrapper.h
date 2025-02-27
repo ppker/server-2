@@ -31,7 +31,7 @@
 #include <zmq.hpp>
 #include <zmq_addon.hpp>
 
-struct HandleableMessage
+struct IPPMessage
 {
     IPP                ipp;
     std::vector<uint8> payload;
@@ -42,10 +42,10 @@ class ZMQRouterWrapper final
     class ZMQWorker final
     {
     public:
-        ZMQWorker(std::atomic<bool>&                              requestExit,
-                  moodycamel::ConcurrentQueue<HandleableMessage>& incomingQueue,
-                  moodycamel::ConcurrentQueue<HandleableMessage>& outgoingQueue,
-                  const std::string&                              endpoint)
+        ZMQWorker(std::atomic<bool>&                       requestExit,
+                  moodycamel::ConcurrentQueue<IPPMessage>& incomingQueue,
+                  moodycamel::ConcurrentQueue<IPPMessage>& outgoingQueue,
+                  const std::string&                       endpoint)
         : requestExit_(requestExit)
         , incomingQueue_(incomingQueue)
         , outgoingQueue_(outgoingQueue)
@@ -86,7 +86,7 @@ class ZMQRouterWrapper final
                 {
                     if (!zmq::recv_multipart_n(zmqSocket_, msgs.data(), msgs.size(), zmq::recv_flags::none))
                     {
-                        HandleableMessage msg;
+                        IPPMessage msg;
                         while (outgoingQueue_.try_dequeue(msg))
                         {
                             // We send the same way as we receive: [routing id (IPP), message]
@@ -119,15 +119,15 @@ class ZMQRouterWrapper final
                 auto ipp     = IPP(from);
                 auto payload = std::vector<uint8>(data.data<uint8>(), data.data<uint8>() + data.size());
 
-                incomingQueue_.enqueue(HandleableMessage{ ipp, payload });
+                incomingQueue_.enqueue(IPPMessage{ ipp, payload });
             }
         }
 
     private:
         std::atomic<bool>& requestExit_;
 
-        moodycamel::ConcurrentQueue<HandleableMessage>& incomingQueue_;
-        moodycamel::ConcurrentQueue<HandleableMessage>& outgoingQueue_;
+        moodycamel::ConcurrentQueue<IPPMessage>& incomingQueue_;
+        moodycamel::ConcurrentQueue<IPPMessage>& outgoingQueue_;
 
         zmq::context_t zmqContext_;
         zmq::socket_t  zmqSocket_;
@@ -151,8 +151,8 @@ public:
         thread_.join();
     }
 
-    moodycamel::ConcurrentQueue<HandleableMessage> incomingQueue_;
-    moodycamel::ConcurrentQueue<HandleableMessage> outgoingQueue_;
+    moodycamel::ConcurrentQueue<IPPMessage> incomingQueue_;
+    moodycamel::ConcurrentQueue<IPPMessage> outgoingQueue_;
 
 private:
     std::atomic<bool> requestExit_;

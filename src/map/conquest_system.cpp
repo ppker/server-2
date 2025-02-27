@@ -44,9 +44,9 @@ namespace conquest
         return conquestData();
     }
 
-    void HandleZMQMessage(uint8 subType, const std::span<const uint8> data)
+    void HandleMessage(ConquestMessage type, const std::span<const uint8> data)
     {
-        switch (static_cast<ConquestMessage>(subType))
+        switch (type)
         {
             case W2M_WeeklyUpdateStart:
             {
@@ -79,7 +79,7 @@ namespace conquest
             break;
             default:
             {
-                ShowWarningFmt("Message: unhandled conquest type message received: {}", subType);
+                ShowWarningFmt("Message: unhandled conquest type message received: {}", type);
             }
             break;
         }
@@ -91,9 +91,8 @@ namespace conquest
         // Note that we do not update local cache, as it would potentially become out of sync from
         // world server due to other map updates anyway. We wait for eventual consistency.
 
-        message::send(ipc::RegionalEvent{
-            .type    = RegionalEventType::Conquest,
-            .subType = ConquestMessage::M2W_AddInfluencePoints,
+        message::send(ipc::ConquestEvent{
+            .type    = ConquestMessage::M2W_AddInfluencePoints,
             .payload = ipc::toBytes(ConquestAddInfluencePoints{
                 .points = points,
                 .nation = nation,
@@ -328,18 +327,14 @@ namespace conquest
     {
         if (type == Conquest_Tally_Start)
         {
-            message::send(ipc::RegionalEvent{
-                .type    = RegionalEventType::Conquest,
-                .subType = ConquestMessage::M2W_GM_WeeklyUpdate,
-                // No payload
+            message::send(ipc::ConquestEvent{
+                .type = ConquestMessage::M2W_GM_WeeklyUpdate,
             });
         }
         else if (type == Conquest_Update)
         {
-            message::send(ipc::RegionalEvent{
-                .type    = RegionalEventType::Conquest,
-                .subType = ConquestMessage::M2W_GM_WeeklyUpdate,
-                // No payload
+            message::send(ipc::ConquestEvent{
+                .type = ConquestMessage::M2W_GM_WeeklyUpdate,
             });
         }
         else if (type == Conquest_Tally_End)

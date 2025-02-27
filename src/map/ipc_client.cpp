@@ -682,19 +682,26 @@ void IPCClient::handleMessage_KillSession(const IPP& ipp, const ipc::KillSession
     }
 }
 
-void IPCClient::handleMessage_RegionalEvent(const IPP& ipp, const ipc::RegionalEvent& message)
+void IPCClient::handleMessage_ConquestEvent(const IPP& ipp, const ipc::ConquestEvent& message)
 {
     TracyZoneScoped;
 
-    switch (message.type)
-    {
-        case RegionalEventType::Conquest:
-            conquest::HandleZMQMessage(message.subType, { message.payload.data(), message.payload.size() });
-            break;
-        default:
-            ShowWarningFmt("Received unknown regional event type {} from {}", message.type, ipp.toString());
-            break;
-    }
+    conquest::HandleMessage(message.type, { message.payload.data(), message.payload.size() });
+}
+
+void IPCClient::handleMessage_BesiegedEvent(const IPP& ipp, const ipc::BesiegedEvent& message)
+{
+    TracyZoneScoped;
+}
+
+void IPCClient::handleMessage_CampaignEvent(const IPP& ipp, const ipc::CampaignEvent& message)
+{
+    TracyZoneScoped;
+}
+
+void IPCClient::handleMessage_ColonizationEvent(const IPP& ipp, const ipc::ColonizationEvent& message)
+{
+    TracyZoneScoped;
 }
 
 void IPCClient::handleMessage_GMSendToZone(const IPP& ipp, const ipc::GMSendToZone& message)

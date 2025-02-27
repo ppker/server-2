@@ -219,11 +219,28 @@ namespace ipc
         uint32 charId;
     };
 
-    struct RegionalEvent
+    struct ConquestEvent
     {
-        RegionalEventType  type;
-        uint8              subType;
+        ConquestMessage    type;
         std::vector<uint8> payload;
+    };
+
+    struct BesiegedEvent
+    {
+        BesiegedMessage    type;
+        std::vector<uint8> payload;
+    };
+
+    struct CampaignEvent
+    {
+        CampaignMessage    type;
+        std::vector<uint8> payload;
+    };
+
+    struct ColonizationEvent
+    {
+        ColonizationMessage type;
+        std::vector<uint8>  payload;
     };
 
     struct GMSendToZone

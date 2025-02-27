@@ -25,26 +25,9 @@
 
 #include "map/conquest_data.h"
 
-enum RegionalEventType : uint8
-{
-    Conquest     = 1,
-    Besieged     = 2,
-    Campaign     = 3,
-    Colonization = 4,
-};
-DECLARE_FORMAT_AS_UNDERLYING(RegionalEventType);
-
-struct RegionalEvent
-{
-    // RegionalEventType
-    uint8 type;
-
-    // ConquestMessage, etc.
-    uint8 subType;
-
-    // Payload built with ipc::toBytes
-    std::vector<uint8> payload;
-};
+//
+// Conquest
+//
 
 enum ConquestMessage : uint8
 {
@@ -96,3 +79,30 @@ struct ConquestAddInfluencePoints
     uint32 nation;
     uint8  region;
 };
+
+//
+// Besieged
+//
+
+enum BesiegedMessage : uint8
+{
+};
+DECLARE_FORMAT_AS_UNDERLYING(BesiegedMessage);
+
+//
+// Campaign
+//
+
+enum CampaignMessage : uint8
+{
+};
+DECLARE_FORMAT_AS_UNDERLYING(CampaignMessage);
+
+//
+// Colonization
+//
+
+enum ColonizationMessage : uint8
+{
+};
+DECLARE_FORMAT_AS_UNDERLYING(ColonizationMessage);

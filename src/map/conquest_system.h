@@ -45,7 +45,7 @@ namespace conquest
 {
     ConquestData& GetConquestData(); // Cached data with influences / region controls
 
-    void HandleZMQMessage(uint8 subType, const std::span<const uint8> data);
+    void HandleMessage(ConquestMessage type, const std::span<const uint8> data);
 
     void UpdateConquestGM(ConquestUpdate type);                  // Update conquest system by GM (modify in the DB and use @updateconquest)
     void GainInfluencePoints(CCharEntity* PChar, uint32 points); // Gain influence for player's nation (+1)
