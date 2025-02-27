@@ -84,8 +84,10 @@ void CLinkshell::setName(const std::string& name)
 
 void CLinkshell::setMessage(const std::string& message, const std::string& poster)
 {
+    const auto postTime = static_cast<uint32>(time(nullptr));
+
     const auto query = "UPDATE linkshells SET poster = ?, message = ?, messagetime = ? WHERE linkshellid = ?";
-    if (!db::preparedStmt(query, poster, message, static_cast<uint32>(time(nullptr)), m_id))
+    if (!db::preparedStmt(query, poster, message, postTime, m_id))
     {
         ShowError("Failed to update linkshell message for linkshell %u", m_id);
         return;
@@ -94,9 +96,11 @@ void CLinkshell::setMessage(const std::string& message, const std::string& poste
     if (message.size() != 0)
     {
         message::send(ipc::LinkshellSetMessage{
-            .linkshellId = m_id,
-            .poster      = poster,
-            .message     = message,
+            .linkshellId   = m_id,
+            .linkshellName = m_name,
+            .poster        = poster,
+            .message       = message,
+            .postTime      = postTime,
         });
     }
 }
@@ -346,7 +350,7 @@ void CLinkshell::PushPacket(uint32 senderID, const std::unique_ptr<CBasicPacket>
     }
 }
 
-void CLinkshell::PushLinkshellMessage(CCharEntity* PChar, bool ls1)
+void CLinkshell::PushLinkshellMessage(CCharEntity* PChar, LinkshellSlot slot)
 {
     const auto rset = db::preparedStmt("SELECT poster, message, messagetime FROM linkshells WHERE linkshellid = ?", m_id);
     if (rset && rset->rowsCount() && rset->next())
@@ -356,7 +360,7 @@ void CLinkshell::PushLinkshellMessage(CCharEntity* PChar, bool ls1)
         const auto messageTime = rset->getOrDefault<uint32>("messagetime", 0);
         if (!message.empty())
         {
-            PChar->pushPacket<CLinkshellMessagePacket>(poster, message, m_name, messageTime, ls1);
+            PChar->pushPacket<CLinkshellMessagePacket>(poster, message, m_name, messageTime, slot);
         }
     }
 }

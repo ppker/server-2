@@ -5754,11 +5754,11 @@ void SmallPacket0x0E1(map_session_data_t* const PSession, CCharEntity* const PCh
     uint8 slot = data.ref<uint8>(0x07);
     if (slot == PChar->equip[SLOT_LINK1] && PChar->PLinkshell1)
     {
-        PChar->PLinkshell1->PushLinkshellMessage(PChar, true);
+        PChar->PLinkshell1->PushLinkshellMessage(PChar, LinkshellSlot::LS1);
     }
     else if (slot == PChar->equip[SLOT_LINK2] && PChar->PLinkshell2)
     {
-        PChar->PLinkshell2->PushLinkshellMessage(PChar, false);
+        PChar->PLinkshell2->PushLinkshellMessage(PChar, LinkshellSlot::LS2);
     }
 }
 
@@ -5810,6 +5810,7 @@ void SmallPacket0x0E2(map_session_data_t* const PSession, CCharEntity* const PCh
             break;
         }
     }
+
     PChar->pushPacket<CMessageStandardPacket>(MsgStd::LinkshellNoAccess);
 }
 

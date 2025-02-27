@@ -214,8 +214,10 @@ namespace ipc
     struct LinkshellSetMessage
     {
         uint32      linkshellId{};
+        std::string linkshellName{};
         std::string poster{};
         std::string message{};
+        uint32      postTime{};
     };
 
     struct LuaFunction

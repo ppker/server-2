@@ -38,6 +38,7 @@
 #include "lua/luautils.h"
 
 #include "packets/chat_message.h"
+#include "packets/linkshell_message.h"
 #include "packets/message_standard.h"
 #include "packets/message_system.h"
 #include "packets/party_invite.h"
@@ -656,10 +657,10 @@ void IPCClient::handleMessage_LinkshellSetMessage(const IPP& ipp, const ipc::Lin
 {
     TracyZoneScoped;
 
-    // TODO: This was originally piggybacking on the Linkshell chat messages, so we need to reimplement this
-    //     : in here now
-
-    ShowWarning("Not implemented");
+    if (CLinkshell* PLinkshell = linkshell::GetLinkshell(message.linkshellId))
+    {
+        PLinkshell->PushPacket(0, std::make_unique<CLinkshellMessagePacket>(message.poster, message.message, message.linkshellName, message.postTime, LinkshellSlot::LS1));
+    }
 }
 
 void IPCClient::handleMessage_LuaFunction(const IPP& ipp, const ipc::LuaFunction& message)
