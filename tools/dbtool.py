@@ -9,6 +9,7 @@ import shutil
 import importlib
 import pathlib
 
+import platform
 
 # Pre-flight sanity checks
 def preflight_exit():
@@ -1027,6 +1028,28 @@ def configure_multi_process_by_modulus_3():
 def configure_multi_process_by_modulus_7():
     configure_multi_process_by_modulus(7)
 
+def launch_process_in_background(process_params):
+    # fmt: off
+
+    if platform.system() == "Windows":
+        subprocess.Popen(
+            process_params,
+            shell=True,
+            creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP,
+            cwd=server_dir_path,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+    else:
+        subprocess.Popen(
+            process_params,
+            start_new_session=True, # POSIX specific flag, can't use the same flags as windows
+            cwd=server_dir_path,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+
+    # fmt: on
 
 def launch_using_zone_settings():
     result = db_query("SELECT DISTINCT zoneip FROM xidb.zone_settings;")
@@ -1048,51 +1071,20 @@ def launch_using_zone_settings():
     xi_search_executable = from_server_path(f"xi_search{exe}")
     xi_world_executable = from_server_path(f"xi_world{exe}")
 
-    # fmt: off
     print(f"Launching {xi_connect_executable} --log log/connect-server.log")
-    subprocess.Popen(
-        [xi_connect_executable, "--log", f"log/connect-server.log"],
-        shell=True,
-        creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP,
-        cwd=server_dir_path,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
+    launch_process_in_background([xi_connect_executable, "--log", "log/connect-server.log"])
 
     print(f"Launching {xi_search_executable} --log log/search-server.log")
-    subprocess.Popen(
-        [xi_search_executable, "--log", f"log/search-server.log"],
-        shell=True,
-        creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP,
-        cwd=server_dir_path,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
+    launch_process_in_background([xi_search_executable, "--log", f"log/search-server.log"])
 
     print(f"Launching {xi_world_executable} --log log/world-server.log")
-    subprocess.Popen(
-        [xi_world_executable, "--log", f"log/world-server.log"],
-        shell=True,
-        creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP,
-        cwd=server_dir_path,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
+    launch_process_in_background([xi_world_executable, "--log", f"log/world-server.log"])
 
     time.sleep(1)
 
     for port in ports:
         print(f"Launching {xi_map_executable} --log log/map-server-{port}.log --ip {zoneip} --port {port}")
-        subprocess.Popen(
-            [xi_map_executable, "--log", f"log/map-server-{port}.log", "--ip", zoneip, "--port", port],
-            shell=True,
-            creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP,
-            cwd=server_dir_path,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
-    # fmt: on
-
+        launch_process_in_background([xi_map_executable, "--log", f"log/map-server-{port}.log", "--ip", zoneip, "--port", port])
 
 def update_submodules():
     # fmt: off
