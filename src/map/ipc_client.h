@@ -77,8 +77,9 @@ public:
     void handleMessage_BesiegedEvent(const IPP& ipp, const ipc::BesiegedEvent& message) override;
     void handleMessage_CampaignEvent(const IPP& ipp, const ipc::CampaignEvent& message) override;
     void handleMessage_ColonizationEvent(const IPP& ipp, const ipc::ColonizationEvent& message) override;
-    void handleMessage_GMSendToZone(const IPP& ipp, const ipc::GMSendToZone& message) override;
-    void handleMessage_GMSendToEntity(const IPP& ipp, const ipc::GMSendToEntity& message) override;
+    void handleMessage_EntityInformationRequest(const IPP& ipp, const ipc::EntityInformationRequest& message) override;
+    void handleMessage_EntityInformationResponse(const IPP& ipp, const ipc::EntityInformationResponse& message) override;
+    void handleMessage_SendPlayerToLocation(const IPP& ipp, const ipc::SendPlayerToLocation& message) override;
 
     void handleUnknownMessage(const IPP& ipp, const std::span<uint8_t> message) override;
 

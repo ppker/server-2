@@ -56,8 +56,10 @@ IPC_STRUCT_NAMES = [
     "CampaignEvent",
     "ColonizationEvent",
 
-    "GMSendToZone",
-    "GMSendToEntity",
+    "EntityInformationRequest",
+    "EntityInformationResponse",
+
+    "SendPlayerToLocation",
 ]
 
 

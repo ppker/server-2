@@ -595,7 +595,6 @@ void IPCServer::handleMessage_KillSession(const IPP& ipp, const ipc::KillSession
     }
     else // Otherwise, send to all zones
     {
-        // TODO: Is this insane, do we need to send this to _every_ zone?
         for (const auto& ipp : zoneSettings_.mapEndpoints_)
         {
             DebugIPCFmt(fmt::format("Message: -> rerouting to {}", ipp.toString()));
@@ -633,32 +632,40 @@ void IPCServer::handleMessage_ColonizationEvent(const IPP& ipp, const ipc::Colon
     worldServer_.colonizationSystem_->handleMessage(message.type, { ipp, message.payload });
 }
 
-void IPCServer::handleMessage_GMSendToZone(const IPP& ipp, const ipc::GMSendToZone& message)
+void IPCServer::handleMessage_EntityInformationRequest(const IPP& ipp, const ipc::EntityInformationRequest& message)
 {
     TracyZoneScoped;
 
-    if (message.requesterId == 0) // Request
+    // enum ENTITYTYPE : uint8
+    // {
+    //     TYPE_NONE   = 0x00,
+    //     TYPE_PC     = 0x01,
+    //     TYPE_NPC    = 0x02,
+    //     TYPE_MOB    = 0x04,
+
+    if (message.entityType == 0x01)
     {
         rerouteMessageToCharId(message.targetId, message);
     }
-    else // Response
+    else
     {
-        rerouteMessageToZoneId(message.requesterId, message);
+        const auto zoneId = (message.targetId >> 12) & 0x0FFF;
+        rerouteMessageToZoneId(zoneId, message);
     }
 }
 
-void IPCServer::handleMessage_GMSendToEntity(const IPP& ipp, const ipc::GMSendToEntity& message)
+void IPCServer::handleMessage_EntityInformationResponse(const IPP& ipp, const ipc::EntityInformationResponse& message)
 {
     TracyZoneScoped;
 
-    if (message.isRequest)
-    {
-        rerouteMessageToZoneId(message.targetZoneId, message);
-    }
-    else // isResponse
-    {
-        rerouteMessageToCharId(message.playerZoneId, message);
-    }
+    rerouteMessageToCharId(message.requesterId, message);
+}
+
+void IPCServer::handleMessage_SendPlayerToLocation(const IPP& ipp, const ipc::SendPlayerToLocation& message)
+{
+    TracyZoneScoped;
+
+    rerouteMessageToCharId(message.targetId, message);
 }
 
 void IPCServer::handleUnknownMessage(const IPP& ipp, const std::span<uint8_t> message)

@@ -186,14 +186,14 @@ void IPCClient::handleMessage_ChatMessageTell(const IPP& ipp, const ipc::ChatMes
         if (settings::get<bool>("map.BLOCK_TELL_TO_HIDDEN_GM") && PChar->m_isGMHidden && !gmSent)
         {
             message::send(ipc::MessageStandard{
-                .recipientId = PChar->id,
+                .recipientId = message.senderId,
                 .message     = MsgStd::TellNotReceivedOffline,
             });
         }
         else if (PChar->isAway() && !gmSent)
         {
             message::send(ipc::MessageStandard{
-                .recipientId = PChar->id,
+                .recipientId = message.senderId,
                 .message     = MsgStd::TellNotReceivedAway,
             });
         }
@@ -205,7 +205,7 @@ void IPCClient::handleMessage_ChatMessageTell(const IPP& ipp, const ipc::ChatMes
     else
     {
         message::send(ipc::MessageStandard{
-            .recipientId = PChar->id,
+            .recipientId = message.senderId,
             .message     = MsgStd::TellNotReceivedOffline,
         });
     }
@@ -716,127 +716,127 @@ void IPCClient::handleMessage_ColonizationEvent(const IPP& ipp, const ipc::Colon
     TracyZoneScoped;
 }
 
-void IPCClient::handleMessage_GMSendToZone(const IPP& ipp, const ipc::GMSendToZone& message)
+void IPCClient::handleMessage_EntityInformationRequest(const IPP& ipp, const ipc::EntityInformationRequest& message)
+{
+    TracyZoneScoped;
+
+    auto PEntity = [&]() -> CBaseEntity*
+    {
+        if (message.entityType & TYPE_PC)
+        {
+            return zoneutils::GetChar(message.targetId);
+        }
+        else
+        {
+            return zoneutils::GetEntity(message.targetId);
+        }
+    }();
+
+    if (PEntity && PEntity->loc.zone)
+    {
+        const bool isSpawned = PEntity->status != STATUS_TYPE::DISAPPEAR;
+
+        float x = 0.0f;
+        float y = 0.0f;
+        float z = 0.0f;
+
+        if ((message.entityType & TYPE_MOB) && !isSpawned)
+        {
+            // If entity not spawned, go to default location as listed in database
+            const auto rset = db::preparedStmt("SELECT pos_x, pos_y, pos_z FROM mob_spawn_points WHERE mobid = ?", PEntity->id);
+            if (rset && rset->rowsCount())
+            {
+                while (rset->next())
+                {
+                    x = rset->get<float>("pos_x");
+                    y = rset->get<float>("pos_y");
+                    z = rset->get<float>("pos_z");
+                }
+            }
+        }
+        else
+        {
+            // Otherwise, their information is available
+            x = PEntity->loc.p.x;
+            y = PEntity->loc.p.y;
+            z = PEntity->loc.p.z;
+        }
+
+        const bool shouldWarp = message.warp && isSpawned;
+
+        const auto moghouseId = PEntity->objtype == TYPE_PC ? static_cast<CCharEntity*>(PEntity)->m_moghouseID : 0;
+
+        message::send(ipc::EntityInformationResponse{
+            .requesterId = message.requesterId,
+            .targetId    = message.targetId,
+            .entityType  = message.entityType,
+            .warp        = shouldWarp,
+            .zoneId      = PEntity->loc.zone->GetID(),
+            .x           = x,
+            .y           = y,
+            .z           = z,
+            .rot         = PEntity->loc.p.rotation,
+            .moghouseId  = moghouseId,
+        });
+    }
+    else
+    {
+        ShowWarningFmt("EntityInformationRequest for entity {} failed", message.targetId);
+    }
+}
+
+void IPCClient::handleMessage_EntityInformationResponse(const IPP& ipp, const ipc::EntityInformationResponse& message)
+{
+    TracyZoneScoped;
+
+    CCharEntity* PChar = zoneutils::GetChar(message.requesterId);
+    if (PChar && PChar->loc.zone)
+    {
+        if (message.warp)
+        {
+            PChar->loc.p.x         = message.x;
+            PChar->loc.p.y         = message.y;
+            PChar->loc.p.z         = message.z;
+            PChar->loc.p.rotation  = message.rot;
+            PChar->loc.destination = message.zoneId;
+
+            PChar->m_moghouseID = message.moghouseId;
+            PChar->loc.boundary = 0;
+            PChar->updatemask   = 0;
+
+            PChar->status    = STATUS_TYPE::DISAPPEAR;
+            PChar->animation = ANIMATION_NONE;
+
+            PChar->clearPacketList();
+
+            charutils::SendToZone(PChar, ZoningType::Zoning, zoneutils::GetZoneIPP(PChar->loc.destination));
+        }
+    }
+}
+
+void IPCClient::handleMessage_SendPlayerToLocation(const IPP& ipp, const ipc::SendPlayerToLocation& message)
 {
     TracyZoneScoped;
 
     CCharEntity* PChar = zoneutils::GetChar(message.targetId);
     if (PChar && PChar->loc.zone)
     {
-        if (message.requesterId != 0) // Handle response
-        {
-            message::send(ipc::GMSendToZone{
-                .targetId   = message.requesterId,
-                .zoneId     = PChar->getZone(),
-                .x          = PChar->loc.p.x,
-                .y          = PChar->loc.p.y,
-                .z          = PChar->loc.p.z,
-                .rot        = PChar->loc.p.rotation,
-                .moghouseId = PChar->m_moghouseID,
-            });
-
-            return;
-        }
-
-        // Handle request
-
-        PChar->updatemask = 0;
-
-        PChar->m_moghouseID = 0;
-
         PChar->loc.p.x         = message.x;
         PChar->loc.p.y         = message.y;
         PChar->loc.p.z         = message.z;
         PChar->loc.p.rotation  = message.rot;
         PChar->loc.destination = message.zoneId;
-        PChar->m_moghouseID    = message.moghouseId;
-        PChar->loc.boundary    = 0;
-        PChar->status          = STATUS_TYPE::DISAPPEAR;
-        PChar->animation       = ANIMATION_NONE;
+
+        PChar->m_moghouseID = message.moghouseId;
+        PChar->loc.boundary = 0;
+        PChar->updatemask   = 0;
+
+        PChar->status    = STATUS_TYPE::DISAPPEAR;
+        PChar->animation = ANIMATION_NONE;
+
         PChar->clearPacketList();
 
-        charutils::SendToZone(PChar, ZoningType::Zoning, zoneutils::GetZoneIPP(message.zoneId));
-    }
-}
-
-void IPCClient::handleMessage_GMSendToEntity(const IPP& ipp, const ipc::GMSendToEntity& message)
-{
-    TracyZoneScoped;
-
-    if (message.isRequest) // This is the request: We're looking up the entity
-    {
-        CBaseEntity* PEntity = zoneutils::GetEntity(message.targetId);
-        if (PEntity && PEntity->loc.zone)
-        {
-            float X = PEntity->GetXPos();
-            float Y = PEntity->GetYPos();
-            float Z = PEntity->GetZPos();
-            uint8 R = PEntity->GetRotPos();
-
-            bool targetFound = true;
-
-            if (PEntity->status == STATUS_TYPE::DISAPPEAR)
-            {
-                if (message.spawnedOnly)
-                {
-                    targetFound = false; // Spawned only, so do not initiate warp
-                }
-                else
-                {
-                    // If entity not spawned, go to default location as listed in database
-                    const auto rset = db::preparedStmt("SELECT pos_x, pos_y, pos_z FROM mob_spawn_points WHERE mobid = ?", PEntity->id);
-                    if (rset && rset->rowsCount())
-                    {
-                        while (rset->next())
-                        {
-                            X = rset->get<float>("pos_x");
-                            Y = rset->get<float>("pos_y");
-                            Z = rset->get<float>("pos_z");
-                        }
-                    }
-                }
-            }
-
-            message::send(ipc::GMSendToEntity{
-                .targetId     = PEntity->id,
-                .playerId     = message.playerId,
-                .targetZoneId = PEntity->loc.zone->GetID(),
-                .playerZoneId = message.playerZoneId,
-                .spawnedOnly  = message.spawnedOnly,
-                .isRequest    = false, // Routing flag
-                .targetFound  = targetFound,
-                .x            = X,
-                .y            = Y,
-                .z            = Z,
-                .rot          = R,
-            });
-        }
-    }
-    else // This is the response: We're warping the player
-    {
-        CCharEntity* PChar = zoneutils::GetChar(message.playerId);
-        if (PChar && PChar->loc.zone)
-        {
-            if (message.targetFound)
-            {
-                PChar->loc.p.x         = message.x;
-                PChar->loc.p.y         = message.y;
-                PChar->loc.p.z         = message.z;
-                PChar->loc.p.rotation  = message.rot;
-                PChar->loc.destination = message.targetZoneId;
-
-                PChar->m_moghouseID = 0;
-                PChar->loc.boundary = 0;
-                PChar->updatemask   = 0;
-
-                PChar->status    = STATUS_TYPE::DISAPPEAR;
-                PChar->animation = ANIMATION_NONE;
-
-                PChar->clearPacketList();
-
-                charutils::SendToZone(PChar, ZoningType::Zoning, zoneutils::GetZoneIPP(PChar->loc.destination));
-            }
-        }
+        charutils::SendToZone(PChar, ZoningType::Zoning, zoneutils::GetZoneIPP(PChar->loc.destination));
     }
 }
 

@@ -3719,13 +3719,13 @@ void CLuaBaseEntity::resetPlayer(const char* charName)
 }
 
 /************************************************************************
- *  Function: goToEntity()
+ *  Function: gotoEntity()
  *  Purpose : Transports PC to a Mob or NPC; works across multiple servers
- *  Example : player:goToEntity(ID, Option)
+ *  Example : player:gotoEntity(ID, Option)
  *  Notes   : Option 0: Spawned/Unspawned | Option 1: Spawned only
  ************************************************************************/
 
-void CLuaBaseEntity::goToEntity(uint32 targetID, sol::object const& option)
+void CLuaBaseEntity::gotoEntity(uint32 targetID, sol::object const& option)
 {
     if (m_PBaseEntity->objtype != TYPE_PC)
     {
@@ -3733,21 +3733,16 @@ void CLuaBaseEntity::goToEntity(uint32 targetID, sol::object const& option)
         return;
     }
 
-    auto* PChar = static_cast<CCharEntity*>(m_PBaseEntity);
+    const bool spawnedOnly = (option != sol::lua_nil) ? option.as<bool>() : false;
 
-    bool spawnedOnly = (option != sol::lua_nil) ? option.as<bool>() : false;
+    const uint16 playerID = m_PBaseEntity->id;
 
-    uint16 targetZone = (targetID >> 12) & 0x0FFF;
-    uint16 playerID   = m_PBaseEntity->id;
-    uint16 playerZone = PChar->loc.zone->GetID();
-
-    message::send(ipc::GMSendToEntity{
-        .targetId     = targetID,
-        .playerId     = playerID,
-        .targetZoneId = targetZone,
-        .playerZoneId = playerZone,
-        .spawnedOnly  = spawnedOnly,
-        .isRequest    = true, // Used for routing direction
+    message::send(ipc::EntityInformationRequest{
+        .requesterId = playerID,
+        .targetId    = targetID,
+        .entityType  = TYPE_NPC | TYPE_MOB,
+        .warp        = true,
+        .spawnedOnly = spawnedOnly,
     });
 }
 
@@ -3762,9 +3757,11 @@ bool CLuaBaseEntity::gotoPlayer(std::string const& playerName)
     uint32 charid = charutils::getCharIdFromName(playerName);
     if (charid != 0)
     {
-        message::send(ipc::GMSendToZone{
-            .targetId    = charid,            // target char id
-            .requesterId = m_PBaseEntity->id, // warping to target char, their server will send us a zoning message with their pos
+        message::send(ipc::EntityInformationRequest{
+            .requesterId = m_PBaseEntity->id,
+            .targetId    = charid,
+            .entityType  = TYPE_PC,
+            .warp        = true,
         });
 
         return true;
@@ -3782,18 +3779,17 @@ bool CLuaBaseEntity::gotoPlayer(std::string const& playerName)
 
 bool CLuaBaseEntity::bringPlayer(std::string const& playerName)
 {
-    const uint32 charid = charutils::getCharIdFromName(playerName);
+    const auto charid = charutils::getCharIdFromName(playerName);
     if (charid != 0)
     {
-        message::send(ipc::GMSendToZone{
-            .targetId    = charid,
-            .requesterId = 0, // Used for routing direction
-            .zoneId      = m_PBaseEntity->getZone(),
-            .x           = m_PBaseEntity->loc.p.x,
-            .y           = m_PBaseEntity->loc.p.y,
-            .z           = m_PBaseEntity->loc.p.z,
-            .rot         = m_PBaseEntity->loc.p.rotation,
-            .moghouseId  = (m_PBaseEntity->objtype == TYPE_PC) ? static_cast<CCharEntity*>(m_PBaseEntity)->m_moghouseID : 0,
+        message::send(ipc::SendPlayerToLocation{
+            .targetId   = charid,
+            .zoneId     = m_PBaseEntity->getZone(),
+            .x          = m_PBaseEntity->loc.p.x,
+            .y          = m_PBaseEntity->loc.p.y,
+            .z          = m_PBaseEntity->loc.p.z,
+            .rot        = m_PBaseEntity->loc.p.rotation,
+            .moghouseId = (m_PBaseEntity->objtype == TYPE_PC) ? static_cast<CCharEntity*>(m_PBaseEntity)->m_moghouseID : 0,
         });
 
         return true;
@@ -19005,7 +19001,7 @@ void CLuaBaseEntity::Register()
     SOL_REGISTER("setHomePoint", CLuaBaseEntity::setHomePoint);
     SOL_REGISTER("resetPlayer", CLuaBaseEntity::resetPlayer);
 
-    SOL_REGISTER("goToEntity", CLuaBaseEntity::goToEntity);
+    SOL_REGISTER("gotoEntity", CLuaBaseEntity::gotoEntity);
     SOL_REGISTER("gotoPlayer", CLuaBaseEntity::gotoPlayer);
     SOL_REGISTER("bringPlayer", CLuaBaseEntity::bringPlayer);
 

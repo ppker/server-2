@@ -257,10 +257,21 @@ namespace ipc
         std::vector<uint8>  payload{};
     };
 
-    struct GMSendToZone
+    struct EntityInformationRequest
     {
-        uint32 targetId{};
         uint32 requesterId{};
+        uint32 targetId{};
+        uint8  entityType{};
+        bool   warp{};
+        bool   spawnedOnly{};
+    };
+
+    struct EntityInformationResponse
+    {
+        uint32 requesterId{};
+        uint32 targetId{};
+        uint8  entityType{};
+        bool   warp{};
 
         uint16 zoneId{};
         float  x{};
@@ -270,19 +281,14 @@ namespace ipc
         uint32 moghouseId{};
     };
 
-    struct GMSendToEntity
+    struct SendPlayerToLocation
     {
         uint32 targetId{};
-        uint32 playerId{};
-        uint16 targetZoneId{};
-        uint16 playerZoneId{};
-        bool   spawnedOnly{};
-        bool   isRequest{}; // Used for routing direction
-
-        bool  targetFound{};
-        float x{};
-        float y{};
-        float z{};
-        uint8 rot{};
+        uint16 zoneId{};
+        float  x{};
+        float  y{};
+        float  z{};
+        uint8  rot{};
+        uint32 moghouseId{};
     };
 } // namespace ipc
