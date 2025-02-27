@@ -3741,17 +3741,14 @@ void CLuaBaseEntity::goToEntity(uint32 targetID, sol::object const& option)
     uint16 playerID   = m_PBaseEntity->id;
     uint16 playerZone = PChar->loc.zone->GetID();
 
-    char buf[12];
-    std::memset(&buf[0], 0, sizeof(buf));
-
-    ref<bool>(&buf, 0)    = true;        // Toggle for message routing; goes to entity server first
-    ref<bool>(&buf, 1)    = spawnedOnly; // Specification for Spawned Only or Any
-    ref<uint16>(&buf, 2)  = targetZone;
-    ref<uint16>(&buf, 4)  = playerZone;
-    ref<uint32>(&buf, 6)  = targetID;
-    ref<uint16>(&buf, 10) = playerID;
-
-    // message::send(MSG_SEND_TO_ENTITY, &buf[0], sizeof(buf), nullptr);
+    message::send(ipc::GMSendToEntity{
+        .targetId     = targetID,
+        .playerId     = playerID,
+        .targetZoneId = targetZone,
+        .playerZoneId = playerZone,
+        .spawnedOnly  = spawnedOnly,
+        .isRequest    = true, // Used for routing direction
+    });
 }
 
 /************************************************************************
@@ -3785,32 +3782,24 @@ bool CLuaBaseEntity::gotoPlayer(std::string const& playerName)
 
 bool CLuaBaseEntity::bringPlayer(std::string const& playerName)
 {
-    bool found = false;
-
-    uint32 charid = charutils::getCharIdFromName(playerName);
+    const uint32 charid = charutils::getCharIdFromName(playerName);
     if (charid != 0)
     {
-        char buf[30];
-        std::memset(&buf[0], 0, sizeof(buf));
+        message::send(ipc::GMSendToZone{
+            .targetId    = charid,
+            .requesterId = 0, // Used for routing direction
+            .zoneId      = m_PBaseEntity->getZone(),
+            .x           = m_PBaseEntity->loc.p.x,
+            .y           = m_PBaseEntity->loc.p.y,
+            .z           = m_PBaseEntity->loc.p.z,
+            .rot         = m_PBaseEntity->loc.p.rotation,
+            .moghouseId  = (m_PBaseEntity->objtype == TYPE_PC) ? static_cast<CCharEntity*>(m_PBaseEntity)->m_moghouseID : 0,
+        });
 
-        ref<uint32>(&buf, 0)  = charid; // target char
-        ref<uint32>(&buf, 4)  = 0;      // wanting to bring target char here so wont give our id
-        ref<uint16>(&buf, 8)  = m_PBaseEntity->getZone();
-        ref<uint16>(&buf, 10) = static_cast<uint16>(m_PBaseEntity->loc.p.x);
-        ref<uint16>(&buf, 14) = static_cast<uint16>(m_PBaseEntity->loc.p.y);
-        ref<uint16>(&buf, 18) = static_cast<uint16>(m_PBaseEntity->loc.p.z);
-        ref<uint8>(&buf, 22)  = m_PBaseEntity->loc.p.rotation;
-
-        if (m_PBaseEntity->objtype == TYPE_PC)
-        {
-            ref<uint32>(&buf, 23) = static_cast<CCharEntity*>(m_PBaseEntity)->m_moghouseID;
-        }
-
-        // message::send(MSG_SEND_TO_ZONE, &buf[0], sizeof(buf), nullptr);
-        found = true;
+        return true;
     }
 
-    return found;
+    return false;
 }
 
 /************************************************************************

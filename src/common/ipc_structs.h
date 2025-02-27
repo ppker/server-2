@@ -266,11 +266,22 @@ namespace ipc
         float  y{};
         float  z{};
         uint8  rot{};
-        uint32 moghouseID{};
+        uint32 moghouseId{};
     };
 
     struct GMSendToEntity
     {
-        uint16 zoneId{};
+        uint32 targetId{};
+        uint32 playerId{};
+        uint16 targetZoneId{};
+        uint16 playerZoneId{};
+        bool   spawnedOnly{};
+        bool   isRequest{}; // Used for routing direction
+
+        bool  targetFound{};
+        float x{};
+        float y{};
+        float z{};
+        uint8 rot{};
     };
 } // namespace ipc

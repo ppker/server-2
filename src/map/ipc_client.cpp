@@ -720,136 +720,110 @@ void IPCClient::handleMessage_GMSendToZone(const IPP& ipp, const ipc::GMSendToZo
 {
     TracyZoneScoped;
 
-    // TODO:
-    /*
     CCharEntity* PChar = zoneutils::GetChar(message.targetId);
     if (PChar && PChar->loc.zone)
     {
-        uint32 requester = ref<uint32>(message.requesterId);
-        if (requester != 0)
+        if (message.requesterId != 0) // Handle response
         {
-            char buf[30];
-            std::memset(&buf[0], 0, sizeof(buf));
+            message::send(ipc::GMSendToZone{
+                .targetId   = message.requesterId,
+                .zoneId     = PChar->getZone(),
+                .x          = PChar->loc.p.x,
+                .y          = PChar->loc.p.y,
+                .z          = PChar->loc.p.z,
+                .rot        = PChar->loc.p.rotation,
+                .moghouseId = PChar->m_moghouseID,
+            });
 
-            ref<uint32>(&buf, 0)  = requester;
-            ref<uint16>(&buf, 8)  = PChar->getZone();
-            ref<float>(&buf, 10)  = PChar->loc.p.x;
-            ref<float>(&buf, 14)  = PChar->loc.p.y;
-            ref<float>(&buf, 18)  = PChar->loc.p.z;
-            ref<uint8>(&buf, 22)  = PChar->loc.p.rotation;
-            ref<uint32>(&buf, 23) = PChar->m_moghouseID;
-
-            message::send(MSG_SEND_TO_ZONE, &buf, sizeof(buf), nullptr);
-            break;
+            return;
         }
 
-        uint16 zoneId     = ref<uint16>((uint8*)extra.data(), 8);
-        float  x          = ref<float>((uint8*)extra.data(), 10);
-        float  y          = ref<float>((uint8*)extra.data(), 14);
-        float  z          = ref<float>((uint8*)extra.data(), 18);
-        uint8  rot        = ref<uint8>((uint8*)extra.data(), 22);
-        uint32 moghouseID = ref<uint32>((uint8*)extra.data(), 23);
+        // Handle request
 
         PChar->updatemask = 0;
 
         PChar->m_moghouseID = 0;
 
-        PChar->loc.p.x         = x;
-        PChar->loc.p.y         = y;
-        PChar->loc.p.z         = z;
-        PChar->loc.p.rotation  = rot;
-        PChar->loc.destination = zoneId;
-        PChar->m_moghouseID    = moghouseID;
+        PChar->loc.p.x         = message.x;
+        PChar->loc.p.y         = message.y;
+        PChar->loc.p.z         = message.z;
+        PChar->loc.p.rotation  = message.rot;
+        PChar->loc.destination = message.zoneId;
+        PChar->m_moghouseID    = message.moghouseId;
         PChar->loc.boundary    = 0;
         PChar->status          = STATUS_TYPE::DISAPPEAR;
         PChar->animation       = ANIMATION_NONE;
         PChar->clearPacketList();
 
-        charutils::SendToZone(PChar, ZoningType::Zoning, zoneutils::GetZoneIPP(zoneId));
+        charutils::SendToZone(PChar, ZoningType::Zoning, zoneutils::GetZoneIPP(message.zoneId));
     }
-    */
 }
 
 void IPCClient::handleMessage_GMSendToEntity(const IPP& ipp, const ipc::GMSendToEntity& message)
 {
     TracyZoneScoped;
 
-    // TODO:
-    /*
-    // Need to check which server we're on so we don't get null pointers
-    bool toTargetServer = ref<bool>((uint8*)extra.data(), 0);
-    bool spawnedOnly    = ref<bool>((uint8*)extra.data(), 1);
-
-    if (toTargetServer) // This is going to the target's game server
+    if (message.isRequest) // This is the request: We're looking up the entity
     {
-        CBaseEntity* Entity = zoneutils::GetEntity(ref<uint32>((uint8*)extra.data(), 6));
-
-        if (Entity && Entity->loc.zone)
+        CBaseEntity* PEntity = zoneutils::GetEntity(message.targetId);
+        if (PEntity && PEntity->loc.zone)
         {
-            char buf[22];
-            std::memset(&buf[0], 0, sizeof(buf));
+            float X = PEntity->GetXPos();
+            float Y = PEntity->GetYPos();
+            float Z = PEntity->GetZPos();
+            uint8 R = PEntity->GetRotPos();
 
-            uint16 targetZone = ref<uint16>((uint8*)extra.data(), 2);
-            uint16 playerZone = ref<uint16>((uint8*)extra.data(), 4);
-            uint16 playerID   = ref<uint16>((uint8*)extra.data(), 10);
+            bool targetFound = true;
 
-            float X = Entity->GetXPos();
-            float Y = Entity->GetYPos();
-            float Z = Entity->GetZPos();
-            uint8 R = Entity->GetRotPos();
-
-            ref<bool>(&buf, 1) = true; // Found, so initiate warp back on the requesting server
-
-            if (Entity->status == STATUS_TYPE::DISAPPEAR)
+            if (PEntity->status == STATUS_TYPE::DISAPPEAR)
             {
-                if (spawnedOnly)
+                if (message.spawnedOnly)
                 {
-                    ref<bool>(&buf, 1) = false; // Spawned only, so do not initiate warp
+                    targetFound = false; // Spawned only, so do not initiate warp
                 }
                 else
                 {
                     // If entity not spawned, go to default location as listed in database
-                    const char* query = "SELECT pos_x, pos_y, pos_z FROM mob_spawn_points WHERE mobid = %u";
-                    auto        fetch = _sql->Query(query, Entity->id);
-
-                    if (fetch != SQL_ERROR && _sql->NumRows() != 0)
+                    const auto rset = db::preparedStmt("SELECT pos_x, pos_y, pos_z FROM mob_spawn_points WHERE mobid = ?", PEntity->id);
+                    if (rset && rset->rowsCount())
                     {
-                        while (_sql->NextRow() == SQL_SUCCESS)
+                        while (rset->next())
                         {
-                            X = _sql->GetFloatData(0);
-                            Y = _sql->GetFloatData(1);
-                            Z = _sql->GetFloatData(2);
+                            X = rset->get<float>("pos_x");
+                            Y = rset->get<float>("pos_y");
+                            Z = rset->get<float>("pos_z");
                         }
                     }
                 }
             }
 
-            ref<bool>(&buf, 0)    = false;
-            ref<uint16>(&buf, 2)  = playerZone;
-            ref<uint16>(&buf, 4)  = playerID;
-            ref<float>(&buf, 6)   = X;
-            ref<float>(&buf, 10)  = Y;
-            ref<float>(&buf, 14)  = Z;
-            ref<uint8>(&buf, 18)  = R;
-            ref<uint16>(&buf, 20) = targetZone;
-
-            message::send(MSG_SEND_TO_ENTITY, &buf, sizeof(buf), nullptr);
-            break;
+            message::send(ipc::GMSendToEntity{
+                .targetId     = PEntity->id,
+                .playerId     = message.playerId,
+                .targetZoneId = PEntity->loc.zone->GetID(),
+                .playerZoneId = message.playerZoneId,
+                .spawnedOnly  = message.spawnedOnly,
+                .isRequest    = false, // Routing flag
+                .targetFound  = targetFound,
+                .x            = X,
+                .y            = Y,
+                .z            = Z,
+                .rot          = R,
+            });
         }
     }
-    else // This is going to the player's game server
+    else // This is the response: We're warping the player
     {
-        CCharEntity* PChar = zoneutils::GetChar(ref<uint16>((uint8*)extra.data(), 4));
-
+        CCharEntity* PChar = zoneutils::GetChar(message.playerId);
         if (PChar && PChar->loc.zone)
         {
-            if (ref<bool>((uint8*)extra.data(), 1))
+            if (message.targetFound)
             {
-                PChar->loc.p.x         = ref<float>((uint8*)extra.data(), 6);
-                PChar->loc.p.y         = ref<float>((uint8*)extra.data(), 10);
-                PChar->loc.p.z         = ref<float>((uint8*)extra.data(), 14);
-                PChar->loc.p.rotation  = ref<uint8>((uint8*)extra.data(), 18);
-                PChar->loc.destination = ref<uint16>((uint8*)extra.data(), 20);
+                PChar->loc.p.x         = message.x;
+                PChar->loc.p.y         = message.y;
+                PChar->loc.p.z         = message.z;
+                PChar->loc.p.rotation  = message.rot;
+                PChar->loc.destination = message.targetZoneId;
 
                 PChar->m_moghouseID = 0;
                 PChar->loc.boundary = 0;
@@ -864,7 +838,6 @@ void IPCClient::handleMessage_GMSendToEntity(const IPP& ipp, const ipc::GMSendTo
             }
         }
     }
-    */
 }
 
 void IPCClient::handleUnknownMessage(const IPP& ipp, const std::span<uint8_t> message)

@@ -637,14 +637,28 @@ void IPCServer::handleMessage_GMSendToZone(const IPP& ipp, const ipc::GMSendToZo
 {
     TracyZoneScoped;
 
-    rerouteMessageToCharId(message.targetId, message);
+    if (message.requesterId == 0) // Request
+    {
+        rerouteMessageToCharId(message.targetId, message);
+    }
+    else // Response
+    {
+        rerouteMessageToZoneId(message.requesterId, message);
+    }
 }
 
 void IPCServer::handleMessage_GMSendToEntity(const IPP& ipp, const ipc::GMSendToEntity& message)
 {
     TracyZoneScoped;
 
-    rerouteMessageToZoneId(message.zoneId, message);
+    if (message.isRequest)
+    {
+        rerouteMessageToZoneId(message.targetZoneId, message);
+    }
+    else // isResponse
+    {
+        rerouteMessageToCharId(message.playerZoneId, message);
+    }
 }
 
 void IPCServer::handleUnknownMessage(const IPP& ipp, const std::span<uint8_t> message)
