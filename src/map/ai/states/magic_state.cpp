@@ -22,6 +22,7 @@
 #include "magic_state.h"
 
 #include "ai/ai_container.h"
+#include "ai/controllers/pet_controller.h"
 #include "ai/states/inactive_state.h"
 #include "common/utils.h"
 #include "enmity_container.h"
@@ -124,6 +125,18 @@ bool CMagicState::Update(time_point tick)
             (HasMoved() && (m_PEntity->objtype != TYPE_PET || static_cast<CPetEntity*>(m_PEntity)->getPetType() != PET_TYPE::AUTOMATON)))
         {
             return false;
+        }
+
+        // Check hide if we're a mob and the target isn't ourselves
+        if (PTarget && PTarget->id != m_PEntity->id && m_PEntity->objtype == TYPE_MOB)
+        {
+            if (auto petController = dynamic_cast<CMobController*>(m_PEntity->PAI->GetController()))
+            {
+                if (petController->CheckHide(PTarget)) // Returns true if cant detect target
+                {
+                    return false;
+                }
+            }
         }
         return true;
     };
