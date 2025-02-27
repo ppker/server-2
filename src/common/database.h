@@ -217,6 +217,7 @@ namespace db
 
             auto rowsCount() -> std::size_t
             {
+                DebugSQLFmt("rowsCount: {}", resultSet->rowsCount());
                 return resultSet->rowsCount();
             }
 
@@ -368,7 +369,12 @@ namespace db
                 DebugSQL(fmt::format("binding {}: {}", counter, value));
             }
 
-            if constexpr (std::is_same_v<UnderlyingT, int32>)
+            if constexpr (std::is_enum_v<UnderlyingT>)
+            {
+                // Break enums down into their further-underlying types
+                bindValue(stmt, counter, blobs, static_cast<std::underlying_type_t<UnderlyingT>>(value));
+            }
+            else if constexpr (std::is_same_v<UnderlyingT, int32>)
             {
                 stmt->setInt(counter, value);
             }

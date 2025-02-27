@@ -24,8 +24,10 @@
 #include "cbasetypes.h"
 
 #include "common/regional_event.h"
+
 #include "map/packets/chat_message.h"
 #include "map/packets/message_standard.h"
+#include "map/packets/party_invite.h"
 
 #include <cstdint>
 #include <iostream>
@@ -141,7 +143,7 @@ namespace ipc
         uint32      inviterId{};
         uint16      inviterTargId{};
         std::string inviterName{};
-        uint8       inviteType{};
+        INVITETYPE  inviteType{};
     };
 
     struct PartyInviteResponse

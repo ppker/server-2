@@ -403,7 +403,7 @@ void IPCClient::handleMessage_PartyInvite(const IPP& ipp, const ipc::PartyInvite
         PInvitee->InvitePending.id     = message.inviterId;
         PInvitee->InvitePending.targid = message.inviterTargId;
 
-        PInvitee->pushPacket(std::make_unique<CPartyInvitePacket>(message.inviterId, message.inviterTargId, message.inviterName, INVITE_PARTY));
+        PInvitee->pushPacket(std::make_unique<CPartyInvitePacket>(message.inviterId, message.inviterTargId, message.inviterName, message.inviteType));
     }
 }
 

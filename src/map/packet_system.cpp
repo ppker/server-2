@@ -3329,8 +3329,6 @@ void SmallPacket0x06E(map_session_data_t* const PSession, CCharEntity* const PCh
                         .inviterName   = PInviter->getName(),
                         .inviteType    = INVITE_PARTY,
                     });
-
-                    ShowDebug("Sent invite packet to lobby server from %s to (%d)", PInviter->getName(), inviteeCharId);
                 }
             }
             else // in party but not leader, cannot invite
@@ -3412,8 +3410,6 @@ void SmallPacket0x06E(map_session_data_t* const PSession, CCharEntity* const PCh
                         .inviterName   = PInviter->getName(),
                         .inviteType    = INVITE_ALLIANCE,
                     });
-
-                    ShowDebug("(Alliance) Sent invite packet to lobby server from %s to (%d)", PInviter->getName(), inviteeCharId);
                 }
             }
         }
@@ -3832,8 +3828,6 @@ void SmallPacket0x074(map_session_data_t* const PSession, CCharEntity* const PCh
     }
     else
     {
-        ShowDebug("(Party) Building invite packet to send to lobby server for %s", PChar->getName());
-
         message::send(ipc::PartyInviteResponse{
             .inviteeId     = PChar->id,
             .inviteeTargId = PChar->targid,
@@ -3842,7 +3836,7 @@ void SmallPacket0x074(map_session_data_t* const PSession, CCharEntity* const PCh
             .inviteAnswer  = InviteAnswer,
         });
 
-        ShowDebug("(Party) Sent invite packet to send to lobby server for %s", PChar->getName());
+        PChar->InvitePending.clean();
     }
 
     PChar->InvitePending.clean();
