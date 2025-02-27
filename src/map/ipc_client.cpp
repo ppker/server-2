@@ -671,8 +671,10 @@ void IPCClient::handleMessage_LuaFunction(const IPP& ipp, const ipc::LuaFunction
     if (!result.valid())
     {
         sol::error err = result;
-        ShowError("MSG_LUA_FUNCTION: error: %s: %s", err.what(), message.funcString.c_str());
+        ShowError("IPCClient::handleMessage_LuaFunction: error: %s: %s", err.what(), message.funcString.c_str());
     }
+
+    // TODO: Handle a return value from result, and send back to message.requesterZoneId
 }
 
 void IPCClient::handleMessage_KillSession(const IPP& ipp, const ipc::KillSession& message)
@@ -866,72 +868,6 @@ void IPCClient::handleMessage_GMSendToEntity(const IPP& ipp, const ipc::GMSendTo
                 charutils::SendToZone(PChar, ZoningType::Zoning, zoneutils::GetZoneIPP(PChar->loc.destination));
             }
         }
-    }
-    */
-}
-
-void IPCClient::handleMessage_RPCSend(const IPP& ipp, const ipc::RPCSend& message)
-{
-    TracyZoneScoped;
-
-    // TODO:
-    /*
-    // Extract data
-    uint8*   data     = (uint8*)extra.data();
-    uint16   sendZone = ref<uint16>(data, 2); // here
-    uint16   recvZone = ref<uint16>(data, 4); // origin
-    uint64_t slotKey  = ref<uint64_t>(data, 6);
-    uint16   strSize  = ref<uint16>(data, 14);
-    auto     sendStr  = std::string(data + 16, data + 16 + strSize);
-
-    // Execute Lua & collect payload
-    std::string payload = "";
-    auto        result  = lua.safe_script(sendStr);
-    if (result.valid() && result.return_count())
-    {
-        payload = result.get<std::string>(0);
-    }
-
-    // Reply w/ payload
-    std::vector<uint8> packetData(16 + payload.size() + 1);
-
-    ref<uint16>(packetData.data(), 2)   = recvZone; // origin
-    ref<uint16>(packetData.data(), 4)   = sendZone; // here
-    ref<uint64_t>(packetData.data(), 6) = slotKey;
-
-    ref<uint16>(packetData.data(), 14) = (uint16)payload.size();
-    std::memcpy(packetData.data() + 16, payload.data(), payload.size());
-
-    packetData[packetData.size() - 1] = '\0';
-
-    message::send(MSG_RPC_RECV, packetData.data(), packetData.size());
-    */
-}
-
-void IPCClient::handleMessage_RPCRecv(const IPP& ipp, const ipc::RPCRecv& message)
-{
-    TracyZoneScoped;
-
-    // TODO:
-    /*
-    uint8* data = (uint8*)extra.data();
-
-    // No need for any of the zone id data now
-    uint64_t slotKey = ref<uint64_t>(data, 6);
-    uint16   strSize = ref<uint16>(data, 14);
-    auto     payload = std::string(data + 16, data + 16 + strSize);
-
-    auto maybeEntry = replyMap.find(slotKey);
-    if (maybeEntry != replyMap.end())
-    {
-        auto& recvFunc = maybeEntry->second;
-        auto  result   = recvFunc(payload);
-        if (!result.valid())
-        {
-            sol::error err = result;
-            ShowError("message::parse::MSG_RPC_RECV: %s", err.what());
-        }
-        replyMap.erase(slotKey);
     }
     */
 }

@@ -1387,10 +1387,11 @@ namespace luautils
         callGlobal<void>("xi.conquest.setRegionalConquestOverseers", regionID);
     }
 
-    void SendLuaFuncStringToZone(uint16 zoneId, std::string const& str)
+    void SendLuaFuncStringToZone(uint16 requestingZoneId, uint16 executorZoneId, std::string const& str)
     {
         message::send(ipc::LuaFunction{
-            .zoneId     = zoneId,
+            .requesterZoneId = requestingZoneId,
+            .executorZoneId = executorZoneId,
             .funcString = str,
         });
     }

@@ -222,7 +222,8 @@ namespace ipc
 
     struct LuaFunction
     {
-        uint16      zoneId{};
+        uint16      requesterZoneId{};
+        uint16      executorZoneId{};
         std::string funcString{};
     };
 
@@ -269,16 +270,6 @@ namespace ipc
     };
 
     struct GMSendToEntity
-    {
-        uint16 zoneId{};
-    };
-
-    struct RPCSend
-    {
-        uint16 zoneId{};
-    };
-
-    struct RPCRecv
     {
         uint16 zoneId{};
     };

@@ -58,9 +58,6 @@ IPC_STRUCT_NAMES = [
 
     "GMSendToZone",
     "GMSendToEntity",
-
-    "RPCSend",
-    "RPCRecv",
 ]
 
 

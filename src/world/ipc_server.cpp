@@ -563,7 +563,7 @@ void IPCServer::handleMessage_LuaFunction(const IPP& ipp, const ipc::LuaFunction
 {
     TracyZoneScoped;
 
-    rerouteMessageToZoneId(message.zoneId, message);
+    rerouteMessageToZoneId(message.executorZoneId, message);
 }
 
 void IPCServer::handleMessage_KillSession(const IPP& ipp, const ipc::KillSession& message)
@@ -635,20 +635,6 @@ void IPCServer::handleMessage_GMSendToZone(const IPP& ipp, const ipc::GMSendToZo
 }
 
 void IPCServer::handleMessage_GMSendToEntity(const IPP& ipp, const ipc::GMSendToEntity& message)
-{
-    TracyZoneScoped;
-
-    rerouteMessageToZoneId(message.zoneId, message);
-}
-
-void IPCServer::handleMessage_RPCSend(const IPP& ipp, const ipc::RPCSend& message)
-{
-    TracyZoneScoped;
-
-    rerouteMessageToZoneId(message.zoneId, message);
-}
-
-void IPCServer::handleMessage_RPCRecv(const IPP& ipp, const ipc::RPCRecv& message)
 {
     TracyZoneScoped;
 

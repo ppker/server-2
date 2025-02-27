@@ -113,8 +113,6 @@ public:
     void handleMessage_ColonizationEvent(const IPP& ipp, const ipc::ColonizationEvent& message) override;
     void handleMessage_GMSendToZone(const IPP& ipp, const ipc::GMSendToZone& message) override;
     void handleMessage_GMSendToEntity(const IPP& ipp, const ipc::GMSendToEntity& message) override;
-    void handleMessage_RPCSend(const IPP& ipp, const ipc::RPCSend& message) override;
-    void handleMessage_RPCRecv(const IPP& ipp, const ipc::RPCRecv& message) override;
 
     void handleUnknownMessage(const IPP& ipp, const std::span<uint8_t> message) override;
 
