@@ -350,15 +350,15 @@ void IPCServer::handleIncomingMessages()
     TracyZoneScoped;
 
     // TODO: Can we stop more messages appearing on the queue while we're processing?
-    IPPMessage out;
-    while (zmqRouterWrapper_.incomingQueue_.try_dequeue(out))
+    IPPMessage message;
+    while (zmqRouterWrapper_.incomingQueue_.try_dequeue(message))
     {
-        const auto firstByte = out.payload[0];
+        const auto firstByte = message.payload[0];
         const auto msgType   = ipc::toString(static_cast<ipc::MessageType>(firstByte));
 
-        DebugIPCFmt("Incoming {} message from {}", msgType, out.ipp.toString());
+        DebugIPCFmt("Incoming {} message from {}", msgType, message.ipp.toString());
 
-        ipc::IIPCMessageHandler::handleMessage(out.ipp, { out.payload.data(), out.payload.size() });
+        ipc::IIPCMessageHandler::handleMessage(message.ipp, { message.payload.data(), message.payload.size() });
     }
 }
 
