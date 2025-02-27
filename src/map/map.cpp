@@ -237,7 +237,8 @@ int32 do_init(int32 argc, char** argv)
         }
     }
 
-    ShowInfo(fmt::format("map_port: {}", map_port));
+    ShowInfoFmt("map_port: {}", map_port);
+    ShowInfoFmt("Zones assigned to this process: {}", zoneutils::GetZonesAssignedToThisProcess().size());
 
     srand((uint32)time(nullptr));
     xirand::seed();

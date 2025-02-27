@@ -1391,8 +1391,8 @@ namespace luautils
     {
         message::send(ipc::LuaFunction{
             .requesterZoneId = requestingZoneId,
-            .executorZoneId = executorZoneId,
-            .funcString = str,
+            .executorZoneId  = executorZoneId,
+            .funcString      = str,
         });
     }
 
@@ -5541,7 +5541,7 @@ namespace luautils
     {
         // IMPORTANT: This should only be called on the Zone Init in Selbina
         // Do not run this from multiple server instances
-        if (zoneutils::IsZoneOnThisProcess(ZONEID::ZONE_SELBINA))
+        if (zoneutils::IsZoneAssignedToThisProcess(ZONEID::ZONE_SELBINA))
         {
             fishingcontest::InitializeFishingContestSystem();
         }
