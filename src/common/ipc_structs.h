@@ -40,240 +40,244 @@ namespace ipc
 
     struct CharLogin
     {
-        uint32 accountId;
-        uint32 charId;
+        uint32 accountId{};
+        uint32 charId{};
     };
 
     struct CharZone
     {
-        uint32 charId;
-        uint16 destinationZoneId;
+        uint32 charId{};
+        uint16 destinationZoneId{};
     };
 
     struct CharVarUpdate
     {
-        uint32      charId;
-        int32       value;
-        uint32      expiry;
-        std::string varName;
+        uint32      charId{};
+        int32       value{};
+        uint32      expiry{};
+        std::string varName{};
     };
 
     struct ChatMessageTell
     {
-        uint32      senderId;
-        std::string senderName;
-        std::string recipientName;
-        std::string message;
-        uint16      zoneId;
-        uint8       gmLevel;
+        uint32      senderId{};
+        std::string senderName{};
+        std::string recipientName{};
+        std::string message{};
+        uint16      zoneId{};
+        uint8       gmLevel{};
     };
 
     struct ChatMessageParty
     {
-        uint32      partyId;
-        uint32      senderId;
-        std::string senderName;
-        std::string message;
-        uint16      zoneId;
-        uint8       gmLevel;
+        uint32      partyId{};
+        uint32      senderId{};
+        std::string senderName{};
+        std::string message{};
+        uint16      zoneId{};
+        uint8       gmLevel{};
     };
 
     struct ChatMessageAlliance
     {
-        uint32      allianceId;
-        uint32      senderId;
-        std::string senderName;
-        std::string message;
-        uint16      zoneId;
-        uint8       gmLevel;
+        uint32      allianceId{};
+        uint32      senderId{};
+        std::string senderName{};
+        std::string message{};
+        uint16      zoneId{};
+        uint8       gmLevel{};
     };
 
     struct ChatMessageLinkshell
     {
-        uint32      linkshellId;
-        uint32      senderId;
-        std::string senderName;
-        std::string message;
-        uint16      zoneId;
-        uint8       gmLevel;
+        uint32      linkshellId{};
+        uint32      senderId{};
+        std::string senderName{};
+        std::string message{};
+        uint16      zoneId{};
+        uint8       gmLevel{};
     };
 
     struct ChatMessageUnity
     {
-        uint32      unityLeaderId;
-        uint32      senderId;
-        std::string senderName;
-        std::string message;
-        uint16      zoneId;
-        uint8       gmLevel;
+        uint32      unityLeaderId{};
+        uint32      senderId{};
+        std::string senderName{};
+        std::string message{};
+        uint16      zoneId{};
+        uint8       gmLevel{};
     };
 
     struct ChatMessageYell
     {
-        uint32      senderId;
-        std::string senderName;
-        std::string message;
-        uint16      zoneId;
-        uint8       gmLevel;
+        uint32      senderId{};
+        std::string senderName{};
+        std::string message{};
+        uint16      zoneId{};
+        uint8       gmLevel{};
     };
 
     struct ChatMessageServerMessage
     {
-        uint32      senderId;
-        std::string senderName;
-        std::string message;
-        uint16      zoneId;
-        uint8       gmLevel;
+        uint32      senderId{};
+        std::string senderName{};
+        std::string message{};
+        uint16      zoneId{};
+        uint8       gmLevel{};
     };
 
     struct ChatMessageCustom
     {
-        uint32            recipientId;
-        std::string       senderName;
-        std::string       message;
-        CHAT_MESSAGE_TYPE messageType;
+        uint32            recipientId{};
+        std::string       senderName{};
+        std::string       message{};
+        CHAT_MESSAGE_TYPE messageType{};
     };
 
     struct PartyInvite
     {
-        uint32      inviteeId;
-        uint16      inviteeTargId;
-        uint32      inviterId;
-        uint16      inviterTargId;
-        std::string inviterName;
-        uint8       inviteType;
+        uint32      inviteeId{};
+        uint16      inviteeTargId{};
+        uint32      inviterId{};
+        uint16      inviterTargId{};
+        std::string inviterName{};
+        uint8       inviteType{};
     };
 
     struct PartyInviteResponse
     {
-        uint32      inviteeId;
-        uint16      inviteeTargId;
-        uint32      inviterId;
-        uint16      inviterTargId;
-        std::string inviterName;
-        uint8       inviteAnswer;
+        uint32      inviteeId{};
+        uint16      inviteeTargId{};
+        uint32      inviterId{};
+        uint16      inviterTargId{};
+        std::string inviterName{};
+        uint8       inviteAnswer{};
     };
 
     struct PartyReload
     {
-        uint32 partyId;
+        uint32 partyId{};
     };
 
     struct PartyDisband
     {
-        uint32 partyId;
+        uint32 partyId{};
     };
 
     struct AllianceReload
     {
-        uint32 allianceId;
+        uint32 allianceId{};
     };
 
     struct AllianceDissolve
     {
-        uint32 allianceId;
+        uint32 allianceId{};
     };
 
     struct PlayerKick
     {
-        uint32 charId;
+        uint32 charId{};
     };
 
     struct MessageStandard
     {
-        uint32 charId;
-        MsgStd message;
+        uint32 charId{};
+        MsgStd message{};
+        uint32 param0{};
+        uint32 param1{};
     };
 
     struct MessageSystem
     {
-        uint32 charId;
-        MsgStd message;
+        uint32 charId{};
+        MsgStd message{};
+        uint32 param0{};
+        uint32 param1{};
     };
 
     struct LinkshellRankChange
     {
-        uint32      charId;
-        std::string linkshellName;
-        uint32      linkshellId;
-        uint8       permission;
+        uint32      charId{};
+        std::string linkshellName{};
+        uint32      linkshellId{};
+        uint8       permission{};
     };
 
     struct LinkshellRemove
     {
-        uint32      charId;
-        std::string linkshellName;
-        uint32      linkshellId;
-        uint8       linkshellType;
+        uint32      charId{};
+        std::string linkshellName{};
+        uint32      linkshellId{};
+        uint8       linkshellType{};
     };
 
     struct LinkshellSetMessage
     {
-        uint32      linkshellId;
-        std::string poster;
-        std::string message;
+        uint32      linkshellId{};
+        std::string poster{};
+        std::string message{};
     };
 
     struct LuaFunction
     {
-        uint16      zoneId;
-        std::string funcString;
+        uint16      zoneId{};
+        std::string funcString{};
     };
 
     struct KillSession
     {
-        uint32 charId;
+        uint32 charId{};
     };
 
     struct ConquestEvent
     {
-        ConquestMessage    type;
-        std::vector<uint8> payload;
+        ConquestMessage    type{};
+        std::vector<uint8> payload{};
     };
 
     struct BesiegedEvent
     {
-        BesiegedMessage    type;
-        std::vector<uint8> payload;
+        BesiegedMessage    type{};
+        std::vector<uint8> payload{};
     };
 
     struct CampaignEvent
     {
-        CampaignMessage    type;
-        std::vector<uint8> payload;
+        CampaignMessage    type{};
+        std::vector<uint8> payload{};
     };
 
     struct ColonizationEvent
     {
-        ColonizationMessage type;
-        std::vector<uint8>  payload;
+        ColonizationMessage type{};
+        std::vector<uint8>  payload{};
     };
 
     struct GMSendToZone
     {
-        uint32 targetId;
-        uint32 requesterId;
+        uint32 targetId{};
+        uint32 requesterId{};
 
-        uint16 zoneId;
-        float  x;
-        float  y;
-        float  z;
-        uint8  rot;
-        uint32 moghouseID;
+        uint16 zoneId{};
+        float  x{};
+        float  y{};
+        float  z{};
+        uint8  rot{};
+        uint32 moghouseID{};
     };
 
     struct GMSendToEntity
     {
-        uint16 zoneId;
+        uint16 zoneId{};
     };
 
     struct RPCSend
     {
-        uint16 zoneId;
+        uint16 zoneId{};
     };
 
     struct RPCRecv
     {
-        uint16 zoneId;
+        uint16 zoneId{};
     };
 } // namespace ipc

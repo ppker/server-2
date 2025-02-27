@@ -599,7 +599,7 @@ void IPCClient::handleMessage_MessageStandard(const IPP& ipp, const ipc::Message
 
     if (CCharEntity* PChar = zoneutils::GetChar(message.charId))
     {
-        PChar->pushPacket(std::make_unique<CMessageStandardPacket>(PChar, 0, 0, message.message));
+        PChar->pushPacket(std::make_unique<CMessageStandardPacket>(PChar, message.param0, message.param1, message.message));
     }
 }
 
@@ -609,7 +609,7 @@ void IPCClient::handleMessage_MessageSystem(const IPP& ipp, const ipc::MessageSy
 
     if (CCharEntity* PChar = zoneutils::GetChar(message.charId))
     {
-        PChar->pushPacket(std::make_unique<CMessageStandardPacket>(PChar, 0, 0, message.message));
+        PChar->pushPacket(std::make_unique<CMessageStandardPacket>(PChar, message.param0, message.param1, message.message));
     }
 }
 

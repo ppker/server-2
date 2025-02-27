@@ -3228,19 +3228,22 @@ void SmallPacket0x06E(map_session_data_t* const PSession, CCharEntity* const PCh
 {
     TracyZoneScoped;
 
-    uint32 charid = data.ref<uint32>(0x04);
-    uint16 targid = data.ref<uint16>(0x08);
+    // Alias for clarity
+    auto* PInviter = PChar;
+
+    uint32 inviteeCharId = data.ref<uint32>(0x04);
+    uint16 inviteeTargId = data.ref<uint16>(0x08);
 
     // cannot invite yourself
-    if (PChar->id == charid)
+    if (PInviter->id == inviteeCharId)
     {
         return;
     }
 
-    if (jailutils::InPrison(PChar))
+    if (jailutils::InPrison(PInviter))
     {
         // Initiator is in prison.  Send error message.
-        PChar->pushPacket<CMessageBasicPacket>(PChar, PChar, 0, 0, MSGBASIC_CANNOT_USE_IN_AREA);
+        PInviter->pushPacket<CMessageBasicPacket>(PInviter, PInviter, 0, 0, MSGBASIC_CANNOT_USE_IN_AREA);
         return;
     }
 
@@ -3248,38 +3251,38 @@ void SmallPacket0x06E(map_session_data_t* const PSession, CCharEntity* const PCh
     {
         case INVITE_PARTY: // party - must by party leader or solo
         {
-            if (PChar->PParty == nullptr || PChar->PParty->GetLeader() == PChar)
+            if (PInviter->PParty == nullptr || PInviter->PParty->GetLeader() == PInviter)
             {
-                if (PChar->PParty && PChar->PParty->IsFull())
+                if (PInviter->PParty && PInviter->PParty->IsFull())
                 {
-                    PChar->pushPacket<CMessageStandardPacket>(PChar, 0, 0, MsgStd::CannotInvite);
+                    PInviter->pushPacket<CMessageStandardPacket>(PInviter, 0, 0, MsgStd::CannotInvite);
                     break;
                 }
 
                 CCharEntity* PInvitee = nullptr;
 
-                if (targid != 0)
+                if (inviteeTargId != 0)
                 {
-                    CBaseEntity* PEntity = PChar->GetEntity(targid, TYPE_PC);
-                    if (PEntity && PEntity->id == charid)
+                    CBaseEntity* PEntity = PInviter->GetEntity(inviteeTargId, TYPE_PC);
+                    if (PEntity && PEntity->id == inviteeCharId)
                     {
                         PInvitee = (CCharEntity*)PEntity;
                     }
                 }
                 else
                 {
-                    PInvitee = zoneutils::GetChar(charid);
+                    PInvitee = zoneutils::GetChar(inviteeCharId);
                 }
 
                 if (PInvitee)
                 {
-                    ShowDebug("%s sent party invite to %s", PChar->getName(), PInvitee->getName());
+                    ShowDebug("%s sent party invite to %s", PInviter->getName(), PInvitee->getName());
 
                     // make sure invitee isn't dead or in jail, they aren't a party member and don't already have an invite pending, and your party is not full
                     if (PInvitee->isDead() || jailutils::InPrison(PInvitee) || PInvitee->InvitePending.id != 0 || PInvitee->PParty != nullptr)
                     {
                         ShowDebug("%s is dead, in jail, has a pending invite, or is already in a party", PInvitee->getName());
-                        PChar->pushPacket<CMessageStandardPacket>(PChar, 0, 0, MsgStd::CannotInvite);
+                        PInviter->pushPacket<CMessageStandardPacket>(PInviter, 0, 0, MsgStd::CannotInvite);
                         break;
                     }
 
@@ -3288,92 +3291,90 @@ void SmallPacket0x06E(map_session_data_t* const PSession, CCharEntity* const PCh
                     {
                         ShowDebug("%s is blocking party invites", PInvitee->getName());
                         // Target is blocking assistance
-                        PChar->pushPacket<CMessageSystemPacket>(0, 0, MsgStd::TargetIsCurrentlyBlocking);
+                        PInviter->pushPacket<CMessageSystemPacket>(0, 0, MsgStd::TargetIsCurrentlyBlocking);
                         // Interaction was blocked
                         PInvitee->pushPacket<CMessageSystemPacket>(0, 0, MsgStd::BlockedByBlockaid);
                         // You cannot invite that person at this time.
-                        PChar->pushPacket<CMessageSystemPacket>(0, 0, MsgStd::CannotInvite);
+                        PInviter->pushPacket<CMessageSystemPacket>(0, 0, MsgStd::CannotInvite);
                         break;
                     }
 
                     if (PInvitee->StatusEffectContainer->HasStatusEffect(EFFECT_LEVEL_SYNC))
                     {
                         ShowDebug("%s has level sync, unable to send invite", PInvitee->getName());
-                        PChar->pushPacket<CMessageStandardPacket>(PChar, 0, 0, MsgStd::CannotInviteLevelSync);
+                        PInviter->pushPacket<CMessageStandardPacket>(PInviter, 0, 0, MsgStd::CannotInviteLevelSync);
                         break;
                     }
 
-                    PInvitee->InvitePending.id     = PChar->id;
-                    PInvitee->InvitePending.targid = PChar->targid;
+                    PInvitee->InvitePending.id     = PInviter->id;
+                    PInvitee->InvitePending.targid = PInviter->targid;
 
-                    PInvitee->pushPacket<CPartyInvitePacket>(charid, targid, PChar->getName(), INVITE_PARTY);
+                    PInvitee->pushPacket<CPartyInvitePacket>(inviteeCharId, inviteeTargId, PInviter->getName(), INVITE_PARTY);
 
                     ShowDebug("Sent party invite packet to %s", PInvitee->getName());
 
-                    if (PChar->PParty && PChar->PParty->GetSyncTarget())
+                    if (PInviter->PParty && PInviter->PParty->GetSyncTarget())
                     {
                         PInvitee->pushPacket<CMessageStandardPacket>(PInvitee, 0, 0, MsgStd::LevelSyncWarning);
                     }
                 }
                 else
                 {
-                    ShowDebug("Building invite packet to send to lobby server from %s to (%d)", PChar->getName(), charid);
-
                     // on another server (hopefully)
                     message::send(ipc::PartyInvite{
-                        .inviteeId     = charid,
-                        .inviteeTargId = targid,
-                        .inviterId     = PChar->id,
-                        .inviterTargId = PChar->targid,
-                        .inviterName   = PChar->getName(),
+                        .inviteeId     = inviteeCharId,
+                        .inviteeTargId = inviteeTargId,
+                        .inviterId     = PInviter->id,
+                        .inviterTargId = PInviter->targid,
+                        .inviterName   = PInviter->getName(),
                         .inviteType    = INVITE_PARTY,
                     });
 
-                    ShowDebug("Sent invite packet to lobby server from %s to (%d)", PChar->getName(), charid);
+                    ShowDebug("Sent invite packet to lobby server from %s to (%d)", PInviter->getName(), inviteeCharId);
                 }
             }
             else // in party but not leader, cannot invite
             {
-                ShowDebug("%s is not party leader, cannot send invite", PChar->getName());
-                PChar->pushPacket<CMessageStandardPacket>(PChar, 0, 0, MsgStd::NotPartyLeader);
+                ShowDebug("%s is not party leader, cannot send invite", PInviter->getName());
+                PInviter->pushPacket<CMessageStandardPacket>(PInviter, 0, 0, MsgStd::NotPartyLeader);
             }
         }
         break;
         case INVITE_ALLIANCE: // alliance - must be unallied party leader or alliance leader of a non-full alliance
         {
-            if (PChar->PParty && PChar->PParty->GetLeader() == PChar &&
-                (PChar->PParty->m_PAlliance == nullptr ||
-                 (PChar->PParty->m_PAlliance->getMainParty() == PChar->PParty && !PChar->PParty->m_PAlliance->isFull())))
+            if (PInviter->PParty && PInviter->PParty->GetLeader() == PInviter &&
+                (PInviter->PParty->m_PAlliance == nullptr ||
+                 (PInviter->PParty->m_PAlliance->getMainParty() == PInviter->PParty && !PInviter->PParty->m_PAlliance->isFull())))
             {
                 CCharEntity* PInvitee = nullptr;
 
-                if (targid != 0)
+                if (inviteeTargId != 0)
                 {
-                    CBaseEntity* PEntity = PChar->GetEntity(targid, TYPE_PC);
-                    if (PEntity && PEntity->id == charid)
+                    CBaseEntity* PEntity = PInviter->GetEntity(inviteeTargId, TYPE_PC);
+                    if (PEntity && PEntity->id == inviteeCharId)
                     {
                         PInvitee = (CCharEntity*)PEntity;
                     }
                 }
                 else
                 {
-                    PInvitee = zoneutils::GetChar(charid);
+                    PInvitee = zoneutils::GetChar(inviteeCharId);
                 }
 
                 if (PInvitee)
                 {
-                    ShowDebug("%s sent alliance invite to %s", PChar->getName(), PInvitee->getName());
+                    ShowDebug("%s sent alliance invite to %s", PInviter->getName(), PInvitee->getName());
 
                     // check /blockaid
                     if (PInvitee->getBlockingAid())
                     {
                         ShowDebug("%s is blocking alliance invites", PInvitee->getName());
                         // Target is blocking assistance
-                        PChar->pushPacket<CMessageSystemPacket>(0, 0, MsgStd::TargetIsCurrentlyBlocking);
+                        PInviter->pushPacket<CMessageSystemPacket>(0, 0, MsgStd::TargetIsCurrentlyBlocking);
                         // Interaction was blocked
                         PInvitee->pushPacket<CMessageSystemPacket>(0, 0, MsgStd::BlockedByBlockaid);
                         // You cannot invite that person at this time.
-                        PChar->pushPacket<CMessageSystemPacket>(0, 0, MsgStd::CannotInvite);
+                        PInviter->pushPacket<CMessageSystemPacket>(0, 0, MsgStd::CannotInvite);
                         break;
                     }
 
@@ -3382,39 +3383,37 @@ void SmallPacket0x06E(map_session_data_t* const PSession, CCharEntity* const PCh
                         PInvitee->PParty->GetLeader() != PInvitee || PInvitee->PParty->m_PAlliance)
                     {
                         ShowDebug("%s is dead, in jail, has a pending invite, or is already in a party/alliance", PInvitee->getName());
-                        PChar->pushPacket<CMessageStandardPacket>(PChar, 0, 0, MsgStd::CannotInvite);
+                        PInviter->pushPacket<CMessageStandardPacket>(PInviter, 0, 0, MsgStd::CannotInvite);
                         break;
                     }
 
                     if (PInvitee->StatusEffectContainer->HasStatusEffect(EFFECT_LEVEL_SYNC))
                     {
                         ShowDebug("%s has level sync, unable to send invite", PInvitee->getName());
-                        PChar->pushPacket<CMessageStandardPacket>(PChar, 0, 0, MsgStd::CannotInviteLevelSync);
+                        PInviter->pushPacket<CMessageStandardPacket>(PInviter, 0, 0, MsgStd::CannotInviteLevelSync);
                         break;
                     }
 
-                    PInvitee->InvitePending.id     = PChar->id;
-                    PInvitee->InvitePending.targid = PChar->targid;
+                    PInvitee->InvitePending.id     = PInviter->id;
+                    PInvitee->InvitePending.targid = PInviter->targid;
 
-                    PInvitee->pushPacket<CPartyInvitePacket>(charid, targid, PChar->getName(), INVITE_ALLIANCE);
+                    PInvitee->pushPacket<CPartyInvitePacket>(inviteeCharId, inviteeTargId, PInviter->getName(), INVITE_ALLIANCE);
 
                     ShowDebug("Sent party invite packet to %s", PInvitee->getName());
                 }
                 else
                 {
-                    ShowDebug("(Alliance) Building invite packet to send to lobby server from %s to (%d)", PChar->getName(), charid);
-
                     // on another server (hopefully)
                     message::send(ipc::PartyInvite{
-                        .inviteeId     = charid,
-                        .inviteeTargId = targid,
-                        .inviterId     = PChar->id,
-                        .inviterTargId = PChar->targid,
-                        .inviterName   = PChar->getName(),
+                        .inviteeId     = inviteeCharId,
+                        .inviteeTargId = inviteeTargId,
+                        .inviterId     = PInviter->id,
+                        .inviterTargId = PInviter->targid,
+                        .inviterName   = PInviter->getName(),
                         .inviteType    = INVITE_ALLIANCE,
                     });
 
-                    ShowDebug("(Alliance) Sent invite packet to lobby server from %s to (%d)", PChar->getName(), charid);
+                    ShowDebug("(Alliance) Sent invite packet to lobby server from %s to (%d)", PInviter->getName(), inviteeCharId);
                 }
             }
         }
