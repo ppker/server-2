@@ -104,6 +104,9 @@ auto IPCServer::getIPPForZoneId(uint16 zoneId) -> std::optional<IPP>
 {
     TracyZoneScoped;
 
+    // TODO: Using the cache we can know if a whole process has no active players on it,
+    //     : so we could omit forwarding messages to it
+
     if (const auto it = zoneSettings_.zoneSettingsMap_.find(zoneId); it != zoneSettings_.zoneSettingsMap_.end())
     {
         return it->second.ipp;
@@ -229,6 +232,9 @@ auto IPCServer::getIPPsForYellZones() -> std::vector<IPP>
 auto IPCServer::getIPPsForAllZones() -> std::vector<IPP>
 {
     TracyZoneScoped;
+
+    // TODO: Using the cache we can know if a whole process has no active players on it,
+    //     : so we could omit forwarding messages to it
 
     return zoneSettings_.mapEndpoints_;
 }

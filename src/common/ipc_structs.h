@@ -198,7 +198,7 @@ namespace ipc
     struct LinkshellRankChange
     {
         uint32      charId{};
-        std::string linkshellName{};
+        std::string memberName{};
         uint32      linkshellId{};
         uint8       permission{};
     };
@@ -206,7 +206,7 @@ namespace ipc
     struct LinkshellRemove
     {
         uint32      charId{};
-        std::string linkshellName{};
+        std::string victimName{};
         uint32      linkshellId{};
         uint8       linkshellType{};
     };

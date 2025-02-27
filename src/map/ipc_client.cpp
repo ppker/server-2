@@ -620,7 +620,7 @@ void IPCClient::handleMessage_LinkshellRankChange(const IPP& ipp, const ipc::Lin
 
     if (CLinkshell* PLinkshell = linkshell::GetLinkshell(message.linkshellId))
     {
-        PLinkshell->ChangeMemberRank(message.linkshellName, message.permission);
+        PLinkshell->ChangeMemberRank(message.memberName, message.permission);
     }
 }
 
@@ -628,29 +628,24 @@ void IPCClient::handleMessage_LinkshellRemove(const IPP& ipp, const ipc::Linkshe
 {
     TracyZoneScoped;
 
-    /*
-    CCharEntity* PChar = zoneutils::GetCharByName(message.linkshellName); // TODO: Should this be memberName?
+    CCharEntity* PChar = zoneutils::GetCharByName(message.victimName);
 
     if (PChar && PChar->PLinkshell1 && PChar->PLinkshell1->getID() == message.linkshellId)
     {
-        uint8           kickerRank = ref<uint8>((uint8*)extra.data(), 28);
-        CItemLinkshell* targetLS   = (CItemLinkshell*)PChar->getEquip(SLOT_LINK1);
-        if (targetLS && (kickerRank == LSTYPE_LINKSHELL || (kickerRank == LSTYPE_PEARLSACK && targetLS->GetLSType() == LSTYPE_LINKPEARL)))
+        CItemLinkshell* targetLS = (CItemLinkshell*)PChar->getEquip(SLOT_LINK1);
+        if (targetLS && (message.linkshellType == LSTYPE_LINKSHELL || (message.linkshellType == LSTYPE_PEARLSACK && targetLS->GetLSType() == LSTYPE_LINKPEARL)))
         {
-            PChar->PLinkshell1->RemoveMemberByName(memberName,
-                                                   (targetLS->GetLSType() == (uint8)LSTYPE_LINKSHELL ? (uint8)LSTYPE_PEARLSACK : kickerRank));
+            PChar->PLinkshell1->RemoveMemberByName(message.victimName, (targetLS->GetLSType() == (uint8)LSTYPE_LINKSHELL ? (uint8)LSTYPE_PEARLSACK : message.linkshellType));
         }
     }
-    else if (PChar && PChar->PLinkshell2 && PChar->PLinkshell2->getID() == ref<uint32>((uint8*)extra.data(), 24))
+    else if (PChar && PChar->PLinkshell2 && PChar->PLinkshell2->getID() == message.linkshellId)
     {
-        uint8           kickerRank = ref<uint8>((uint8*)extra.data(), 28);
-        CItemLinkshell* targetLS   = (CItemLinkshell*)PChar->getEquip(SLOT_LINK2);
-        if (targetLS && (kickerRank == LSTYPE_LINKSHELL || (kickerRank == LSTYPE_PEARLSACK && targetLS->GetLSType() == LSTYPE_LINKPEARL)))
+        CItemLinkshell* targetLS = (CItemLinkshell*)PChar->getEquip(SLOT_LINK2);
+        if (targetLS && (message.linkshellType == LSTYPE_LINKSHELL || (message.linkshellType == LSTYPE_PEARLSACK && targetLS->GetLSType() == LSTYPE_LINKPEARL)))
         {
-            PChar->PLinkshell2->RemoveMemberByName(memberName, kickerRank);
+            PChar->PLinkshell2->RemoveMemberByName(message.victimName, message.linkshellType);
         }
     }
-    */
 }
 
 void IPCClient::handleMessage_LinkshellSetMessage(const IPP& ipp, const ipc::LinkshellSetMessage& message)

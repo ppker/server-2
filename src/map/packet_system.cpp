@@ -3554,9 +3554,9 @@ void SmallPacket0x071(map_session_data_t* const PSession, CCharEntity* const PCh
         {
             if (PChar->PParty && PChar->PParty->GetLeader() == PChar)
             {
-                const auto charName = escapeString(asStringFromUntrustedSource(data[0x0C], 15));
+                const auto victimName = escapeString(asStringFromUntrustedSource(data[0x0C], 15));
 
-                CCharEntity* PVictim = dynamic_cast<CCharEntity*>(PChar->PParty->GetMemberByName(charName));
+                CCharEntity* PVictim = dynamic_cast<CCharEntity*>(PChar->PParty->GetMemberByName(victimName));
                 if (PVictim)
                 {
                     ShowDebug("%s is trying to kick %s from party", PChar->getName(), PVictim->getName());
@@ -3623,11 +3623,11 @@ void SmallPacket0x071(map_session_data_t* const PSession, CCharEntity* const PCh
             CItemLinkshell* PItemLinkshell = (CItemLinkshell*)PChar->getEquip(SLOT_LINK1);
             if (PChar->PLinkshell1 && PItemLinkshell)
             {
-                const auto linkshellName = escapeString(asStringFromUntrustedSource(data[0x0C], 20));
+                const auto victimName = escapeString(asStringFromUntrustedSource(data[0x0C], 15));
 
                 message::send(ipc::LinkshellRemove{
                     .charId        = PChar->id,
-                    .linkshellName = linkshellName,
+                    .victimName    = victimName,
                     .linkshellId   = PChar->PLinkshell1->getID(),
                     .linkshellType = PItemLinkshell->GetLSType(),
                 });
@@ -3640,11 +3640,11 @@ void SmallPacket0x071(map_session_data_t* const PSession, CCharEntity* const PCh
             CItemLinkshell* PItemLinkshell = (CItemLinkshell*)PChar->getEquip(SLOT_LINK2);
             if (PChar->PLinkshell2 && PItemLinkshell)
             {
-                const auto linkshellName = escapeString(asStringFromUntrustedSource(data[0x0C], 20));
+                const auto victimName = escapeString(asStringFromUntrustedSource(data[0x0C], 15));
 
                 message::send(ipc::LinkshellRemove{
                     .charId        = PChar->id,
-                    .linkshellName = linkshellName,
+                    .victimName    = victimName,
                     .linkshellId   = PChar->PLinkshell2->getID(),
                     .linkshellType = PItemLinkshell->GetLSType(),
                 });
@@ -3658,9 +3658,9 @@ void SmallPacket0x071(map_session_data_t* const PSession, CCharEntity* const PCh
                 CCharEntity* PVictim = nullptr;
                 for (std::size_t i = 0; i < PChar->PParty->m_PAlliance->partyList.size(); ++i)
                 {
-                    const auto charName = escapeString(asStringFromUntrustedSource(data[0x0C], 15));
+                    const auto victimName = escapeString(asStringFromUntrustedSource(data[0x0C], 15));
 
-                    PVictim = dynamic_cast<CCharEntity*>(PChar->PParty->m_PAlliance->partyList[i]->GetMemberByName(charName));
+                    PVictim = dynamic_cast<CCharEntity*>(PChar->PParty->m_PAlliance->partyList[i]->GetMemberByName(victimName));
                     if (PVictim && PVictim->PParty && PVictim->PParty->m_PAlliance) // victim is in this party
                     {
                         ShowDebug("%s is trying to kick %s party from alliance", PChar->getName(), PVictim->getName());
@@ -3900,14 +3900,14 @@ void SmallPacket0x077(map_session_data_t* const PSession, CCharEntity* const PCh
         {
             if (PChar->PLinkshell1 != nullptr)
             {
-                const auto linkshellName = escapeString(asStringFromUntrustedSource(data[0x04], 20));
-                const auto permission    = data.ref<uint8>(0x15);
+                const auto memberName = escapeString(asStringFromUntrustedSource(data[0x04], 15));
+                const auto permission = data.ref<uint8>(0x15);
 
                 message::send(ipc::LinkshellRankChange{
-                    .charId        = PChar->id,
-                    .linkshellName = linkshellName,
-                    .linkshellId   = PChar->PLinkshell1->getID(),
-                    .permission    = permission,
+                    .charId      = PChar->id,
+                    .memberName  = memberName,
+                    .linkshellId = PChar->PLinkshell1->getID(),
+                    .permission  = permission,
                 });
             }
         }
@@ -3916,14 +3916,14 @@ void SmallPacket0x077(map_session_data_t* const PSession, CCharEntity* const PCh
         {
             if (PChar->PLinkshell2 != nullptr)
             {
-                const auto linkshellName = escapeString(asStringFromUntrustedSource(data[0x04], 20));
-                const auto permission    = data.ref<uint8>(0x15);
+                const auto memberName = escapeString(asStringFromUntrustedSource(data[0x04], 15));
+                const auto permission = data.ref<uint8>(0x15);
 
                 message::send(ipc::LinkshellRankChange{
-                    .charId        = PChar->id,
-                    .linkshellName = linkshellName,
-                    .linkshellId   = PChar->PLinkshell2->getID(),
-                    .permission    = permission,
+                    .charId      = PChar->id,
+                    .memberName  = memberName,
+                    .linkshellId = PChar->PLinkshell2->getID(),
+                    .permission  = permission,
                 });
             }
         }
