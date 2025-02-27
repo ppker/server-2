@@ -1,7 +1,7 @@
-﻿/*
+/*
 ===========================================================================
 
-  Copyright (c) 2010-2015 Darkstar Dev Teams
+  Copyright (c) 2025 LandSandBoat Dev Teams
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,23 +19,26 @@
 ===========================================================================
 */
 
-#include "common/socket.h"
+#pragma once
 
-#include <cstring>
+#include "world_server.h"
 
-#include "party_invite.h"
-
-#include "entities/charentity.h"
-
-CPartyInvitePacket::CPartyInvitePacket(uint32 id, uint16 targid, const std::string& inviterName, INVITETYPE InviteType)
+class PartySystem
 {
-    this->setType(0xDC);
-    this->setSize(0x20);
+public:
+    PartySystem(WorldServer& worldServer)
+    : worldServer_(worldServer)
+    {
+        std::ignore = worldServer_;
+    }
 
-    ref<uint32>(0x04) = id;
-    ref<uint16>(0x08) = targid;
+    ~PartySystem() = default;
 
-    ref<uint8>(0x0B) = InviteType;
+    bool handleMessage(uint8 messageType, IPPMessage&& message)
+    {
+        return false;
+    }
 
-    std::memcpy(buffer_.data() + 0x0C, inviterName.c_str(), inviterName.size());
-}
+private:
+    WorldServer& worldServer_;
+};

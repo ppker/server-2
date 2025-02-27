@@ -1,7 +1,7 @@
-﻿/*
+/*
 ===========================================================================
 
-  Copyright (c) 2010-2015 Darkstar Dev Teams
+  Copyright (c) 2025 LandSandBoat Dev Teams
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,23 +19,26 @@
 ===========================================================================
 */
 
-#include "common/socket.h"
+#pragma once
 
-#include <cstring>
+#include "common/cbasetypes.h"
+#include "common/ipp.h"
 
-#include "party_invite.h"
+#include <optional>
+#include <unordered_map>
 
-#include "entities/charentity.h"
-
-CPartyInvitePacket::CPartyInvitePacket(uint32 id, uint16 targid, const std::string& inviterName, INVITETYPE InviteType)
+class CharacterCache
 {
-    this->setType(0xDC);
-    this->setSize(0x20);
+public:
+    CharacterCache()  = default;
+    ~CharacterCache() = default;
 
-    ref<uint32>(0x04) = id;
-    ref<uint16>(0x08) = targid;
+    void updateCharacter(uint32 charId, const IPP& ipp);
+    void removeCharacter(uint32 charId);
 
-    ref<uint8>(0x0B) = InviteType;
+    // TODO: Also handle lookup by name
+    auto getCharacterIPP(uint32 charId) -> std::optional<IPP>;
 
-    std::memcpy(buffer_.data() + 0x0C, inviterName.c_str(), inviterName.size());
-}
+private:
+    std::unordered_map<uint32, IPP> charIdToIPP_;
+};

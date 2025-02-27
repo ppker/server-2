@@ -1,7 +1,7 @@
-﻿/*
+/*
 ===========================================================================
 
-  Copyright (c) 2010-2015 Darkstar Dev Teams
+  Copyright (c) 2025 LandSandBoat Dev Teams
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -19,23 +19,24 @@
 ===========================================================================
 */
 
-#include "common/socket.h"
+#include "character_cache.h"
 
-#include <cstring>
-
-#include "party_invite.h"
-
-#include "entities/charentity.h"
-
-CPartyInvitePacket::CPartyInvitePacket(uint32 id, uint16 targid, const std::string& inviterName, INVITETYPE InviteType)
+void CharacterCache::updateCharacter(uint32 charId, const IPP& ipp)
 {
-    this->setType(0xDC);
-    this->setSize(0x20);
+    charIdToIPP_[charId] = ipp;
+}
 
-    ref<uint32>(0x04) = id;
-    ref<uint16>(0x08) = targid;
+void CharacterCache::removeCharacter(uint32 charId)
+{
+    charIdToIPP_.erase(charId);
+}
 
-    ref<uint8>(0x0B) = InviteType;
+auto CharacterCache::getCharacterIPP(uint32 charId) -> std::optional<IPP>
+{
+    if (const auto it = charIdToIPP_.find(charId); it != charIdToIPP_.end())
+    {
+        return it->second;
+    }
 
-    std::memcpy(buffer_.data() + 0x0C, inviterName.c_str(), inviterName.size());
+    return std::nullopt;
 }
