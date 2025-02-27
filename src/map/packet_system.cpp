@@ -3605,7 +3605,7 @@ void SmallPacket0x071(map_session_data_t* const PSession, CCharEntity* const PCh
 
                             // Notify the player they were just kicked -- they are no longer in the DB and party/alliance reloads won't notify them.
                             message::send(ipc::PlayerKick{
-                                .charId = victimId,
+                                .victimId = victimId,
                             });
                         }
                     }
@@ -3622,7 +3622,7 @@ void SmallPacket0x071(map_session_data_t* const PSession, CCharEntity* const PCh
                 const auto victimName = escapeString(asStringFromUntrustedSource(data[0x0C], 15));
 
                 message::send(ipc::LinkshellRemove{
-                    .charId        = PChar->id,
+                    .changerId     = PChar->id,
                     .victimName    = victimName,
                     .linkshellId   = PChar->PLinkshell1->getID(),
                     .linkshellType = PItemLinkshell->GetLSType(),
@@ -3639,7 +3639,7 @@ void SmallPacket0x071(map_session_data_t* const PSession, CCharEntity* const PCh
                 const auto victimName = escapeString(asStringFromUntrustedSource(data[0x0C], 15));
 
                 message::send(ipc::LinkshellRemove{
-                    .charId        = PChar->id,
+                    .changerId     = PChar->id,
                     .victimName    = victimName,
                     .linkshellId   = PChar->PLinkshell2->getID(),
                     .linkshellType = PItemLinkshell->GetLSType(),
@@ -3895,7 +3895,7 @@ void SmallPacket0x077(map_session_data_t* const PSession, CCharEntity* const PCh
                 const auto permission = data.ref<uint8>(0x15);
 
                 message::send(ipc::LinkshellRankChange{
-                    .charId      = PChar->id,
+                    .changerId   = PChar->id,
                     .memberName  = memberName,
                     .linkshellId = PChar->PLinkshell1->getID(),
                     .permission  = permission,
@@ -3911,7 +3911,7 @@ void SmallPacket0x077(map_session_data_t* const PSession, CCharEntity* const PCh
                 const auto permission = data.ref<uint8>(0x15);
 
                 message::send(ipc::LinkshellRankChange{
-                    .charId      = PChar->id,
+                    .changerId   = PChar->id,
                     .memberName  = memberName,
                     .linkshellId = PChar->PLinkshell2->getID(),
                     .permission  = permission,

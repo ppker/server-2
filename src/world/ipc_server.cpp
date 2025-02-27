@@ -524,7 +524,7 @@ void IPCServer::handleMessage_PlayerKick(const IPP& ipp, const ipc::PlayerKick& 
 {
     TracyZoneScoped;
 
-    rerouteMessageToCharId(message.charId, message);
+    rerouteMessageToCharId(message.victimId, message);
 
     // TODO:
     // worldServer_.partySystem_->handleMessage(message);
@@ -534,28 +534,28 @@ void IPCServer::handleMessage_MessageStandard(const IPP& ipp, const ipc::Message
 {
     TracyZoneScoped;
 
-    rerouteMessageToCharId(message.charId, message);
+    rerouteMessageToCharId(message.recipientId, message);
 }
 
 void IPCServer::handleMessage_MessageSystem(const IPP& ipp, const ipc::MessageSystem& message)
 {
     TracyZoneScoped;
 
-    rerouteMessageToCharId(message.charId, message);
+    rerouteMessageToCharId(message.recipientId, message);
 }
 
 void IPCServer::handleMessage_LinkshellRankChange(const IPP& ipp, const ipc::LinkshellRankChange& message)
 {
     TracyZoneScoped;
 
-    rerouteMessageToCharId(message.charId, message);
+    rerouteMessageToCharName(message.memberName, message);
 }
 
 void IPCServer::handleMessage_LinkshellRemove(const IPP& ipp, const ipc::LinkshellRemove& message)
 {
     TracyZoneScoped;
 
-    rerouteMessageToCharId(message.charId, message);
+    rerouteMessageToCharName(message.victimName, message);
 }
 
 void IPCServer::handleMessage_LinkshellSetMessage(const IPP& ipp, const ipc::LinkshellSetMessage& message)
@@ -576,7 +576,7 @@ void IPCServer::handleMessage_KillSession(const IPP& ipp, const ipc::KillSession
 {
     TracyZoneScoped;
 
-    const auto rset = db::preparedStmt("SELECT pos_prevzone, pos_zone from chars where charid = ? LIMIT 1", message.charId);
+    const auto rset = db::preparedStmt("SELECT pos_prevzone, pos_zone from chars where charid = ? LIMIT 1", message.victimId);
 
     // Get zone ID from query and try to send to _just_ the previous zone
     if (rset && rset->rowsCount() && rset->next())

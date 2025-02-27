@@ -818,7 +818,7 @@ int32 recv_parse(int8* buff, size_t* buffsize, sockaddr_in* from, map_session_da
             if (map_session_data->blowfish.status == BLOWFISH_WAITING && map_session_data->PChar->loc.destination != map_session_data->PChar->loc.prevzone)
             {
                 message::send(ipc::KillSession{
-                    .charId = charID,
+                    .victimId = charID,
                 });
             }
         }

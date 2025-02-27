@@ -177,12 +177,12 @@ namespace ipc
 
     struct PlayerKick
     {
-        uint32 charId{};
+        uint32 victimId{};
     };
 
     struct MessageStandard
     {
-        uint32 charId{};
+        uint32 recipientId{};
         MsgStd message{};
         uint32 param0{};
         uint32 param1{};
@@ -190,7 +190,7 @@ namespace ipc
 
     struct MessageSystem
     {
-        uint32 charId{};
+        uint32 recipientId{};
         MsgStd message{};
         uint32 param0{};
         uint32 param1{};
@@ -198,7 +198,7 @@ namespace ipc
 
     struct LinkshellRankChange
     {
-        uint32      charId{};
+        uint32      changerId{};
         std::string memberName{};
         uint32      linkshellId{};
         uint8       permission{};
@@ -206,7 +206,7 @@ namespace ipc
 
     struct LinkshellRemove
     {
-        uint32      charId{};
+        uint32      changerId{};
         std::string victimName{};
         uint32      linkshellId{};
         uint8       linkshellType{};
@@ -230,7 +230,7 @@ namespace ipc
 
     struct KillSession
     {
-        uint32 charId{};
+        uint32 victimId{};
     };
 
     struct ConquestEvent

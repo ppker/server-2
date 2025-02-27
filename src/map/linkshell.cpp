@@ -100,7 +100,7 @@ void CLinkshell::setMessage(const std::string& message, const std::string& poste
             .linkshellName = m_name,
             .poster        = poster,
             .message       = message,
-            .postTime      = postTime,
+            .postTime      = 0, // Indicator to look up the LS message
         });
     }
 }

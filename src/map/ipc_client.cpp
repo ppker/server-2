@@ -186,15 +186,15 @@ void IPCClient::handleMessage_ChatMessageTell(const IPP& ipp, const ipc::ChatMes
         if (settings::get<bool>("map.BLOCK_TELL_TO_HIDDEN_GM") && PChar->m_isGMHidden && !gmSent)
         {
             message::send(ipc::MessageStandard{
-                .charId  = PChar->id,
-                .message = MsgStd::TellNotReceivedOffline,
+                .recipientId = PChar->id,
+                .message     = MsgStd::TellNotReceivedOffline,
             });
         }
         else if (PChar->isAway() && !gmSent)
         {
             message::send(ipc::MessageStandard{
-                .charId  = PChar->id,
-                .message = MsgStd::TellNotReceivedAway,
+                .recipientId = PChar->id,
+                .message     = MsgStd::TellNotReceivedAway,
             });
         }
         else
@@ -205,8 +205,8 @@ void IPCClient::handleMessage_ChatMessageTell(const IPP& ipp, const ipc::ChatMes
     else
     {
         message::send(ipc::MessageStandard{
-            .charId  = PChar->id,
-            .message = MsgStd::TellNotReceivedOffline,
+            .recipientId = PChar->id,
+            .message     = MsgStd::TellNotReceivedOffline,
         });
     }
 }
@@ -363,8 +363,8 @@ void IPCClient::handleMessage_PartyInvite(const IPP& ipp, const ipc::PartyInvite
             (message.inviteType == INVITE_ALLIANCE && (!PInvitee->PParty || PInvitee->PParty->GetLeader() != PInvitee || (PInvitee->PParty && PInvitee->PParty->m_PAlliance))))
         {
             message::send(ipc::MessageStandard{
-                .charId  = message.inviterId,
-                .message = MsgStd::CannotInvite,
+                .recipientId = message.inviterId,
+                .message     = MsgStd::CannotInvite,
             });
 
             return;
@@ -374,8 +374,8 @@ void IPCClient::handleMessage_PartyInvite(const IPP& ipp, const ipc::PartyInvite
         {
             // Target is blocking assistance
             message::send(ipc::MessageSystem{
-                .charId  = message.inviterId,
-                .message = MsgStd::TargetIsCurrentlyBlocking,
+                .recipientId = message.inviterId,
+                .message     = MsgStd::TargetIsCurrentlyBlocking,
             });
 
             // Interaction was blocked
@@ -383,8 +383,8 @@ void IPCClient::handleMessage_PartyInvite(const IPP& ipp, const ipc::PartyInvite
 
             // You cannot invite that person at this time.
             message::send(ipc::MessageStandard{
-                .charId  = message.inviterId,
-                .message = MsgStd::CannotInvite,
+                .recipientId = message.inviterId,
+                .message     = MsgStd::CannotInvite,
             });
 
             return;
@@ -393,8 +393,8 @@ void IPCClient::handleMessage_PartyInvite(const IPP& ipp, const ipc::PartyInvite
         if (PInvitee->StatusEffectContainer->HasStatusEffect(EFFECT_LEVEL_SYNC))
         {
             message::send(ipc::MessageStandard{
-                .charId  = message.inviterId,
-                .message = MsgStd::CannotInviteLevelSync,
+                .recipientId = message.inviterId,
+                .message     = MsgStd::CannotInviteLevelSync,
             });
 
             return;
@@ -441,8 +441,8 @@ void IPCClient::handleMessage_PartyInviteResponse(const IPP& ipp, const ipc::Par
                         else
                         {
                             message::send(ipc::MessageStandard{
-                                .charId  = message.inviteeId,
-                                .message = MsgStd::CannotBeProcessed,
+                                .recipientId = message.inviteeId,
+                                .message     = MsgStd::CannotBeProcessed,
                             });
                         }
                     }
@@ -456,8 +456,8 @@ void IPCClient::handleMessage_PartyInviteResponse(const IPP& ipp, const ipc::Par
                 else // Somehow, the inviter didn't have a party despite the database thinking they did.
                 {
                     message::send(ipc::MessageStandard{
-                        .charId  = message.inviteeId,
-                        .message = MsgStd::CannotBeProcessed,
+                        .recipientId = message.inviteeId,
+                        .message     = MsgStd::CannotBeProcessed,
                     });
                 }
             }
@@ -588,7 +588,7 @@ void IPCClient::handleMessage_PlayerKick(const IPP& ipp, const ipc::PlayerKick& 
     TracyZoneScoped;
 
     // player was kicked and is no longer in alliance/party db -- they need a direct update.
-    if (CCharEntity* PChar = zoneutils::GetChar(message.charId))
+    if (CCharEntity* PChar = zoneutils::GetChar(message.victimId))
     {
         PChar->ReloadPartyInc();
     }
@@ -598,7 +598,7 @@ void IPCClient::handleMessage_MessageStandard(const IPP& ipp, const ipc::Message
 {
     TracyZoneScoped;
 
-    if (CCharEntity* PChar = zoneutils::GetChar(message.charId))
+    if (CCharEntity* PChar = zoneutils::GetChar(message.recipientId))
     {
         PChar->pushPacket(std::make_unique<CMessageStandardPacket>(PChar, message.param0, message.param1, message.message));
     }
@@ -608,7 +608,7 @@ void IPCClient::handleMessage_MessageSystem(const IPP& ipp, const ipc::MessageSy
 {
     TracyZoneScoped;
 
-    if (CCharEntity* PChar = zoneutils::GetChar(message.charId))
+    if (CCharEntity* PChar = zoneutils::GetChar(message.recipientId))
     {
         PChar->pushPacket(std::make_unique<CMessageStandardPacket>(PChar, message.param0, message.param1, message.message));
     }
@@ -680,7 +680,7 @@ void IPCClient::handleMessage_KillSession(const IPP& ipp, const ipc::KillSession
 
     for (const auto [_, session] : map_session_list)
     {
-        if (session->charID == message.charId)
+        if (session->charID == message.victimId)
         {
             sessionToDelete = session;
             break;
@@ -689,7 +689,7 @@ void IPCClient::handleMessage_KillSession(const IPP& ipp, const ipc::KillSession
 
     if (sessionToDelete && sessionToDelete->blowfish.status == BLOWFISH_PENDING_ZONE)
     {
-        DebugSockets(fmt::format("Closing session of charid {} on request of other process", message.charId));
+        DebugSockets(fmt::format("Closing session of charid {} on request of other process", message.victimId));
         map_close_session(server_clock::now(), sessionToDelete);
     }
 }
