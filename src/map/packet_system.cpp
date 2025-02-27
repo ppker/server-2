@@ -3834,14 +3834,11 @@ void SmallPacket0x074(map_session_data_t* const PSession, CCharEntity* const PCh
     {
         ShowDebug("(Party) Building invite packet to send to lobby server for %s", PChar->getName());
 
-        PChar->InvitePending.clean();
-
         message::send(ipc::PartyInviteResponse{
-            .inviteeId     = PChar->InvitePending.id,
-            .inviteeTargId = PChar->InvitePending.targid,
-            .inviterId     = PChar->id,
-            .inviterTargId = PChar->targid,
-            .inviterName   = PChar->getName(),
+            .inviteeId     = PChar->id,
+            .inviteeTargId = PChar->targid,
+            .inviterId     = PChar->InvitePending.id,
+            .inviterTargId = PChar->InvitePending.targid,
             .inviteAnswer  = InviteAnswer,
         });
 

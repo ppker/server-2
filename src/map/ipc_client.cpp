@@ -363,7 +363,7 @@ void IPCClient::handleMessage_PartyInvite(const IPP& ipp, const ipc::PartyInvite
             (message.inviteType == INVITE_ALLIANCE && (!PInvitee->PParty || PInvitee->PParty->GetLeader() != PInvitee || (PInvitee->PParty && PInvitee->PParty->m_PAlliance))))
         {
             message::send(ipc::MessageStandard{
-                .charId  = message.inviteeId,
+                .charId  = message.inviterId,
                 .message = MsgStd::CannotInvite,
             });
 
@@ -383,7 +383,7 @@ void IPCClient::handleMessage_PartyInvite(const IPP& ipp, const ipc::PartyInvite
 
             // You cannot invite that person at this time.
             message::send(ipc::MessageStandard{
-                .charId  = message.inviteeId,
+                .charId  = message.inviterId,
                 .message = MsgStd::CannotInvite,
             });
 
@@ -393,7 +393,7 @@ void IPCClient::handleMessage_PartyInvite(const IPP& ipp, const ipc::PartyInvite
         if (PInvitee->StatusEffectContainer->HasStatusEffect(EFFECT_LEVEL_SYNC))
         {
             message::send(ipc::MessageStandard{
-                .charId  = message.inviteeId,
+                .charId  = message.inviterId,
                 .message = MsgStd::CannotInviteLevelSync,
             });
 
@@ -441,7 +441,7 @@ void IPCClient::handleMessage_PartyInviteResponse(const IPP& ipp, const ipc::Par
                         else
                         {
                             message::send(ipc::MessageStandard{
-                                .charId  = message.inviterId,
+                                .charId  = message.inviteeId,
                                 .message = MsgStd::CannotBeProcessed,
                             });
                         }
@@ -456,7 +456,7 @@ void IPCClient::handleMessage_PartyInviteResponse(const IPP& ipp, const ipc::Par
                 else // Somehow, the inviter didn't have a party despite the database thinking they did.
                 {
                     message::send(ipc::MessageStandard{
-                        .charId  = message.inviterId,
+                        .charId  = message.inviteeId,
                         .message = MsgStd::CannotBeProcessed,
                     });
                 }

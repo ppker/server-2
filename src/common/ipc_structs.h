@@ -146,12 +146,11 @@ namespace ipc
 
     struct PartyInviteResponse
     {
-        uint32      inviteeId{};
-        uint16      inviteeTargId{};
-        uint32      inviterId{};
-        uint16      inviterTargId{};
-        std::string inviterName{};
-        uint8       inviteAnswer{};
+        uint32 inviteeId{};
+        uint16 inviteeTargId{};
+        uint32 inviterId{};
+        uint16 inviterTargId{};
+        uint8  inviteAnswer{};
     };
 
     struct PartyReload
