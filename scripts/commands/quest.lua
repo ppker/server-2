@@ -1,7 +1,7 @@
 -----------------------------------
 -- func: quest <logid> <questid> optional <player-name>, logid and quest ids work by numbers or string.format
 -- desc: quest command built with menu control, can add/delete/complete quests, see status,
--- see vars in the IF format of 'Prog', 'Option', 'Stage', 'Wait'.
+-- see vars in the IF format of 'Prog', 'Option', 'Stage', 'Wait', 'Timer', etc.
 -- Can clear vars in the IF format
 -----------------------------------
 local logIdHelpers = require('scripts/globals/log_ids')
@@ -132,10 +132,7 @@ commandObj.onTrigger = function(player, logId, questId, target)
             {
                 'Clear Vars',
                 function(playerArg)
-                    xi.quest.setVar(targ, logId, questId, 'Prog', 0)
-                    xi.quest.setVar(targ, logId, questId, 'Stage', 0)
-                    xi.quest.setVar(targ, logId, questId, 'Option', 0)
-                    xi.quest.setVar(targ, logId, questId, 'Wait', 0)
+                    targ:clearVarsWithPrefix(xi.quest.getVarPrefix(logId, questId))
                     playerArg:printToPlayer(string.format('Player %s variables for %s Quest %i are cleared', targ:getName(), logName, questId), xi.msg.channel.NS_LINKSHELL3)
                 end,
             },
