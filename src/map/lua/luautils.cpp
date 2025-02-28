@@ -4980,7 +4980,7 @@ namespace luautils
     {
         TracyZoneScoped;
 
-        return callGlobal<bool>("xi.player.onChocoboDig", PChar);
+        return callGlobal<bool>("xi.chocoboDig.start", PChar);
     }
 
     // Loads a Lua function with a fallback hierarchy
