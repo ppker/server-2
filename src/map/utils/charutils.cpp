@@ -6699,17 +6699,6 @@ namespace charutils
         return 0;
     }
 
-    int32 RemoveCharVarsWithTag(CCharEntity* PChar, std::string const& varsTag)
-    {
-        if (PChar == nullptr)
-        {
-            return 0;
-        }
-
-        PChar->clearCharVarsWithPrefix(fmt::sprintf("[%s]", varsTag));
-        return 0;
-    }
-
     void ClearCharVarFromAll(std::string const& varName, bool localOnly)
     {
         if (!localOnly)
