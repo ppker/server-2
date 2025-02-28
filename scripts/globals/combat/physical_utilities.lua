@@ -574,7 +574,7 @@ xi.combat.physical.calculateRangedPDIF = function(actor, target, weaponType, wsA
     local levelDifFactor = 0
 
     if applyLevelCorrection then
-        levelDifFactor = (actor:getMainLvl() - target:getMainLvl()) * 0.05
+        levelDifFactor = (actor:getMainLvl() - target:getMainLvl()) * 0.025
     end
 
     -- Only players suffer from negative level difference.
