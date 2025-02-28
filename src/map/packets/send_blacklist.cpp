@@ -48,9 +48,10 @@ struct GP_BLACK_LIST
 // https://github.com/atom0s/XiPackets/tree/main/world/server/0x0041
 CSendBlacklist::CSendBlacklist(CCharEntity* PChar, std::vector<std::pair<uint32, std::string>> blacklist, bool resetClientBlist, bool lastBlistPacket)
 {
-    GP_BLACK_LIST packet = {};
-    packet.id            = 0x41;
-    packet.size          = roundUpToNearestFour(sizeof(GP_BLACK_LIST)) / 4;
+    auto& packet = *this->as<GP_BLACK_LIST>();
+
+    packet.id   = 0x41;
+    packet.size = roundUpToNearestFour(sizeof(GP_BLACK_LIST)) / 4;
 
     if (resetClientBlist)
     {
@@ -69,6 +70,4 @@ CSendBlacklist::CSendBlacklist(CCharEntity* PChar, std::vector<std::pair<uint32,
         packet.List[i].ID = blacklist[i].first;
         std::memcpy(&packet.List[i].Name, blacklist[i].second.c_str(), std::min<size_t>(blacklist[i].second.length(), 16));
     }
-
-    std::memcpy(buffer_.data(), &packet, packet.size * 4);
 }

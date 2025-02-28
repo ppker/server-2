@@ -204,11 +204,7 @@ struct GP_SERV_SERVERSTATUS
 
 CCharStatusPacket::CCharStatusPacket(CCharEntity* PChar)
 {
-    this->setType(0x37);
-    this->setSize(0x60);
-
-    GP_SERV_SERVERSTATUS packet = {};
-    std::memset(&packet, 0, sizeof(packet));
+    auto& packet = *this->as<GP_SERV_SERVERSTATUS>();
 
     packet.id   = 0x037;
     packet.size = roundUpToNearestFour(sizeof(GP_SERV_SERVERSTATUS)) / 4;
@@ -366,8 +362,6 @@ CCharStatusPacket::CCharStatusPacket(CCharEntity* PChar)
     packet.Flags4 = flags4;
     packet.Flags5 = flags5;
     packet.Flags6 = flags6;
-
-    std::memcpy(&buffer_.data()[0], &packet, sizeof(packet));
 
     // Mog wardrobe enabled bits (apparently used by windower in get_bag_info(N).enabled):
     // 0x01 = Wardrobe 3

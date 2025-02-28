@@ -205,9 +205,6 @@ class CCharUpdatePacket : public CBasicPacket
 public:
     CCharUpdatePacket(CCharEntity* PChar, ENTITYUPDATE type, uint8 updatemask);
     void updateWith(CCharEntity* PChar, ENTITYUPDATE type, uint8 updatemask);
-
-private:
-    GP_SERV_CHAR_PC packet;
 };
 
 #endif

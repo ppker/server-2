@@ -36,7 +36,6 @@ constexpr uint32_t name_size        = offsetof(GP_SERV_CHAR_PC, name[0]);
 
 // This packet should only be constructed in CCharEntity::updateEntityPacket()!
 CCharUpdatePacket::CCharUpdatePacket(CCharEntity* PChar, ENTITYUPDATE type, uint8 updatemask)
-: packet{}
 {
     ref<uint32>(0x04) = PChar->id;
     updateWith(PChar, type, updatemask);
@@ -51,7 +50,8 @@ void CCharUpdatePacket::updateWith(CCharEntity* PChar, ENTITYUPDATE type, uint8 
         ShowError("Unable to update char packet for %d with data from %d", currentId, PChar->id);
         return;
     }
-    ref<uint32>(0x04) = PChar->id;
+
+    auto& packet = *this->as<GP_SERV_CHAR_PC>();
 
     packet.id       = 0x0D;
     packet.size     = roundUpToNearestFour(nonspecific_size) / 4; // Client recieves this and multiplies by 4
@@ -265,6 +265,4 @@ void CCharUpdatePacket::updateWith(CCharEntity* PChar, ENTITYUPDATE type, uint8 
         packet.Flags4.TrialFlag     = 0; // Trial accounts not implemented.
         packet.Flags4.JobMasterFlag = PChar->getMod(Mod::SUPERIOR_LEVEL) == 5 && PChar->m_jobMasterDisplay;
     }
-
-    std::memcpy(&buffer_.data()[0], &packet, sizeof(packet));
 }
