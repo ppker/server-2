@@ -39,11 +39,11 @@ struct GP_SERV_CONFIG
 // https://github.com/atom0s/XiPackets/tree/main/world/server/0x00B4
 CMenuConfigPacket::CMenuConfigPacket(CCharEntity* PChar)
 {
-    auto& packet = *this->as<GP_SERV_CONFIG>();
+    auto packet = this->as<GP_SERV_CONFIG>();
 
-    packet.id       = 0xB4;
-    packet.size     = roundUpToNearestFour(sizeof(GP_SERV_CONFIG)) / 4;
-    packet.ConfData = PChar->playerConfig;
+    packet->id       = 0xB4;
+    packet->size     = roundUpToNearestFour(sizeof(GP_SERV_CONFIG)) / 4;
+    packet->ConfData = PChar->playerConfig;
 
-    std::memcpy(&packet.PartyLanguages, &PChar->search.language, sizeof(packet.PartyLanguages));
+    std::memcpy(&packet->PartyLanguages, &PChar->search.language, sizeof(packet->PartyLanguages));
 }

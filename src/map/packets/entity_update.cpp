@@ -265,13 +265,13 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         return;
     }
 
-    auto& packet = *this->as<GP_SERV_CHAR_NPC>();
+    auto packet = this->as<GP_SERV_CHAR_NPC>();
 
-    packet.id = 0x0E;
-    // packet.size     = roundUpToNearestFour(nonspecific_size) / 4; // Client recieves this and multiplies by 4
+    packet->id = 0x0E;
+    // packet->size     = roundUpToNearestFour(nonspecific_size) / 4; // Client recieves this and multiplies by 4
 
-    packet.UniqueNo = PEntity->id;
-    packet.ActIndex = PEntity->targid; // 0x0E entity updates are valid for 0 to 1023 and 1792 to 2303
+    packet->UniqueNo = PEntity->id;
+    packet->ActIndex = PEntity->targid; // 0x0E entity updates are valid for 0 to 1023 and 1792 to 2303
 
     ref<uint8>(0x0A) |= updatemask;
 
@@ -482,53 +482,53 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
     }
 
     // TODO: Fill this in
-    switch (packet.SubKind)
+    switch (packet->SubKind)
     {
         case 0:
         {
-            auto& data  = *reinterpret_cast<packet_data_0*>(packet.Data);
+            auto data   = ::as<packet_data_0>(packet->Data);
             std::ignore = data;
         }
         break;
         case 1:
         {
-            auto& data  = *reinterpret_cast<packet_data_1*>(packet.Data);
+            auto data   = ::as<packet_data_1>(packet->Data);
             std::ignore = data;
         }
         break;
         case 2:
         {
-            auto& data  = *reinterpret_cast<packet_data_2*>(packet.Data);
+            auto data   = ::as<packet_data_2>(packet->Data);
             std::ignore = data;
         }
         break;
         case 3:
         {
-            auto& data  = *reinterpret_cast<packet_data_3*>(packet.Data);
+            auto data   = ::as<packet_data_3>(packet->Data);
             std::ignore = data;
         }
         break;
         case 4:
         {
-            auto& data  = *reinterpret_cast<packet_data_4*>(packet.Data);
+            auto data   = ::as<packet_data_4>(packet->Data);
             std::ignore = data;
         }
         break;
         case 5:
         {
-            auto& data  = *reinterpret_cast<packet_data_5*>(packet.Data);
+            auto data   = ::as<packet_data_5>(packet->Data);
             std::ignore = data;
         }
         break;
         case 6:
         {
-            auto& data  = *reinterpret_cast<packet_data_6*>(packet.Data);
+            auto data   = ::as<packet_data_6>(packet->Data);
             std::ignore = data;
         }
         break;
         case 7:
         {
-            auto& data  = *reinterpret_cast<packet_data_7*>(packet.Data);
+            auto data   = ::as<packet_data_7>(packet->Data);
             std::ignore = data;
         }
     }
