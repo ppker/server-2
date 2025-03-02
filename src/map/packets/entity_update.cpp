@@ -139,6 +139,53 @@ namespace
         uint32_t unknown_3_7 : 1;      // PS2: (New; did not exist.)
     };
 
+    struct packet_data_0
+    {
+        uint16_t model_id;
+    };
+
+    struct packet_data_1
+    {
+        uint16_t GrapIDTbl[9];
+    };
+
+    struct packet_data_2
+    {
+        uint16_t unused;
+        uint32_t DoorId;
+    };
+
+    struct packet_data_3
+    {
+        uint16_t unused;
+        uint32_t DoorId;
+        uint32_t Time;
+        uint32_t EndTime;
+    };
+
+    struct packet_data_4
+    {
+        uint16_t unused;
+        uint32_t DoorId;
+        uint32_t Time;
+        uint32_t EndTime;
+    };
+
+    struct packet_data_5
+    {
+        uint16_t model_id;
+    };
+
+    struct packet_data_6
+    {
+        uint16_t model_id;
+    };
+
+    struct packet_data_7
+    {
+        uint16_t GrapIDTbl[9];
+    };
+
     // PS2: GP_SERV_CHAR_NPC
     struct GP_SERV_CHAR_NPC
     {
@@ -169,7 +216,9 @@ namespace
         uint16_t Status : 13; // PS2: Status
 
         // PS2: GP_SERV_CHAR_NPC remaining fields.
-        // uint8_t Data[]; // PS2: (New; did not exist.) (Data that fills the rest of the packet is based on the SendFlg and SubKind values!)
+        // This will be treated as packet_data_0, packet_data_1, etc. based on the SubKind value.
+        // It is set to the maximum possible size.
+        uint8_t Data[18]; // PS2: (New; did not exist.) (Data that fills the rest of the packet is based on the SendFlg and SubKind values!)
     };
 
     // constexpr uint32_t nonspecific_size = offsetof(GP_SERV_CHAR_PC, MonstrosityFlags);
@@ -430,6 +479,58 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
             std::memcpy(buffer_.data() + 0x34, name.data(), name.size());
         }
         break;
+    }
+
+    // TODO: Fill this in
+    switch (packet.SubKind)
+    {
+        case 0:
+        {
+            auto& data  = *reinterpret_cast<packet_data_0*>(packet.Data);
+            std::ignore = data;
+        }
+        break;
+        case 1:
+        {
+            auto& data  = *reinterpret_cast<packet_data_1*>(packet.Data);
+            std::ignore = data;
+        }
+        break;
+        case 2:
+        {
+            auto& data  = *reinterpret_cast<packet_data_2*>(packet.Data);
+            std::ignore = data;
+        }
+        break;
+        case 3:
+        {
+            auto& data  = *reinterpret_cast<packet_data_3*>(packet.Data);
+            std::ignore = data;
+        }
+        break;
+        case 4:
+        {
+            auto& data  = *reinterpret_cast<packet_data_4*>(packet.Data);
+            std::ignore = data;
+        }
+        break;
+        case 5:
+        {
+            auto& data  = *reinterpret_cast<packet_data_5*>(packet.Data);
+            std::ignore = data;
+        }
+        break;
+        case 6:
+        {
+            auto& data  = *reinterpret_cast<packet_data_6*>(packet.Data);
+            std::ignore = data;
+        }
+        break;
+        case 7:
+        {
+            auto& data  = *reinterpret_cast<packet_data_7*>(packet.Data);
+            std::ignore = data;
+        }
     }
 
     // Slightly bigger packet to encompass both name and model on first spawn, and only for dynamic entities.
