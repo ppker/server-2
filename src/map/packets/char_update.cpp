@@ -245,15 +245,10 @@ void CCharUpdatePacket::updateWith(CCharEntity* PChar, ENTITYUPDATE type, uint8 
     }
     else // Update and OR the flags together
     {
-        // static_cast doesn't set the bits the way we need it to, so do some std::memcpy
-        uint8 tempSendFlg = {};
-        std::memcpy(&tempSendFlg, &packet.SendFlg, sizeof(charUpdateFlags::sendflags_t));
-
-        // OR the update mask with the previously-calculated mask...
-        tempSendFlg |= updatemask;
-
-        // set the flags back
-        std::memcpy(&packet.SendFlg, &tempSendFlg, sizeof(charUpdateFlags::sendflags_t));
+        // sendflags_t is a uint8 under the hood, so we can
+        // treat it like one here so we can OR onto it.
+        auto& flags = *reinterpret_cast<uint8*>(&packet.SendFlg);
+        flags |= updatemask;
     }
 
     if (packet.SendFlg.Position)

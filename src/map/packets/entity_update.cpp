@@ -1,4 +1,4 @@
-/*
+﻿/*
 ===========================================================================
 
   Copyright (c) 2010-2015 Darkstar Dev Teams
@@ -177,24 +177,25 @@ namespace
     // constexpr uint32_t model_size       = offsetof(GP_SERV_CHAR_PC, name[0]);
     // constexpr uint32_t name_size        = offsetof(GP_SERV_CHAR_PC, name[0]);
 
-std::string getTransportNPCName(CBaseEntity* PEntity)
-{
-    bool isElevator = PEntity->look.size == MODEL_ELEVATOR;
-    auto strSize    = isElevator ? 10 : 8;
-
-    std::string str(strSize, '\0');
-    std::memcpy(str.data() + 0, PEntity->name.data(), PEntity->name.size());
-
-    auto timestamp = PEntity->GetLocalVar("TransportTimestamp");
-    std::memcpy(str.data() + 4, &timestamp, 4);
-
-    if (isElevator)
+    std::string getTransportNPCName(CBaseEntity* PEntity)
     {
-        std::memset(str.data() + 8, 8, 1);
-    }
+        bool isElevator = PEntity->look.size == MODEL_ELEVATOR;
+        auto strSize    = isElevator ? 10 : 8;
 
-    return str;
-}
+        std::string str(strSize, '\0');
+        std::memcpy(str.data() + 0, PEntity->name.data(), PEntity->name.size());
+
+        auto timestamp = PEntity->GetLocalVar("TransportTimestamp");
+        std::memcpy(str.data() + 4, &timestamp, 4);
+
+        if (isElevator)
+        {
+            std::memset(str.data() + 8, 8, 1);
+        }
+
+        return str;
+    }
+} // namespace
 
 CEntityUpdatePacket::CEntityUpdatePacket(CBaseEntity* PEntity, ENTITYUPDATE type, uint8 updatemask)
 {
@@ -215,7 +216,14 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
         return;
     }
 
-    ref<uint16>(0x08) = PEntity->targid; // 0x0E entity updates are valid for 0 to 1023 and 1792 to 2303
+    auto& packet = *this->as<GP_SERV_CHAR_NPC>();
+
+    packet.id = 0x0E;
+    // packet.size     = roundUpToNearestFour(nonspecific_size) / 4; // Client recieves this and multiplies by 4
+
+    packet.UniqueNo = PEntity->id;
+    packet.ActIndex = PEntity->targid; // 0x0E entity updates are valid for 0 to 1023 and 1792 to 2303
+
     ref<uint8>(0x0A) |= updatemask;
 
     switch (type)
@@ -339,7 +347,7 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
                 // TODO: make this a MOBMOD or some other way to set this flag without hardcoding.
                 if (PMob->getZone() == ZONEID::ZONE_PSOXJA)
                 {
-                    // Enable CliPriorityFlag, see https://github.com/atom0s/XiPackets/tree/main/world/server/0x0037 (documentation for 0x00E is not on the repo yet)
+                    // Enable CliPriorityFlag
                     ref<uint8>(0x28) |= 0x20;
                 }
 
@@ -352,7 +360,7 @@ void CEntityUpdatePacket::updateWith(CBaseEntity* PEntity, ENTITYUPDATE type, ui
             // TODO: make flags struct for 0x00E when it's decompped
             if (PEntity->priorityRender)
             {
-                // Enable CliPriorityFlag, see https://github.com/atom0s/XiPackets/tree/main/world/server/0x0037 (documentation for 0x00E is not on the repo yet)
+                // Enable CliPriorityFlag
                 ref<uint8>(0x28) |= 0x20;
             }
 
