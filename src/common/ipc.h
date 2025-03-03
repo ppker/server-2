@@ -71,8 +71,8 @@ namespace ipc
     template <typename T>
     auto toBytesWithHeader(const T& object) -> std::vector<uint8>
     {
-        auto bytes         = std::vector<uint8>();
-        auto bytes_written = alpaca::serialize(object, bytes);
+        auto       bytes         = std::vector<uint8>();
+        const auto bytes_written = alpaca::serialize(object, bytes);
 
         const auto type = static_cast<uint8>(EnumTypeV<T>);
 
@@ -91,14 +91,14 @@ namespace ipc
             return std::nullopt;
         }
 
-        auto ec     = std::error_code{};
-        auto object = alpaca::deserialize<T>(message, ec);
+        auto       ec     = std::error_code{};
+        const auto object = alpaca::deserialize<T>(message, ec);
         if (ec)
         {
             return std::nullopt;
         }
 
-        return std::move(object);
+        return object;
     }
 
     template <typename T>
@@ -117,13 +117,13 @@ namespace ipc
 
         const auto bytes = std::span(message.data() + 1, message.size() - 1);
 
-        auto ec     = std::error_code{};
-        auto object = alpaca::deserialize<T>(bytes, ec);
+        auto       ec     = std::error_code{};
+        const auto object = alpaca::deserialize<T>(bytes, ec);
         if (ec)
         {
             return std::nullopt;
         }
 
-        return std::move(object);
+        return object;
     }
 } // namespace ipc
