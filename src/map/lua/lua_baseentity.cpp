@@ -612,6 +612,28 @@ int32 CLuaBaseEntity::getCharVar(std::string const& varName)
 }
 
 /************************************************************************
+ *  Function: getCharVarsWithPrefix()
+ *  Purpose :
+ *  Example : local vars = player:getCharVarsWithPrefix("[ZM]")
+ *  Notes   :
+ ************************************************************************/
+
+auto CLuaBaseEntity::getCharVarsWithPrefix(std::string const& prefix) -> sol::table
+{
+    sol::table table = lua.create_table();
+
+    if (auto* PChar = dynamic_cast<CCharEntity*>(m_PBaseEntity))
+    {
+        for (auto const& [varName, value] : PChar->getCharVarsWithPrefix(prefix))
+        {
+            table[varName] = value;
+        }
+    }
+
+    return table;
+}
+
+/************************************************************************
  *  Function: setCharVar()
  *  Purpose : Updates PC's variable to an explicit value
  *  Example : player:setCharVar("[ZM]Status", 4)
@@ -18866,6 +18888,7 @@ void CLuaBaseEntity::Register()
 
     // Variables
     SOL_REGISTER("getCharVar", CLuaBaseEntity::getCharVar);
+    SOL_REGISTER("getCharVarsWithPrefix", CLuaBaseEntity::getCharVarsWithPrefix);
     SOL_REGISTER("setCharVar", CLuaBaseEntity::setCharVar);
     SOL_REGISTER("setCharVarExpiration", CLuaBaseEntity::setCharVarExpiration);
     SOL_REGISTER("getVar", CLuaBaseEntity::getCharVar); // Compatibility binding

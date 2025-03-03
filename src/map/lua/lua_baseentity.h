@@ -69,6 +69,7 @@ public:
 
     // Variables
     int32  getCharVar(std::string const& varName);
+    auto   getCharVarsWithPrefix(std::string const& prefix) -> sol::table;
     void   setCharVar(std::string const& varname, int32 value, sol::object const& expiry);
     void   setCharVarExpiration(std::string const& varName, uint32 expiry); // Sets character variable expiration timestamp
     void   incrementCharVar(std::string const& varname, int32 value);       // Increments/decrements/sets a character variable
