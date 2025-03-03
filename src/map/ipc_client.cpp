@@ -124,7 +124,7 @@ void IPCClient::handleIncomingMessages()
         // TODO: Make an IPP for the world server, so we can use it here
         DebugIPCFmt("Incoming {} message", msgType);
 
-        ipc::IIPCMessageHandler::handleMessage(IPP(), { static_cast<uint8*>(out.data()), out.size() });
+        handleMessage(IPP(), { static_cast<uint8*>(out.data()), out.size() });
     }
 }
 

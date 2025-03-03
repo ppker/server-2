@@ -74,7 +74,7 @@ namespace ipc
         auto bytes         = std::vector<uint8>();
         auto bytes_written = alpaca::serialize(object, bytes);
 
-        const auto type = static_cast<uint8>(getEnumType<T>());
+        const auto type = static_cast<uint8>(EnumTypeV<T>);
 
         std::vector<uint8> message(1 + bytes_written);
         message[0] = type;
@@ -110,7 +110,7 @@ namespace ipc
         }
 
         const auto type = static_cast<MessageType>(message[0]);
-        if (type != getEnumType<T>())
+        if (type != EnumTypeV<T>)
         {
             return std::nullopt;
         }
