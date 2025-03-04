@@ -6943,248 +6943,275 @@ INSERT INTO `mob_droplist` VALUES (848,4,0,1000,642,0);         -- Chunk Of Zinc
 -- 849-850 Available
 
 -- ZoneID: 213 - Flying Manta
-INSERT INTO `mob_droplist` VALUES (851,0,0,1000,876,250); -- Manta Skin (25.0%)
-INSERT INTO `mob_droplist` VALUES (851,0,0,1000,888,140); -- Seashell (14.0%)
-INSERT INTO `mob_droplist` VALUES (851,0,0,1000,4484,80); -- Shall Shell (8.0%)
-INSERT INTO `mob_droplist` VALUES (851,0,0,1000,1056,20); -- Onzozo Chest Key (2.0%)
+INSERT INTO `mob_droplist` VALUES (851,0,0,1000,876,@COMMON);   -- Manta Skin (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (851,0,0,1000,888,@UNCOMMON); -- Seashell (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (851,0,0,1000,4484,@RARE);    -- Shall Shell (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (851,0,0,1000,1056,@VRARE);   -- Onzozo Chest Key (Very Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (851,4,0,1000,888,0);         -- Seashell (Despoil)
 
 -- ZoneID:   1 - Flytrap
 -- ZoneID:   2 - Battrap
 -- ZoneID:   2 - Birdtrap
 -- ZoneID:   2 - Flytrap
 -- ZoneID:  30 - Hawkertrap
+-- ZoneID:  68 - Puktrap
 -- ZoneID:  77 - Puktrap
 -- ZoneID:  79 - Puktrap
 INSERT INTO `mob_droplist` VALUES (852,0,0,1000,1617,@RARE); -- Flytrap Leaf (Rare, 5%)
 INSERT INTO `mob_droplist` VALUES (852,4,0,1000,1617,0);     -- Flytrap Leaf (Despoil)
 
 -- ZoneID: 193 - Fly Agaric
-INSERT INTO `mob_droplist` VALUES (853,0,0,1000,4374,190); -- Sleepshroom (19.0%)
-INSERT INTO `mob_droplist` VALUES (853,2,0,1000,4374,0);   -- Sleepshroom (Steal)
+INSERT INTO `mob_droplist` VALUES (853,0,0,1000,4374,@COMMON); -- Sleepshroom (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (853,2,0,1000,4374,0);       -- Sleepshroom (Steal)
+INSERT INTO `mob_droplist` VALUES (853,4,0,1000,4373,0);       -- Woozyshroom (Despoil)
+INSERT INTO `mob_droplist` VALUES (853,4,0,1000,4374,0);       -- Sleepshroom (Despoil)
+INSERT INTO `mob_droplist` VALUES (853,4,0,1000,4375,0);       -- Danceshroom (Despoil)
+INSERT INTO `mob_droplist` VALUES (853,4,0,1000,5680,0);       -- Agaricus Mushroom (Despoil)
 
 -- ZoneID: 196 - Fly Agaric
-INSERT INTO `mob_droplist` VALUES (854,0,0,1000,4374,260); -- Sleepshroom (26.0%)
-INSERT INTO `mob_droplist` VALUES (854,0,0,1000,4373,130); -- Woozyshroom (13.0%)
-INSERT INTO `mob_droplist` VALUES (854,2,0,1000,4374,0);   -- Sleepshroom (Steal)
+INSERT INTO `mob_droplist` VALUES (854,0,0,1000,4374,@COMMON);   -- Sleepshroom (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (854,0,0,1000,4373,@UNCOMMON); -- Woozyshroom (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (854,2,0,1000,4374,0);         -- Sleepshroom (Steal)
+INSERT INTO `mob_droplist` VALUES (854,4,0,1000,4373,0);         -- Woozyshroom (Despoil)
+INSERT INTO `mob_droplist` VALUES (854,4,0,1000,4374,0);         -- Sleepshroom (Despoil)
+INSERT INTO `mob_droplist` VALUES (854,4,0,1000,4375,0);         -- Danceshroom (Despoil)
+INSERT INTO `mob_droplist` VALUES (854,4,0,1000,5680,0);         -- Agaricus Mushroom (Despoil)
 
 -- ZoneID:  25 - Fomor Paladin
 -- ZoneID:  25 - Fomor Bard
 -- ZoneID:  25 - Fomor Red Mage
-INSERT INTO `mob_droplist` VALUES (855,0,0,1000,1843,@UNCOMMON); -- Square Of Spectral Crimson (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (855,0,0,1000,1843,@RARE); -- Square Of Spectral Crimson (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (855,0,0,1000,940,@VRARE); -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  27 - Fomor Bard
-INSERT INTO `mob_droplist` VALUES (856,0,0,1000,15381,290);  -- Libra Subligar (29.0%)
-INSERT INTO `mob_droplist` VALUES (856,0,0,1000,940,110);    -- Revival Tree Root (11.0%)
-INSERT INTO `mob_droplist` VALUES (856,0,0,1000,1660,@RARE); -- Bronze Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (856,0,0,1000,15381,@COMMON); -- Libra Subligar (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (856,0,0,1000,1660,@RARE);    -- Bronze Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (856,0,0,1000,940,@VRARE);    -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  28 - Fomor Bard
-INSERT INTO `mob_droplist` VALUES (857,0,0,1000,1659,70);  -- Coral Crest Key (7.0%)
-INSERT INTO `mob_droplist` VALUES (857,0,0,1000,15381,40); -- Libra Subligar (4.0%)
-INSERT INTO `mob_droplist` VALUES (857,0,0,1000,1061,30);  -- Sacrarium Chest Key (3.0%)
+INSERT INTO `mob_droplist` VALUES (857,0,0,1000,1659,@UNCOMMON); -- Coral Crest Key (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (857,0,0,1000,15381,@RARE);    -- Libra Subligar (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (857,0,0,1000,1061,@RARE);     -- Sacrarium Chest Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (857,0,0,1000,940,@VRARE);     -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  24 - Fomor Beastmaster
--- ZoneID:  52 - Fomor Bard
+-- ZoneID:  24 - Fomor Ranger
+-- ZoneID:  24 - Fomor Summoner
+-- ZoneID:  24 - Fomor Thief
+-- ZoneID:  25 - Fomor Summoner
+-- ZoneID:  175 - Eastern Spriggan
+-- ZoneID:  175 - Northern Spriggan
+-- ZoneID:  175 - Southern Spriggan
+-- ZoneID:  175 - Western Spriggan
 INSERT INTO `mob_droplist` VALUES (858,0,0,1000,940,@VRARE); -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  27 - Fomor Beastmaster
-INSERT INTO `mob_droplist` VALUES (859,0,0,1000,15388,@VCOMMON); -- Ophiuchus Subligar (Very Common, 24%)
-INSERT INTO `mob_droplist` VALUES (859,0,0,1000,1660,70);        -- Bronze Key (7.0%)
+INSERT INTO `mob_droplist` VALUES (859,0,0,1000,15388,@COMMON); -- Ophiuchus Subligar (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (859,0,0,1000,1660,@RARE);    -- Bronze Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (859,0,0,1000,940,@VRARE);    -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  28 - Fomor Beastmaster
-INSERT INTO `mob_droplist` VALUES (860,0,0,1000,1659,80);    -- Coral Crest Key (8.0%)
-INSERT INTO `mob_droplist` VALUES (860,0,0,1000,15388,80);   -- Ophiuchus Subligar (8.0%)
-INSERT INTO `mob_droplist` VALUES (860,0,0,1000,1061,30);    -- Sacrarium Chest Key (3.0%)
-INSERT INTO `mob_droplist` VALUES (860,0,0,1000,940,@VRARE); -- Revival Tree Root (Very Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (860,0,0,1000,1659,@UNCOMMON); -- Coral Crest Key (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (860,0,0,1000,15388,@RARE);    -- Ophiuchus Subligar (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (860,0,0,1000,1061,@RARE);     -- Sacrarium Chest Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (860,0,0,1000,940,@VRARE);     -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  27 - Fomor Black Mage
-INSERT INTO `mob_droplist` VALUES (861,0,0,1000,15375,230); -- Aries Subligar (23.0%)
+INSERT INTO `mob_droplist` VALUES (861,0,0,1000,15375,@COMMON); -- Aries Subligar (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (861,0,0,1000,940,@VRARE);    -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  28 - Fomor Black Mage
 INSERT INTO `mob_droplist` VALUES (862,0,0,1000,1659,@UNCOMMON); -- Coral Crest Key (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (862,0,0,1000,15375,60);       -- Aries Subligar (6.0%)
-INSERT INTO `mob_droplist` VALUES (862,0,0,1000,940,30);         -- Revival Tree Root (3.0%)
-INSERT INTO `mob_droplist` VALUES (862,0,0,1000,1061,@VRARE);    -- Sacrarium Chest Key (Very Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (862,0,0,1000,15375,@RARE);    -- Aries Subligar (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (862,0,0,1000,1061,@RARE);     -- Sacrarium Chest Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (862,0,0,1000,940,@VRARE);     -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  27 - Fomor Dark Knight
-INSERT INTO `mob_droplist` VALUES (863,0,0,1000,15383,250);  -- Sagittarius Subligar (25.0%)
-INSERT INTO `mob_droplist` VALUES (863,0,0,1000,1660,60);    -- Bronze Key (6.0%)
-INSERT INTO `mob_droplist` VALUES (863,0,0,1000,940,@VRARE); -- Revival Tree Root (Very Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (863,0,0,1000,15383,@COMMON); -- Sagittarius Subligar (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (863,0,0,1000,1660,@RARE);    -- Bronze Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (863,0,0,1000,940,@VRARE);    -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  28 - Fomor Dark Knight
-INSERT INTO `mob_droplist` VALUES (864,0,0,1000,1659,80);  -- Coral Crest Key (8.0%)
-INSERT INTO `mob_droplist` VALUES (864,0,0,1000,15383,80); -- Sagittarius Subligar (8.0%)
-INSERT INTO `mob_droplist` VALUES (864,0,0,1000,940,20);   -- Revival Tree Root (2.0%)
-INSERT INTO `mob_droplist` VALUES (864,0,0,1000,1061,20);  -- Sacrarium Chest Key (2.0%)
+INSERT INTO `mob_droplist` VALUES (864,0,0,1000,1659,@UNCOMMON); -- Coral Crest Key (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (864,0,0,1000,15383,@RARE);    -- Sagittarius Subligar (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (864,0,0,1000,1061,@RARE);     -- Sacrarium Chest Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (864,0,0,1000,940,@VRARE);     -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  27 - Fomor Dragoon
-INSERT INTO `mob_droplist` VALUES (865,0,0,1000,15379,320); -- Leo Subligar (32.0%)
-INSERT INTO `mob_droplist` VALUES (865,0,0,1000,940,160);   -- Revival Tree Root (16.0%)
-INSERT INTO `mob_droplist` VALUES (865,0,0,1000,1660,60);   -- Bronze Key (6.0%)
+INSERT INTO `mob_droplist` VALUES (865,0,0,1000,15379,@COMMON); -- Leo Subligar (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (865,0,0,1000,1660,@RARE);    -- Bronze Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (865,0,0,1000,940,@VRARE);    -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  28 - Fomor Dragoon
-INSERT INTO `mob_droplist` VALUES (866,0,0,1000,1659,200); -- Coral Crest Key (20.0%)
-INSERT INTO `mob_droplist` VALUES (866,0,0,1000,15379,90); -- Leo Subligar (9.0%)
-INSERT INTO `mob_droplist` VALUES (866,0,0,1000,1061,40);  -- Sacrarium Chest Key (4.0%)
-INSERT INTO `mob_droplist` VALUES (866,0,0,1000,940,30);   -- Revival Tree Root (3.0%)
+INSERT INTO `mob_droplist` VALUES (866,0,0,1000,1659,@UNCOMMON); -- Coral Crest Key (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (866,0,0,1000,15379,@RARE);    -- Leo Subligar (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (866,0,0,1000,1061,@RARE);     -- Sacrarium Chest Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (866,0,0,1000,940,@VRARE);     -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  24 - Fomor Monk
-INSERT INTO `mob_droplist` VALUES (867,0,0,1000,1698,60); -- Extra-Fine File (6.0%)
+-- ZoneID:  24 - Fomor Paladin
+-- ZoneID:  24 - Fomor Samurai
+-- ZoneID:  24 - Fomor Warrior
+INSERT INTO `mob_droplist` VALUES (867,0,0,1000,1698,@RARE); -- Extra-Fine File (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (867,0,0,1000,940,@VRARE); -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  27 - Fomor Monk
-INSERT INTO `mob_droplist` VALUES (868,0,0,1000,15385,@UNCOMMON); -- Aquarius Subligar (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (868,0,0,1000,1660,60);         -- Bronze Key (6.0%)
+INSERT INTO `mob_droplist` VALUES (868,0,0,1000,15385,@COMMON); -- Aquarius Subligar (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (868,0,0,1000,1660,@RARE);    -- Bronze Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (868,0,0,1000,940,@VRARE);    -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  28 - Fomor Monk
-INSERT INTO `mob_droplist` VALUES (869,0,0,1000,15385,@UNCOMMON); -- Aquarius Subligar (Uncommon, 10%)
 INSERT INTO `mob_droplist` VALUES (869,0,0,1000,1659,80);         -- Coral Crest Key (8.0%)
+INSERT INTO `mob_droplist` VALUES (869,0,0,1000,15385,@UNCOMMON); -- Aquarius Subligar (Uncommon, 10%)
 INSERT INTO `mob_droplist` VALUES (869,0,0,1000,940,30);          -- Revival Tree Root (3.0%)
 INSERT INTO `mob_droplist` VALUES (869,0,0,1000,1061,20);         -- Sacrarium Chest Key (2.0%)
 
 -- ZoneID:  27 - Fomor Ninja
-INSERT INTO `mob_droplist` VALUES (870,0,0,1000,15376,350);      -- Taurus Subligar (35.0%)
-INSERT INTO `mob_droplist` VALUES (870,0,0,1000,1738,300);       -- Shakudo Ingot (30.0%)
-INSERT INTO `mob_droplist` VALUES (870,0,0,1000,1738,@COMMON);   -- Shakudo Ingot (Common, 15%)
-INSERT INTO `mob_droplist` VALUES (870,0,0,1000,1660,@UNCOMMON); -- Bronze Key (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (870,0,0,1000,15376,@COMMON);  -- Taurus Subligar (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (870,0,0,1000,1660,@RARE);     -- Bronze Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (870,0,0,1000,1738,@UNCOMMON); -- Shakudo Ingot (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (870,0,0,1000,1738,@UNCOMMON); -- Shakudo Ingot (Uncommon, 10%)
 INSERT INTO `mob_droplist` VALUES (870,0,0,1000,940,@VRARE);     -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  28 - Fomor Ninja
-INSERT INTO `mob_droplist` VALUES (871,0,0,1000,1738,590);        -- Shakudo Ingot (59.0%)
-INSERT INTO `mob_droplist` VALUES (871,0,0,1000,15376,@UNCOMMON); -- Taurus Subligar (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (871,0,0,1000,1659,80);         -- Coral Crest Key (8.0%)
-INSERT INTO `mob_droplist` VALUES (871,0,0,1000,1061,20);         -- Sacrarium Chest Key (2.0%)
+INSERT INTO `mob_droplist` VALUES (871,0,0,1000,1659,@UNCOMMON); -- Coral Crest Key (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (871,0,0,1000,15376,@RARE);    -- Taurus Subligar (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (871,0,0,1000,1738,@COMMON);   -- Shakudo Ingot (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (871,0,0,1000,1738,@COMMON);   -- Shakudo Ingot (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (871,0,0,1000,1061,@RARE);     -- Sacrarium Chest Key (Rare, 5%)
 
--- ZoneID:  24 - Fomor Ranger
 -- ZoneID:  28 - Fomor Paladin
-INSERT INTO `mob_droplist` VALUES (872,0,0,1000,15386,80); -- Pisces Subligar (8.0%)
-INSERT INTO `mob_droplist` VALUES (872,0,0,1000,1659,60);  -- Coral Crest Key (6.0%)
-INSERT INTO `mob_droplist` VALUES (872,0,0,1000,1061,40);  -- Sacrarium Chest Key (4.0%)
-INSERT INTO `mob_droplist` VALUES (872,0,0,1000,940,30);   -- Revival Tree Root (3.0%)
+INSERT INTO `mob_droplist` VALUES (872,0,0,1000,1659,@UNCOMMON); -- Coral Crest Key (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (872,0,0,1000,15386,@RARE);    -- Pisces Subligar (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (872,0,0,1000,1061,@RARE);     -- Sacrarium Chest Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (872,0,0,1000,940,@VRARE);     -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  27 - Fomor Ranger
-INSERT INTO `mob_droplist` VALUES (873,0,0,1000,15380,@COMMON); -- Virgo Subligar (Common, 15%)
-INSERT INTO `mob_droplist` VALUES (873,0,0,1000,1660,60);       -- Bronze Key (6.0%)
-INSERT INTO `mob_droplist` VALUES (873,0,0,1000,1739,40);       -- Square Of Balloon Cloth (4.0%)
-INSERT INTO `mob_droplist` VALUES (873,0,0,1000,1739,20);       -- Square Of Balloon Cloth (2.0%)
-INSERT INTO `mob_droplist` VALUES (873,0,0,1000,940,@VRARE);    -- Revival Tree Root (Very Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (873,0,0,1000,15380,@COMMON);  -- Virgo Subligar (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (873,0,0,1000,1660,@RARE);     -- Bronze Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (873,0,0,1000,1739,@UNCOMMON); -- Square Of Balloon Cloth (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (873,0,0,1000,1739,@UNCOMMON); -- Square Of Balloon Cloth (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (873,0,0,1000,940,@VRARE);     -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  28 - Fomor Ranger
-INSERT INTO `mob_droplist` VALUES (874,0,0,1000,1739,660); -- Square Of Balloon Cloth (66.0%)
-INSERT INTO `mob_droplist` VALUES (874,0,0,1000,1739,330); -- Square Of Balloon Cloth (33.0%)
-INSERT INTO `mob_droplist` VALUES (874,0,0,1000,1659,140); -- Coral Crest Key (14.0%)
-INSERT INTO `mob_droplist` VALUES (874,0,0,1000,15380,40); -- Virgo Subligar (4.0%)
-INSERT INTO `mob_droplist` VALUES (874,0,0,1000,1061,30);  -- Sacrarium Chest Key (3.0%)
-INSERT INTO `mob_droplist` VALUES (874,0,0,1000,940,20);   -- Revival Tree Root (2.0%)
+INSERT INTO `mob_droplist` VALUES (874,0,0,1000,1659,@UNCOMMON); -- Coral Crest Key (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (874,0,0,1000,15380,@RARE);    -- Virgo Subligar (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (874,0,0,1000,1739,@UNCOMMON); -- Square Of Balloon Cloth (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (874,0,0,1000,1739,@UNCOMMON); -- Square Of Balloon Cloth (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (874,0,0,1000,1061,@RARE);     -- Sacrarium Chest Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (874,0,0,1000,940,@VRARE);     -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  27 - Fomor Red Mage
-INSERT INTO `mob_droplist` VALUES (875,0,0,1000,15382,190); -- Scorpius Subligar (19.0%)
-INSERT INTO `mob_droplist` VALUES (875,0,0,1000,1660,60);   -- Bronze Key (6.0%)
-INSERT INTO `mob_droplist` VALUES (875,0,0,1000,940,20);    -- Revival Tree Root (2.0%)
+INSERT INTO `mob_droplist` VALUES (875,0,0,1000,15382,@COMMON); -- Scorpius Subligar (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (875,0,0,1000,1660,@RARE);    -- Bronze Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (875,0,0,1000,940,@VRARE);    -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  28 - Fomor Red Mage
-INSERT INTO `mob_droplist` VALUES (876,0,0,1000,1659,90);  -- Coral Crest Key (9.0%)
-INSERT INTO `mob_droplist` VALUES (876,0,0,1000,15382,90); -- Scorpius Subligar (9.0%)
-INSERT INTO `mob_droplist` VALUES (876,0,0,1000,1061,40);  -- Sacrarium Chest Key (4.0%)
-INSERT INTO `mob_droplist` VALUES (876,0,0,1000,940,20);   -- Revival Tree Root (2.0%)
+INSERT INTO `mob_droplist` VALUES (876,0,0,1000,1659,@UNCOMMON); -- Coral Crest Key (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (876,0,0,1000,15382,@RARE);    -- Scorpius Subligar (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (876,0,0,1000,1061,@RARE);     -- Sacrarium Chest Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (876,0,0,1000,940,@VRARE);     -- Revival Tree Root (Very Rare, 1%)
 
--- ZoneID:  24 - Fomor Samurai
-INSERT INTO `mob_droplist` VALUES (877,0,0,1000,1698,130); -- Extra-Fine File (13.0%)
-INSERT INTO `mob_droplist` VALUES (877,0,0,1000,940,20);   -- Revival Tree Root (2.0%)
+-- ZoneID:  24 - Fomor Bard (Blueblade Fell) -- TODO: mob_groups.SQL doesn't distinguish between lower and higher level fomors in the zone
+-- ZoneID:  24 - Fomor Paladin (Blueblade Fell)
+-- ZoneID:  24 - Fomor Red Mage (Blueblade Fell)
+-- INSERT INTO `mob_droplist` VALUES (877,0,0,1000,1843,@UNCOMMON); -- Square Of Spectral Crimson (Uncommon, 10%)
+-- INSERT INTO `mob_droplist` VALUES (877,0,0,1000,940,@VRARE);     -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  27 - Fomor Samurai
-INSERT INTO `mob_droplist` VALUES (878,0,0,1000,1738,590);        -- Shakudo Ingot (59.0%)
-INSERT INTO `mob_droplist` VALUES (878,0,0,1000,1738,300);        -- Shakudo Ingot (30.0%)
-INSERT INTO `mob_droplist` VALUES (878,0,0,1000,15378,@UNCOMMON); -- Cancer Subligar (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (878,0,0,1000,1660,60);         -- Bronze Key (6.0%)
-INSERT INTO `mob_droplist` VALUES (878,0,0,1000,940,30);          -- Revival Tree Root (3.0%)
+INSERT INTO `mob_droplist` VALUES (878,0,0,1000,15378,@COMMON);  -- Cancer Subligar (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (878,0,0,1000,1660,@RARE);     -- Bronze Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (878,0,0,1000,1738,@UNCOMMON); -- Shakudo Ingot (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (878,0,0,1000,1738,@UNCOMMON); -- Shakudo Ingot (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (878,0,0,1000,940,@VRARE);     -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  28 - Fomor Samurai
-INSERT INTO `mob_droplist` VALUES (879,0,0,1000,1738,750);    -- Shakudo Ingot (75.0%)
-INSERT INTO `mob_droplist` VALUES (879,0,0,1000,1738,380);    -- Shakudo Ingot (38.0%)
-INSERT INTO `mob_droplist` VALUES (879,0,0,1000,1061,270);    -- Sacrarium Chest Key (27.0%)
-INSERT INTO `mob_droplist` VALUES (879,0,0,1000,1659,170);    -- Coral Crest Key (17.0%)
-INSERT INTO `mob_droplist` VALUES (879,0,0,1000,15378,80);    -- Cancer Subligar (8.0%)
-INSERT INTO `mob_droplist` VALUES (879,0,0,1000,1739,@VRARE); -- Square Of Balloon Cloth (Very Rare, 1%)
-INSERT INTO `mob_droplist` VALUES (879,0,0,1000,1739,@VRARE); -- Square Of Balloon Cloth (Very Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (879,0,0,1000,1659,@UNCOMMON); -- Coral Crest Key (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (879,0,0,1000,15378,@RARE);    -- Cancer Subligar (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (879,0,0,1000,1738,@COMMON);   -- Shakudo Ingot (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (879,0,0,1000,1738,@COMMON);   -- Shakudo Ingot (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (879,0,0,1000,1061,@RARE);     -- Sacrarium Chest Key (Rare, 5%)
 
--- ZoneID:  24 - Fomor Summoner
--- ZoneID:  25 - Fomor Summoner
-INSERT INTO `mob_droplist` VALUES (880,0,0,1000,940,80); -- Revival Tree Root (8.0%)
+-- ZoneID:  24 - Fomor Paladin
+INSERT INTO `mob_droplist` VALUES (877,0,0,1000,1843,@UNCOMMON); -- Square Of Spectral Crimson (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (877,0,0,1000,940,@VRARE);     -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  27 - Fomor Summoner
-INSERT INTO `mob_droplist` VALUES (881,0,0,1000,15384,270); -- Capricornus Subligar (27.0%)
-INSERT INTO `mob_droplist` VALUES (881,0,0,1000,1660,60);   -- Bronze Key (6.0%)
-INSERT INTO `mob_droplist` VALUES (881,0,0,1000,940,20);    -- Revival Tree Root (2.0%)
+INSERT INTO `mob_droplist` VALUES (881,0,0,1000,15384,@COMMON); -- Capricornus Subligar (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (881,0,0,1000,1660,@RARE);    -- Bronze Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (881,0,0,1000,940,@VRARE);    -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  28 - Fomor Summoner
-INSERT INTO `mob_droplist` VALUES (882,0,0,1000,1659,80);    -- Coral Crest Key (8.0%)
-INSERT INTO `mob_droplist` VALUES (882,0,0,1000,15384,80);   -- Capricornus Subligar (8.0%)
-INSERT INTO `mob_droplist` VALUES (882,0,0,1000,1061,40);    -- Sacrarium Chest Key (4.0%)
-INSERT INTO `mob_droplist` VALUES (882,0,0,1000,940,@VRARE); -- Revival Tree Root (Very Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (882,0,0,1000,1659,@UNCOMMON); -- Coral Crest Key (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (882,0,0,1000,15384,@RARE);    -- Capricornus Subligar (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (882,0,0,1000,1061,@RARE);     -- Sacrarium Chest Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (882,0,0,1000,940,@VRARE);     -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  28 - Fomors Bats
-INSERT INTO `mob_droplist` VALUES (883,0,0,1000,1061,20); -- Sacrarium Chest Key (2.0%)
+INSERT INTO `mob_droplist` VALUES (883,0,0,1000,1061,@RARE); -- Sacrarium Chest Key (Rare, 5%)
 
 -- ZoneID:  28 - Fomors Wyvern
 INSERT INTO `mob_droplist` VALUES (884,0,0,1000,1061,@RARE); -- Sacrarium Chest Key (Rare, 5%)
 
--- ZoneID:  24 - Fomor Thief
-INSERT INTO `mob_droplist` VALUES (885,0,0,1000,940,30); -- Revival Tree Root (3.0%)
-INSERT INTO `mob_droplist` VALUES (885,0,0,1000,940,30); -- Revival Tree Root (3.0%)
+-- 885 Available
 
 -- ZoneID:  27 - Fomor Thief
-INSERT INTO `mob_droplist` VALUES (886,0,0,1000,15377,340);    -- Gemini Subligar (34.0%)
-INSERT INTO `mob_droplist` VALUES (886,0,0,1000,1739,300);     -- Square Of Balloon Cloth (30.0%)
-INSERT INTO `mob_droplist` VALUES (886,0,0,1000,1739,@COMMON); -- Square Of Balloon Cloth (Common, 15%)
-INSERT INTO `mob_droplist` VALUES (886,0,0,1000,1660,60);      -- Bronze Key (6.0%)
-INSERT INTO `mob_droplist` VALUES (886,0,0,1000,940,30);       -- Revival Tree Root (3.0%)
+INSERT INTO `mob_droplist` VALUES (886,0,0,1000,15377,@COMMON);  -- Gemini Subligar (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (886,0,0,1000,1660,@RARE);     -- Bronze Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (886,0,0,1000,1739,@UNCOMMON); -- Square Of Balloon Cloth (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (886,0,0,1000,1739,@UNCOMMON); -- Square Of Balloon Cloth (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (886,0,0,1000,940,@VRARE);     -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  28 - Fomor Thief
-INSERT INTO `mob_droplist` VALUES (887,0,0,1000,1739,460);  -- Square Of Balloon Cloth (46.0%)
-INSERT INTO `mob_droplist` VALUES (887,0,0,1000,1739,230);  -- Square Of Balloon Cloth (23.0%)
-INSERT INTO `mob_droplist` VALUES (887,0,0,1000,1659,160);  -- Coral Crest Key (16.0%)
-INSERT INTO `mob_droplist` VALUES (887,0,0,1000,15377,130); -- Gemini Subligar (13.0%)
-INSERT INTO `mob_droplist` VALUES (887,0,0,1000,1061,30);   -- Sacrarium Chest Key (3.0%)
+INSERT INTO `mob_droplist` VALUES (887,0,0,1000,1659,@UNCOMMON); -- Coral Crest Key (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (887,0,0,1000,15377,@RARE);    -- Gemini Subligar (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (887,0,0,1000,1739,@COMMON);   -- Square Of Balloon Cloth (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (887,0,0,1000,1739,@COMMON);   -- Square Of Balloon Cloth (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (887,0,0,1000,1061,@RARE);     -- Sacrarium Chest Key (Rare, 5%)
 
--- ZoneID:  24 - Fomor Warrior
-INSERT INTO `mob_droplist` VALUES (888,0,0,1000,1698,140); -- Extra-Fine File (14.0%)
-INSERT INTO `mob_droplist` VALUES (888,0,0,1000,940,120);  -- Revival Tree Root (12.0%)
+-- 888 Available
 
 -- ZoneID:  27 - Fomor Warrior
-INSERT INTO `mob_droplist` VALUES (889,0,0,1000,1660,60); -- Bronze Key (6.0%)
-INSERT INTO `mob_droplist` VALUES (889,0,0,1000,940,20);  -- Revival Tree Root (2.0%)
+INSERT INTO `mob_droplist` VALUES (889,0,0,1000,1660,@RARE); -- Bronze Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (889,0,0,1000,940,@VRARE); -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID:  28 - Fomor Warrior
-INSERT INTO `mob_droplist` VALUES (890,0,0,1000,1659,80); -- Coral Crest Key (8.0%)
-INSERT INTO `mob_droplist` VALUES (890,0,0,1000,940,30);  -- Revival Tree Root (3.0%)
-INSERT INTO `mob_droplist` VALUES (890,0,0,1000,1061,30); -- Sacrarium Chest Key (3.0%)
+INSERT INTO `mob_droplist` VALUES (890,0,0,1000,1659,@UNCOMMON); -- Coral Crest Key (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (890,0,0,1000,1061,@RARE);     -- Sacrarium Chest Key (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (890,0,0,1000,940,@VRARE);     -- Revival Tree Root (Very Rare, 1%)
 
 -- ZoneID: 205 - Foreseer Oramix
-INSERT INTO `mob_droplist` VALUES (891,0,0,1000,17563,@UNCOMMON); -- Power Staff (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (891,0,0,1000,4719,90);         -- Scroll Of Regen Iii (9.0%)
-INSERT INTO `mob_droplist` VALUES (891,0,0,1000,4613,80);         -- Scroll Of Cure V (8.0%)
-INSERT INTO `mob_droplist` VALUES (891,0,0,1000,4618,80);         -- Scroll Of Curaga Iv (8.0%)
-INSERT INTO `mob_droplist` VALUES (891,0,0,1000,4741,80);         -- Scroll Of Shellra Iv (8.0%)
-INSERT INTO `mob_droplist` VALUES (891,0,0,1000,511,70);          -- Goblin Mask (7.0%)
-INSERT INTO `mob_droplist` VALUES (891,0,0,1000,510,@RARE);       -- Goblin Armor (Rare, 5%)
-INSERT INTO `mob_droplist` VALUES (891,0,0,1000,4659,@VRARE);     -- Scroll Of Shell Iv (Very Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (891,0,0,1000,17563,@COMMON);  -- Power Staff (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (891,0,0,1000,511,@ALWAYS);    -- Goblin Mask (Always, 100%)
+INSERT INTO `mob_droplist` VALUES (891,0,0,1000,510,@ALWAYS);    -- Goblin Armor (Always, 100%)
+INSERT INTO `mob_droplist` VALUES (891,0,0,1000,4719,@UNCOMMON); -- Scroll Of Regen Iii (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (891,0,0,1000,4613,@UNCOMMON); -- Scroll Of Cure V (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (891,0,0,1000,4618,@RARE);     -- Scroll Of Curaga Iv (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (891,0,0,1000,4741,@COMMON);   -- Scroll Of Shellra Iv (Common, 15%)
 
 -- ZoneID: 100 - Forest Funguar
 -- ZoneID: 101 - Forest Funguar
-INSERT INTO `mob_droplist` VALUES (892,0,0,1000,4374,160);       -- Sleepshroom (16.0%)
-INSERT INTO `mob_droplist` VALUES (892,0,0,1000,4373,@UNCOMMON); -- Woozyshroom (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (892,2,0,1000,4374,0);         -- Sleepshroom (Steal)
+INSERT INTO `mob_droplist` VALUES (892,0,0,1000,4374,@COMMON); -- Sleepshroom (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (892,2,0,1000,4374,0);       -- Sleepshroom (Steal)
+INSERT INTO `mob_droplist` VALUES (892,4,0,1000,4373,0);       -- Woozyshroom (Despoil)
+INSERT INTO `mob_droplist` VALUES (892,4,0,1000,4374,0);       -- Sleepshroom (Despoil)
+INSERT INTO `mob_droplist` VALUES (892,4,0,1000,4375,0);       -- Danceshroom (Despoil)
+INSERT INTO `mob_droplist` VALUES (892,4,0,1000,5680,0);       -- Agaricus Mushroom (Despoil)
+
+-- ZoneID: 100 - Forest Hare
+INSERT INTO `mob_droplist` VALUES (893,0,0,1000,856,@COMMON);   -- Rabbit Hide (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (893,0,0,1000,856,@UNCOMMON); -- Rabbit Hide (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (893,2,0,1000,4389,0);        -- San Dorian Carrot (Steal)
+INSERT INTO `mob_droplist` VALUES (893,4,0,1000,856,0);         -- Rabbit Hide (Despoil)
+INSERT INTO `mob_droplist` VALUES (893,4,0,1000,4358,0);        -- Slice Of Hare Meat (Despoil)
 
 -- ZoneID:  81 - Forest Hare
--- ZoneID: 100 - Forest Hare
-INSERT INTO `mob_droplist` VALUES (893,0,0,1000,856,@COMMON); -- Rabbit Hide (Common, 15%)
-INSERT INTO `mob_droplist` VALUES (893,0,0,1000,4358,120);    -- Slice Of Hare Meat (12.0%)
-INSERT INTO `mob_droplist` VALUES (893,2,0,1000,4389,0);      -- San Dorian Carrot (Steal)
-
 -- ZoneID: 101 - Forest Hare
-INSERT INTO `mob_droplist` VALUES (894,0,0,1000,4358,300);    -- Slice Of Hare Meat (30.0%)
-INSERT INTO `mob_droplist` VALUES (894,0,0,1000,856,@COMMON); -- Rabbit Hide (Common, 15%)
-INSERT INTO `mob_droplist` VALUES (894,0,0,1000,856,70);      -- Rabbit Hide (7.0%)
-INSERT INTO `mob_droplist` VALUES (894,2,0,1000,4389,0);      -- San Dorian Carrot (Steal)
+INSERT INTO `mob_droplist` VALUES (894,0,0,1000,4358,@COMMON);  -- Slice Of Hare Meat (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (894,0,0,1000,856,@UNCOMMON); -- Rabbit Hide (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (894,2,0,1000,4389,0);        -- San Dorian Carrot (Steal)
+INSERT INTO `mob_droplist` VALUES (894,4,0,1000,856,0);         -- Rabbit Hide (Despoil)
+INSERT INTO `mob_droplist` VALUES (894,4,0,1000,4358,0);        -- Slice Of Hare Meat (Despoil)
 
 -- ZoneID:  82 - Thread Leech Fished
 -- ZoneID:  82 - Forest Leech
@@ -7193,28 +7220,33 @@ INSERT INTO `mob_droplist` VALUES (894,2,0,1000,4389,0);      -- San Dorian Carr
 -- ZoneID: 104 - Thread Leech Fished
 -- ZoneID: 104 - Huge Leech
 INSERT INTO `mob_droplist` VALUES (895,0,0,1000,924,@UNCOMMON); -- Vial Of Fiend Blood (Uncommon, 10%)
-INSERT INTO `mob_droplist` VALUES (895,0,0,1000,930,@VRARE);    -- Vial Of Beastman Blood (Very Rare, 1%)
+INSERT INTO `mob_droplist` VALUES (895,0,0,1000,930,@VRARE);    -- Vial Of Beastman Blood (Rare, 5%)
+INSERT INTO `mob_droplist` VALUES (895,4,0,1000,924,0);         -- Vial Of Fiend Blood (Despoil)
+INSERT INTO `mob_droplist` VALUES (895,4,0,1000,930,0);         -- Vial Of Beastman Blood (Despoil)
+INSERT INTO `mob_droplist` VALUES (895,4,0,1000,2014,0);        -- Vial Of Bird Blood (Despoil)
 
 -- ZoneID:   2 - Forest Tiger
 -- ZoneID: 104 - Forest Tiger
-INSERT INTO `mob_droplist` VALUES (896,0,0,1000,884,360); -- Black Tiger Fang (36.0%)
-INSERT INTO `mob_droplist` VALUES (896,0,0,1000,861,140); -- Black Tiger Hide (14.0%)
-INSERT INTO `mob_droplist` VALUES (896,2,0,1000,4372,0);  -- Slice Of Giant Sheep Meat (Steal)
+INSERT INTO `mob_droplist` VALUES (896,0,0,1000,884,@COMMON);   -- Black Tiger Fang (Common, 15%)
+INSERT INTO `mob_droplist` VALUES (896,0,0,1000,861,@UNCOMMON); -- Black Tiger Hide (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (896,2,0,1000,4372,0);        -- Slice Of Giant Sheep Meat (Steal)
+INSERT INTO `mob_droplist` VALUES (896,4,0,1000,884,0);         -- Black Tiger Fang (Despoil)
+INSERT INTO `mob_droplist` VALUES (896,4,0,1000,861,0);         -- Black Tiger Hide (Despoil)
 
 -- ZoneID: 108 - Forger
 INSERT INTO `mob_droplist` VALUES (897,0,0,1000,1152,@ALWAYS); -- Lump Of Bomb Steel (Always, 100%)
 
 -- ZoneID:  27 - Foul Meat
-INSERT INTO `mob_droplist` VALUES (898,0,0,1000,849,250); -- Undead Skin (25.0%)
-INSERT INTO `mob_droplist` VALUES (898,0,0,1000,940,210); -- Revival Tree Root (21.0%)
+INSERT INTO `mob_droplist` VALUES (898,0,0,1000,849,@UNCOMMON); -- Undead Skin (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (898,4,0,1000,849,0);         -- Undead Skin (Despoil)
 
 -- ZoneID: 196 - Foul Meat
-INSERT INTO `mob_droplist` VALUES (899,0,0,1000,849,250);         -- Undead Skin (25.0%)
-INSERT INTO `mob_droplist` VALUES (899,0,0,1000,940,210);         -- Revival Tree Root (21.0%)
+INSERT INTO `mob_droplist` VALUES (899,0,0,1000,849,@UNCOMMON);   -- Undead Skin (Uncommon, 10%)
+INSERT INTO `mob_droplist` VALUES (899,0,0,1000,940,@COMMON);     -- Revival Tree Root (Common, 15%)
 INSERT INTO `mob_droplist` VALUES (899,0,0,1000,13120,@UNCOMMON); -- Clay Amulet (Uncommon, 10%)
 
 -- ZoneID: 194 - Four Of Batons
-INSERT INTO `mob_droplist` VALUES (900,0,0,1000,976,20); -- Four Of Batons Card (2.0%)
+INSERT INTO `mob_droplist` VALUES (900,0,0,1000,976,@UNCOMMON); -- Four Of Batons Card (Uncommon, 10%)
 
 -- ZoneID: 194 - Four Of Coins
 INSERT INTO `mob_droplist` VALUES (901,0,0,1000,1002,20); -- Four Of Coins Card (2.0%)
@@ -16211,8 +16243,7 @@ INSERT INTO `mob_droplist` VALUES (2038,0,0,1000,2148,380);       -- Puk Wing (3
 INSERT INTO `mob_droplist` VALUES (2038,0,0,1000,5569,130);       -- Puk Egg (13.0%)
 INSERT INTO `mob_droplist` VALUES (2038,0,0,1000,2229,@UNCOMMON); -- Vial Of Chimera Blood (Uncommon, 10%)
 
--- ZoneID:  68 - Puktrap
-INSERT INTO `mob_droplist` VALUES (2039,0,0,1000,1617,70); -- Flytrap Leaf (7.0%)
+-- 2039 Available
 
 -- ZoneID: 196 - Pulverized Pfeffer
 INSERT INTO `mob_droplist` VALUES (2040,0,0,1000,825,@ALWAYS); -- Square Of Cotton Cloth (Always, 100%)
