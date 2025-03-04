@@ -278,7 +278,7 @@ CCharEntity::~CCharEntity()
     if (PTreasurePool != nullptr)
     {
         // remove myself
-        PTreasurePool->DelMember(this);
+        PTreasurePool->delMember(this);
     }
 
     ClearTrusts(); // trusts don't survive zone lines
