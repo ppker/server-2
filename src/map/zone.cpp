@@ -430,7 +430,7 @@ void CZone::LoadZoneSettings()
         }
         if (m_miscMask & MISC_TREASURE)
         {
-            m_TreasurePool = new CTreasurePool(TREASUREPOOL_ZONE);
+            m_TreasurePool = new CTreasurePool(TreasurePoolType::Zone);
         }
         if (m_CampaignHandler && m_CampaignHandler->m_PZone == nullptr)
         {
@@ -992,10 +992,10 @@ void CZone::CharZoneIn(CCharEntity* PChar)
     PChar->ReloadPartyInc();
 
     // Zone-wide treasure pool takes precendence over all others
-    if (m_TreasurePool && m_TreasurePool->GetPoolType() == TREASUREPOOL_ZONE)
+    if (m_TreasurePool && m_TreasurePool->getPoolType() == TreasurePoolType::Zone)
     {
         PChar->PTreasurePool = m_TreasurePool;
-        PChar->PTreasurePool->AddMember(PChar);
+        PChar->PTreasurePool->addMember(PChar);
     }
     else
     {
@@ -1005,8 +1005,8 @@ void CZone::CharZoneIn(CCharEntity* PChar)
         }
         else
         {
-            PChar->PTreasurePool = new CTreasurePool(TREASUREPOOL_SOLO);
-            PChar->PTreasurePool->AddMember(PChar);
+            PChar->PTreasurePool = new CTreasurePool(TreasurePoolType::Solo);
+            PChar->PTreasurePool->addMember(PChar);
         }
     }
 
@@ -1118,15 +1118,15 @@ void CZone::CharZoneOut(CCharEntity* PChar)
 
     if (PChar->PTreasurePool != nullptr) // TODO: Condition for eliminating problems with MobHouse, we need to solve it once and for all!
     {
-        PChar->PTreasurePool->DelMember(PChar);
+        PChar->PTreasurePool->delMember(PChar);
     }
 
     // If zone-wide treasure pool but no players in zone then destroy current pool and create new pool
     // this prevents loot from staying in zone pool after the last player leaves the zone
-    if (m_TreasurePool && m_TreasurePool->GetPoolType() == TREASUREPOOL_ZONE && m_zoneEntities->CharListEmpty())
+    if (m_TreasurePool && m_TreasurePool->getPoolType() == TreasurePoolType::Zone && m_zoneEntities->CharListEmpty())
     {
         destroy(m_TreasurePool);
-        m_TreasurePool = new CTreasurePool(TREASUREPOOL_ZONE);
+        m_TreasurePool = new CTreasurePool(TreasurePoolType::Zone);
     }
 
     PChar->loc.zone = nullptr;
