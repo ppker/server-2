@@ -27556,6 +27556,97 @@ INSERT INTO `mob_droplist` VALUES (3409,0,0,1000,5384,@ALWAYS);
 INSERT INTO `mob_droplist` VALUES (3409,0,0,1000,5384,@ALWAYS);
 INSERT INTO `mob_droplist` VALUES (3409,0,0,1000,5384,@ALWAYS);
 
+-- ZoneID:  78 - Dark Elemental
+-- ZoneID:  78 - Rotting Huskarl
+-- ZoneID:  78 - Craven Einherjar
+-- ZoneID:  78 - Hyndla
+-- ZoneID:  78 - Nickur
+-- ZoneID:  78 - Hazhalm Bat
+-- ZoneID:  78 - Hazhalm Bats
+-- ZoneID:  78 - Gardsvor
+-- ZoneID:  78 - Einherjar Brei
+-- ZoneID:  78 - Hazhalm Leech
+-- ZoneID:  78 - Winebibber
+-- ZoneID:  78 - Waldgeist
+-- ZoneID:  78 - Odins Fool
+-- ZoneID:  78 - Battlemite
+-- ZoneID:  78 - Utgarth Bat
+-- ZoneID:  78 - Utgarth Bats
+-- ZoneID:  78 - Utgarth Leech
+-- ZoneID:  78 - Experimental Poroggo
+-- ZoneID:  78 - Liquified Einherjar
+-- ZoneID:  78 - Soulflayer
+-- ZoneID:  78 - Audhumbla
+-- ZoneID:  78 - Marid X
+-- ZoneID:  78 - Wivre X
+-- ZoneID:  78 - Berserkr
+-- ZoneID:  78 - Margygr
+-- ZoneID:  78 - Odins Jester
+-- ZoneID:  78 - Corrupt Einherjar
+-- ZoneID:  78 - Manticore X
+-- ZoneID:  78 - Ormr
+-- ZoneID:  78 - Chigoe
+-- ZoneID:  78 - Djigga
+-- ZoneID:  78 - Logi
+-- ZoneID:  78 - Flames of Muspelheim
+-- ZoneID:  78 - Infected Wamoura
+-- ZoneID:  78 - Sjokrakjen
+-- ZoneID:  78 - Einherjar Eater
+-- ZoneID:  78 - Hafgygr
+-- ZoneID:  78 - Hervarth
+-- ZoneID:  78 - Hjorvarth
+-- ZoneID:  78 - Hrani
+-- ZoneID:  78 - Angantyr
+-- ZoneID:  78 - Bui
+-- ZoneID:  78 - Brami
+-- ZoneID:  78 - Barri
+-- ZoneID:  78 - Reifnir
+-- ZoneID:  78 - Tind
+-- ZoneID:  78 - Tyrfing
+-- ZoneID:  78 - Hadding the Elder
+-- ZoneID:  78 - Hadding the Younger
+-- ZoneID:  78 - Vampyr Dog
+-- ZoneID:  78 - Idun
+-- ZoneID:  78 - Vanquished Einherjar
+-- ZoneID:  78 - Bugard X
+INSERT INTO `mob_droplist` VALUES (3410,0,0,1000,5415,@RARE); -- Page from Balrahn's Reflections (Rare, 5%)
+
+-- ZoneID:  78 - Odin (Odin's Chamber)
+INSERT INTO `mob_droplist` VALUES (3411,1,1,@ALWAYS,1325,250);   -- Aquarian Abjuration Body (Group 1, Always, 100% - 25%)
+INSERT INTO `mob_droplist` VALUES (3411,1,1,@ALWAYS,1320,250);   -- Earthen Abjuration Body (Group 1, Always, 100% - 25%)
+INSERT INTO `mob_droplist` VALUES (3411,1,1,@ALWAYS,1330,250);   -- Martial Abjuration Body (Group 1, Always, 100% - 25%)
+INSERT INTO `mob_droplist` VALUES (3411,1,1,@ALWAYS,1335,250);   -- Wyrmal Abjuration Body (Group 1, Always, 100% - 25%)
+INSERT INTO `mob_droplist` VALUES (3411,1,2,@ALWAYS,1326,100);   -- Aquarian Abjuration Hands (Group 2, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,2,@ALWAYS,1328,100);   -- Aquarian Abjuration Feet (Group 2, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,2,@ALWAYS,1318,100);   -- Dryadic Abjuration Feet (Group 2, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,2,@ALWAYS,1321,100);   -- Earthen Abjuration Hands (Group 2, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,2,@ALWAYS,1322,100);   -- Earthen Abjuration Legs (Group 2, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,2,@ALWAYS,1332,100);   -- Martial Abjuration Legs (Group 2, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,2,@ALWAYS,1333,100);   -- Martial Abjuration Feet (Group 2, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,2,@ALWAYS,1339,100);   -- Neptunal Abjuration Head (Group 2, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,2,@ALWAYS,1342,100);   -- Neptunal Abjuration Legs (Group 2, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,2,@ALWAYS,1334,100);   -- Wyrmal Abjuration Head (Group 2, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,3,@ALWAYS,2434,100);   -- Hadean Abjuration Head (Group 3, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,3,@ALWAYS,2435,100);   -- Hadean Abjuration Body (Group 3, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,3,@ALWAYS,2436,100);   -- Hadean Abjuration Hands (Group 3, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,3,@ALWAYS,2437,100);   -- Hadean Abjuration Legs (Group 3, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,3,@ALWAYS,2438,100);   -- Hadean Abjuration Feet (Group 3, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,3,@ALWAYS,2429,100);   -- Phantasmal Abjuration Head (Group 3, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,3,@ALWAYS,2430,100);   -- Phantasmal Abjuration Body (Group 3, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,3,@ALWAYS,2431,100);   -- Phantasmal Abjuration Hands (Group 3, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,3,@ALWAYS,2432,100);   -- Phantasmal Abjuration Legs (Group 3, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,3,@ALWAYS,2433,100);   -- Phantasmal Abjuration Feet (Group 3, Always, 100% - 10%)
+INSERT INTO `mob_droplist` VALUES (3411,1,4,@VCOMMON,1325,167);  -- Aquarian Abjuration Body (Group 4, Very Common, 24% - 16.7%)
+INSERT INTO `mob_droplist` VALUES (3411,1,4,@VCOMMON,1320,167);  -- Earthen Abjuration Body (Group 4, Very Common, 24% - 16.7%)
+INSERT INTO `mob_droplist` VALUES (3411,1,4,@VCOMMON,1330,167);  -- Martial Abjuration Body (Group 4, Very Common, 24% - 16.7%)
+INSERT INTO `mob_droplist` VALUES (3411,1,4,@VCOMMON,1335,167);  -- Wyrmal Abjuration Body (Group 4, Very Common, 24% - 16.7%)
+INSERT INTO `mob_droplist` VALUES (3411,1,4,@VCOMMON,2435,166);  -- Hadean Abjuration Body (Group 4, Very Common, 24% - 16.6%)
+INSERT INTO `mob_droplist` VALUES (3411,1,4,@VCOMMON,2430,166);  -- Phantasmal Abjuration Body (Group 4, Very Common, 24% - 16.6%)
+INSERT INTO `mob_droplist` VALUES (3411,1,5,@VCOMMON,17745,250); -- Hofud (Group 5, Very Common, 24% - 25%)
+INSERT INTO `mob_droplist` VALUES (3411,1,5,@VCOMMON,18121,250); -- Valkyrie's Fork (Group 5, Very Common, 24% - 25%)
+INSERT INTO `mob_droplist` VALUES (3411,1,5,@VCOMMON,16117,250); -- Valhalla Helm (Group 5, Very Common, 24% - 25%)
+INSERT INTO `mob_droplist` VALUES (3411,1,5,@VCOMMON,14577,250); -- Valhalla Breastplate (Group 5, Very Common, 24% - 25%)
+
 /*!40000 ALTER TABLE `mob_droplist` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
