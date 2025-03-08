@@ -81,10 +81,11 @@ end
 function IsConquestAlliance()
 end
 
----@param zoneId xi.zone
+---@param requestingZoneId xi.zone
+---@param executorZoneId xi.zone
 ---@param str string
 ---@return nil
-function SendLuaFuncStringToZone(zoneId, str)
+function SendLuaFuncStringToZone(requestingZoneId, executorZoneId, str)
 end
 
 ---@nodiscard
@@ -338,6 +339,14 @@ end
 
 ---@return nil
 function Terminate()
+end
+
+---@param target CBaseEntity
+---@param table table
+---@param offset number
+---@param degrees number
+---@return nil
+function DrawIn(target, table, offset, degrees)
 end
 
 ---@nodiscard
